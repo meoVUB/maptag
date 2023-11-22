@@ -19,52 +19,48 @@
 
       #floating-panel {
         position: absolute;
-        top: 10px;
-        left: 25%;
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: "Roboto", "sans-serif";
-        line-height: 30px;
-        padding-left: 10px;
-      }
-
-      #map {
-        position: absolute;
-        top: 75%;
+        top: 70%;
         left: 75%;
         z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
         text-align: center;
-        font-family: "Roboto", "sans-serif";
-        line-height: 30px;
-        padding-left: 10px;
-        height: 25%;
+        height: 30%;
         width: 25%;
         opacity: 0.5;
       }
+
+      #map {
+        height: 80%;
+        width: 100%;
+      }
+
+      #mybutton {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        border-radius: 15px;
+        font-size: 200%;
+        transition: background-color 0.1s ease; 
+        height: 20%;
+        width: 100%;
+      }
+      
     </style>
     <script>
 
-      function showHideMap() {
-        var x = document.getElementById("map");
-        if (x.style.display === "none") {
-          x.style.display = "block";
-        } else {
-          x.style.display = "none";
+        function playAgain() {
+          if (played === true) {
+            played = false;
+            initialize();
+          } else {
+            document.getElementById("mybutton").value = "Click the map to make your guess!";
+            document.getElementById("mybutton").style.color = "red";
+            //wait 2 seconds
+            setTimeout(function() {
+              document.getElementById("mybutton").value = "Play Again";
+              document.getElementById("mybutton").style.color = "white";
+            }, 1300);
+          }
         }
-      }
-
-      function playAgain() {
-        document.getElementById("mybutton").value = "MAKE A GUESS";
-        document.getElementById("mybutton").onclick = function() {showHideMap()};
-        played = false;
-        initialize();
-      }
 
       played = false;
 
@@ -132,9 +128,10 @@
         });
 
         
+        
         // Makes it so the opacity and size chnages when hovering on and off the world map
-        map.addListener("mouseover", (mapsMouseEvent) => {
-          mapDiv = document.getElementById("map")
+        const mapDiv = document.getElementById("floating-panel")
+        mapDiv.addEventListener("mouseover", () => {
           mapDiv.style.opacity = 1;
           mapDiv.style.height = "35%";
           mapDiv.style.width = "35%";
@@ -142,8 +139,7 @@
           mapDiv.style.left = "65%";
         });
 
-        map.addListener("mouseout", (mapsMouseEvent) => {
-          mapDiv = document.getElementById("map")
+        mapDiv.addEventListener("mouseout", () => {
           mapDiv.style.opacity = 0.5;
           mapDiv.style.height = "25%";
           mapDiv.style.width = "25%";
@@ -205,8 +201,6 @@
           linePath.setMap(map);
 
           played = true;
-          document.getElementById("mybutton").value = "Play Again";
-          document.getElementById("mybutton").onclick = function() {playAgain()};
 
         });
 
@@ -476,10 +470,10 @@
     <div id="pano"></div>
 
     <div id="floating-panel">
-      <input type="button" id="mybutton" value="MAKE A GUESS" onclick="showHideMap()" />
+      <input type="button" id="mybutton" value="Play Again" onclick="playAgain()" />
+      <div id="map"></div>
     </div>
 
-    <div id="map"></div>
     <div id="infoWindowContainer"></div>
 
     <script
