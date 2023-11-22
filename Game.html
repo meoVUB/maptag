@@ -2,6 +2,8 @@
 <html>
   <head>
     <title>Street View split-map-panes</title>
+     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <style type="text/css">
       html,
@@ -21,7 +23,7 @@
         position: absolute;
         top: 70%;
         left: 75%;
-        z-index: 5;
+        z-index: 2;
         text-align: center;
         height: 30%;
         width: 25%;
@@ -38,10 +40,21 @@
         color: #fff;
         text-align: center;
         border-radius: 15px;
-        font-size: 200%;
+        font-size: 150%;
         transition: background-color 0.1s ease; 
         height: 20%;
         width: 100%;
+      }
+
+      #locationInfo {
+        position: absolute;
+        z-index: 1; 
+        background-color: black; 
+        padding: 10px; 
+        border-radius: 15px;
+        opacity: 0;
+        height: 12%;
+        width: 15%;
       }
       
     </style>
@@ -50,13 +63,16 @@
         function playAgain() {
           if (played === true) {
             played = false;
+            document.getElementById("mybutton").value = "Zoom in and double click the map to make your guess!";
+            document.getElementById("locationInfo").style.opacity = 0;
+            weatherInfoElement.remove();
             initialize();
           } else {
             document.getElementById("mybutton").value = "Click the map to make your guess!";
             document.getElementById("mybutton").style.color = "red";
             //wait 2 seconds
             setTimeout(function() {
-              document.getElementById("mybutton").value = "Play Again";
+              document.getElementById("mybutton").value = "Zoom in and double click the map to make your guess!";
               document.getElementById("mybutton").style.color = "white";
             }, 1300);
           }
@@ -65,171 +81,55 @@
       played = false;
 
 
-        // Function to calculate the nearest Street View panorama
-        function findNearestStreetView(latitude, longitude) {
-          const streetViewService = new google.maps.StreetViewService();
-          const streetViewLocation = { lat: latitude, lng: longitude };
+      let weatherInfoElement;
+     //Weather API from https://openweathermap.org/api
+      function showLocalinfo(latitude, longitude){
+        const apiKey = '9becfeed140c9639fe192941f0633492';
 
-          streetViewService.getPanorama(
-            { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
-            (data, status) => {
-              if (status === "OK") {
-                const newstreetViewLocation = data.location;
-                const panorama = new google.maps.StreetViewPanorama(
-                  document.getElementById("pano"),
-                  {
-                    pano: newstreetViewLocation.pano,
-                    pov: {
-                      heading: 0,
-                      pitch: 0,
-                      zoom: 0
-                    },
-                    linksControl: false,
-                    panControl: false,
-                    enableCloseButton: false,
-                    addressControl: false,
-                    zoomControl: false,
-                    fullscreenControl: false,
-                    showRoadLabels: false,
-                  }
-                );
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+        const locationInfoElement = document.getElementById('locationInfo');
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            // Handle the weather data here
+            const countryCode = data.sys.country;
+            const countryFlag = `https://flagsapi.com/${countryCode}/flat/64.png`;
+            const city = data.name;
+            const description = data.weather[0].description;
+            const temperature = `${data.main.temp}°C`;
+            //alert( temperature + "  " + description + "  " + "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png" + city +  countryCode + countryFlag);  
 
-                map.setStreetView(panorama);
-              } else {
-                initialize();
-              }
-            }
-          );
+            weatherInfoElement = document.createElement('div');
+            weatherInfoElement.innerHTML = `
+            <p>Welcome to <strong>${city}</strong>, <img src="${countryFlag}" alt="${countryCode} flag"> 
+              <p></p>
+              Weather: <strong> <i> ${description.toLowerCase()}</i>, ${temperature}</strong></p>
+              <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
+            `;
+
+            locationInfoElement.appendChild(weatherInfoElement);
+            locationInfoElement.style.opacity = 0.85;
+          })
+          .catch(error => {
+            console.log('Error fetching weather data:', error);
+          });
         }
+      //////////////////////////////////////////////////////
 
-      function initialize() {
 
-        map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: 0, lng: 0 },
-                zoom: 1,
-                mapTypeControl: false,
-                streetViewControl: false,
-                minZoom: 1,
-                restriction: {
-                  latLngBounds: {
-                    north: 80,
-                    south: -80,
-                    east: 180,
-                    west: -180,
-                  },
-                },
-              });
-
-              myInfoWindowLatLng = new google.maps.LatLng(85, 0);
-
-        myinfowindow = new google.maps.InfoWindow({
-          position: myInfoWindowLatLng,
-          content: "Zoom in and double click the map to make your guess!",
-        });
-
-        
-        
-        // Makes it so the opacity and size chnages when hovering on and off the world map
-        const mapDiv = document.getElementById("floating-panel")
-        mapDiv.addEventListener("mouseover", () => {
-          mapDiv.style.opacity = 1;
-          mapDiv.style.height = "35%";
-          mapDiv.style.width = "35%";
-          mapDiv.style.top = "65%";
-          mapDiv.style.left = "65%";
-        });
-
-        mapDiv.addEventListener("mouseout", () => {
-          mapDiv.style.opacity = 0.5;
-          mapDiv.style.height = "25%";
-          mapDiv.style.width = "25%";
-          mapDiv.style.top = "75%";
-          mapDiv.style.left = "75%";
-        });
-        /////////////////////////////////////////////////////////////////////////
-
-        map.addListener("dblclick", (mapsMouseEvent) => {
-
-          if (played === true) {
-            return;
-          }
-
-          guessLatLng = new google.maps.LatLng(mapsMouseEvent.latLng.lat(), mapsMouseEvent.latLng.lng());
-
-          guessMarker = new google.maps.Marker({
-            position: mapsMouseEvent.latLng,
-            title:"Hello World!",
-            optimized: true 
-          });
-
-          guessMarker.setMap(map);
-
-          const image = "blackMarker.png";
-          targetLatLng = new google.maps.LatLng(latitude, longitude);
-          targetMarker = new google.maps.Marker({
-            position: targetLatLng,
-            draggable: false,
-            icon: image,
-            anchor: new google.maps.Point(15, 15),
-          });
-
-          targetMarker.setMap(map);
-
-          distance = checkDistance();
-
-          myinfowindow.close();
-
-          myinfowindow = new google.maps.InfoWindow({
-          });
-
-          myinfowindow.setContent("You were only " + distance.toFixed(1) + " km away!")
-          myinfowindow.open(map, targetMarker);
-          
-          lineCoordinates = [
-            targetLatLng,
-            guessLatLng,
-          ];
-
-          linePath = new google.maps.Polyline({
-            path: lineCoordinates,
-            geodesic: true,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 2,
-          });
-
-          linePath.setMap(map);
-
-          played = true;
-
-        });
-
-        function checkDistance() {
-        var lat1 = guessMarker.position.lat()
-        var lng1 = guessMarker.position.lng()
-        var lat2 = latitude
-        var lng2 = longitude
-
-        var R = 6371; //Radius of the earth in km
-        var dLat = deg2rad(lat2-lat1);
-        var dLng = deg2rad(lng2-lng1);
-        var a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-        Math.sin(dLng/2) * Math.sin(dLng/2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        var distance = R * c;
-        return distance;
+      score = 0;
+      // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
+      function calculateScore(distance) {
+        sigma = 1000 // the higher the sigma the more forgiving the game is
+        score = 1000 * Math.exp(-0.5 * (distance / sigma)**2)
+        setTimeout(function() {
+        alert("you scored " + score.toFixed(0) + " points!");
+            }, 500);
       }
 
-      function deg2rad(deg) {
-        return deg * (Math.PI/180)
-      }
-
-        
-        //const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
-        const continents ={
-           /* Scandinavia: [
+       //const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
+       const continents ={
+            Scandinavia: [
                 [71.14084246427528, 5.034565097476516],
                 [71.30034606248509, 32.18062094906504],
                 [54.78296177431897, 31.932654747289646],
@@ -240,13 +140,13 @@
                 [66.5329835378412, -13.300064245743673],
                 [63.3100828692601, -13.269474527556316],
                 [63.29644943582654, -24.64213384165604],
-            ],*/
+            ],
             EuropeMainLand: [
                 [58.82120051117042, -10.19889105971192],
                 [58.76715539096427, 39.240253055989676],
                 [36.856141469642594, 39.2424457522243],
                 [37.13222554355153, -10.124650104618762],
-            ]/*,
+            ],
             CanaryIslands: [
                 [29.258488255121286, -18.224358355185416],
                 [29.292993906896275, -13.404653644679778],
@@ -414,7 +314,7 @@
                 [22.377551979794113, -154.82292660765438],
                 [18.89281949189007, -154.76799497117378],
                 [18.840839181664133, -160.27214494653106],
-            ],*/
+            ],
           
         }
         
@@ -437,18 +337,15 @@
         const latitude = Math.random() * (Math.min(upleftY, downrightY) - Math.max(uprightY, downleftY)) + Math.max(uprightY, downleftY);
         const longitude = Math.random() * (Math.min(uprightX, upleftX) - Math.max(downrightX, downleftX)) + Math.max(downrightX, downleftX);
         return {latitude, longitude};
-      }
-        
-        
-             // Get random coordinates
+      }        
+        // Get random coordinates
         function randomcoordinates() {
           const latitude = Math.random() * 180 - 90;
           const longitude = Math.random() * 360 - 180;
           return { latitude, longitude };
         }
-
-				
-        const randomNumber = Math.random();       
+        
+        randomNumber = Math.random();       
         let randomCoordinates; 
           if (randomNumber < 0) {
             // 10% of an actual random coordinate in the whole world
@@ -459,8 +356,188 @@
             const randomArea = getRandomArea();
             randomCoordinates = getRandomCoordinates(randomArea);
           }
-        const latitude = randomCoordinates.latitude;
-        const longitude = randomCoordinates.longitude;
+        latitude = randomCoordinates.latitude;
+        longitude = randomCoordinates.longitude;
+
+      let mapLocation;
+
+      // Function to calculate the nearest Street View panorama
+      function findNearestStreetView(latitude, longitude) {
+          const streetViewService = new google.maps.StreetViewService();
+          const streetViewLocation = { lat: latitude, lng: longitude };
+
+          streetViewService.getPanorama(
+            { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
+            (data, status) => {
+              if (status === "OK") {
+                mapLocation = data.location;
+                const panorama = new google.maps.StreetViewPanorama(
+                  document.getElementById("pano"),
+                  {
+                    pano: mapLocation.pano,
+                    pov: {
+                      heading: 0,
+                      pitch: 0,
+                      zoom: 0
+                    },
+                    linksControl: false,
+                    panControl: false,
+                    enableCloseButton: false,
+                    addressControl: false,
+                    zoomControl: false,
+                    fullscreenControl: false,
+                    showRoadLabels: false,
+                  }
+                );
+
+                map.setStreetView(panorama);
+              } else {
+                  if (randomNumber < 0) {
+                  // 10% of an actual random coordinate in the whole world
+                  console.log("random");
+                  randomCoordinates = randomcoordinates();
+                  } else {
+                    // 90% chance for a coordinate in the defined Areas
+                    const randomArea = getRandomArea();
+                    randomCoordinates = getRandomCoordinates(randomArea);
+                  }
+                  latitude = randomCoordinates.latitude;
+                  longitude = randomCoordinates.longitude;
+                  findNearestStreetView(latitude, longitude);
+                }
+            }
+          );
+        }
+
+      function initialize() {
+
+        map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 0, lng: 0 },
+                zoom: 1,
+                mapTypeControl: false,
+                streetViewControl: false,
+                minZoom: 1,
+                restriction: {
+                  latLngBounds: {
+                    north: 80,
+                    south: -80,
+                    east: 180,
+                    west: -180,
+                  },
+                },
+              });
+
+              myInfoWindowLatLng = new google.maps.LatLng(85, 0);
+
+        myinfowindow = new google.maps.InfoWindow({
+          position: myInfoWindowLatLng,
+          content: "Zoom in and double click the map to make your guess!",
+        });
+
+        
+        
+        // Makes it so the opacity and size chanages when hovering on and off the world map
+        const mapDiv = document.getElementById("floating-panel")
+        mapDiv.addEventListener("mouseover", () => {
+          mapDiv.style.opacity = 1;
+          mapDiv.style.height = "35%";
+          mapDiv.style.width = "35%";
+          mapDiv.style.top = "65%";
+          mapDiv.style.left = "65%";
+        });
+
+        mapDiv.addEventListener("mouseout", () => {
+          mapDiv.style.opacity = 0.5;
+          mapDiv.style.height = "25%";
+          mapDiv.style.width = "25%";
+          mapDiv.style.top = "75%";
+          mapDiv.style.left = "75%";
+        });
+        /////////////////////////////////////////////////////////////////////////
+
+        map.addListener("dblclick", (mapsMouseEvent) => {
+
+          if (played === true) {
+            return;
+          }
+
+          guessLatLng = new google.maps.LatLng(mapsMouseEvent.latLng.lat(), mapsMouseEvent.latLng.lng());
+
+          guessMarker = new google.maps.Marker({
+            position: mapsMouseEvent.latLng,
+            title:"Hello World!",
+            optimized: true 
+          });
+
+          guessMarker.setMap(map);
+
+          const image = "blackMarker.png";
+          targetLatLng = new google.maps.LatLng(mapLocation.latLng.lat(), mapLocation.latLng.lng());
+          targetMarker = new google.maps.Marker({
+            position: targetLatLng,
+            draggable: false,
+            icon: image,
+            anchor: new google.maps.Point(15, 15),
+          });
+
+          targetMarker.setMap(map);
+
+          distance = checkDistance();
+
+          myinfowindow.close();
+
+          myinfowindow = new google.maps.InfoWindow({
+          });
+
+          myinfowindow.setContent("You were only " + distance.toFixed(1) + " km away!")
+          myinfowindow.open(map, targetMarker);
+          
+          lineCoordinates = [
+            targetLatLng,
+            guessLatLng,
+          ];
+
+          linePath = new google.maps.Polyline({
+            path: lineCoordinates,
+            geodesic: true,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          });
+
+          linePath.setMap(map);
+
+          calculateScore(distance);
+
+          played = true;
+
+          document.getElementById("mybutton").value = "Play Again!"; 
+          
+          showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
+
+        });
+
+        function checkDistance() {
+        var lat1 = guessMarker.position.lat()
+        var lng1 = guessMarker.position.lng()
+        var lat2 = latitude
+        var lng2 = longitude
+
+        var R = 6371; //Radius of the earth in km
+        var dLat = deg2rad(lat2-lat1);
+        var dLng = deg2rad(lng2-lng1);
+        var a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        var distance = R * c;
+        return distance;
+      }
+
+      function deg2rad(deg) {
+        return deg * (Math.PI/180)
+      }
 
         findNearestStreetView(latitude, longitude);
       }
@@ -470,10 +547,13 @@
     <div id="pano"></div>
 
     <div id="floating-panel">
-      <input type="button" id="mybutton" value="Play Again" onclick="playAgain()" />
+      <input type="button" id="mybutton" value="Zoom in and double click the map to make your guess!" onclick="playAgain()" />
       <div id="map"></div>
     </div>
 
+    <div class="jumbotron" id="locationInfo"></div>
+  
+    
     <div id="infoWindowContainer"></div>
 
     <script
