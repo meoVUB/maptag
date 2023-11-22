@@ -33,8 +33,8 @@
 
       #map {
         position: absolute;
-        top: 50%;
-        left: 62%;
+        top: 75%;
+        left: 75%;
         z-index: 5;
         background-color: #fff;
         padding: 5px;
@@ -43,8 +43,9 @@
         font-family: "Roboto", "sans-serif";
         line-height: 30px;
         padding-left: 10px;
-        height: 45%;
-        width: 35%;
+        height: 25%;
+        width: 25%;
+        opacity: 0.5;
       }
     </style>
     <script>
@@ -67,8 +68,6 @@
 
       played = false;
 
-      function initialize() {
-
 
         // Function to calculate the nearest Street View panorama
         function findNearestStreetView(latitude, longitude) {
@@ -76,11 +75,10 @@
           const streetViewLocation = { lat: latitude, lng: longitude };
 
           streetViewService.getPanorama(
-            { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.GOOGLE, preference: google.maps.StreetViewPreference.NEAREST },
+            { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
             (data, status) => {
               if (status === "OK") {
                 const newstreetViewLocation = data.location;
-                document.getElementById("map").style.display = "none";
                 const panorama = new google.maps.StreetViewPanorama(
                   document.getElementById("pano"),
                   {
@@ -88,6 +86,7 @@
                     pov: {
                       heading: 0,
                       pitch: 0,
+                      zoom: 0
                     },
                     linksControl: false,
                     panControl: false,
@@ -107,8 +106,10 @@
           );
         }
 
+      function initialize() {
+
         map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: -4.348637404641733, lng: -161.11511345290657 },
+                center: { lat: 0, lng: 0 },
                 zoom: 1,
                 mapTypeControl: false,
                 streetViewControl: false,
@@ -123,14 +124,33 @@
                 },
               });
 
-              myInfoWindowLatLng = new google.maps.LatLng(-4.348637404641733, -161.11511345290657);
+              myInfoWindowLatLng = new google.maps.LatLng(85, 0);
 
         myinfowindow = new google.maps.InfoWindow({
           position: myInfoWindowLatLng,
           content: "Zoom in and double click the map to make your guess!",
         });
 
-        myinfowindow.open(map);
+        
+        // Makes it so the opacity and size chnages when hovering on and off the world map
+        map.addListener("mouseover", (mapsMouseEvent) => {
+          mapDiv = document.getElementById("map")
+          mapDiv.style.opacity = 1;
+          mapDiv.style.height = "35%";
+          mapDiv.style.width = "35%";
+          mapDiv.style.top = "65%";
+          mapDiv.style.left = "65%";
+        });
+
+        map.addListener("mouseout", (mapsMouseEvent) => {
+          mapDiv = document.getElementById("map")
+          mapDiv.style.opacity = 0.5;
+          mapDiv.style.height = "25%";
+          mapDiv.style.width = "25%";
+          mapDiv.style.top = "75%";
+          mapDiv.style.left = "75%";
+        });
+        /////////////////////////////////////////////////////////////////////////
 
         map.addListener("dblclick", (mapsMouseEvent) => {
 
@@ -215,7 +235,7 @@
         
         //const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
         const continents ={
-            Scandinavia: [
+           /* Scandinavia: [
                 [71.14084246427528, 5.034565097476516],
                 [71.30034606248509, 32.18062094906504],
                 [54.78296177431897, 31.932654747289646],
@@ -226,13 +246,13 @@
                 [66.5329835378412, -13.300064245743673],
                 [63.3100828692601, -13.269474527556316],
                 [63.29644943582654, -24.64213384165604],
-            ],
+            ],*/
             EuropeMainLand: [
                 [58.82120051117042, -10.19889105971192],
                 [58.76715539096427, 39.240253055989676],
                 [36.856141469642594, 39.2424457522243],
                 [37.13222554355153, -10.124650104618762],
-            ],
+            ]/*,
             CanaryIslands: [
                 [29.258488255121286, -18.224358355185416],
                 [29.292993906896275, -13.404653644679778],
@@ -400,7 +420,7 @@
                 [22.377551979794113, -154.82292660765438],
                 [18.89281949189007, -154.76799497117378],
                 [18.840839181664133, -160.27214494653106],
-            ],
+            ],*/
           
         }
         
@@ -447,8 +467,6 @@
           }
         const latitude = randomCoordinates.latitude;
         const longitude = randomCoordinates.longitude;
-        //console.log("randomLat", randomCoordinates.latitude);
-        //console.log("randomLong", randomCoordinates.longitude);
 
         findNearestStreetView(latitude, longitude);
       }
@@ -462,6 +480,7 @@
     </div>
 
     <div id="map"></div>
+    <div id="infoWindowContainer"></div>
 
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&callback=initialize&v=weekly"
