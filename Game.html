@@ -93,17 +93,18 @@
           .then(data => {
             // Handle the weather data here
             const countryCode = data.sys.country;
-            const countryFlag = `https://flagsapi.com/${countryCode}/flat/64.png`;
+            const countryFlag = `https://flagsapi.com/${countryCode}/flat/64.png`;//https://flagsapi.com/
             const city = data.name;
             const description = data.weather[0].description;
             const temperature = `${data.main.temp}°C`;
-            //alert( temperature + "  " + description + "  " + "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png" + city +  countryCode + countryFlag);  
+            const icon = "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
+            //alert( temperature + "  " + description + "  " +  + city +  countryCode + countryFlag + icon);  
 
             weatherInfoElement = document.createElement('div');
             weatherInfoElement.innerHTML = `
-            <p>Welcome to <strong>${city}</strong>, <img src="${countryFlag}" alt="${countryCode} flag"> 
+            <p>Welcome to <strong>${city}</strong>, <img src="${countryFlag}" alt="${countryCode}"> 
               <p></p>
-              Weather: <strong> <i> ${description.toLowerCase()}</i>, ${temperature}</strong></p>
+              <img src="${icon}">  <strong>${temperature}</strong></p>
               <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
             `;
 
