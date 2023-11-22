@@ -102,9 +102,9 @@
 
             weatherInfoElement = document.createElement('div');
             weatherInfoElement.innerHTML = `
-            <p>Welcome to <strong>${city}</strong>, <img src="${countryFlag}" alt="${countryCode}"> 
+            <p>Welcome to <strong>${city}</strong> <img src="${countryFlag}" alt="${countryCode}" style="width: 48px; height: 48px;"> 
               <p></p>
-              <img src="${icon}">  <strong>${temperature}</strong></p>
+              <img src="${icon}" style="width: 48px; height: 48px;">  <strong>${temperature}</strong></p>
               <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
             `;
 
