@@ -4,10 +4,14 @@ let weatherInfoElement;
 let total_score = 0;
 let current_score = 0;
 let total_maps = 5;
-let current_map = 0;
+let current_map = 1;
 let latitude, longitude;
 let mapLocation;
 let guessMarker, targetMarker, linePath, myinfowindow, lineCoordinates, randomCoordinates;
+///////////////////////////////////////////////////////////////////////
+// Variables for the gamemodes
+let timer;
+let time_ms = 60000;
 ///////////////////////////////////////////////////////////////////////
 function playAgain() {
   if (current_map != total_maps) {
@@ -350,7 +354,7 @@ function findNearestStreetView(latitude, longitude) {
   }
 
 function newMap() {
-
+  clearTimeout(timer);
   map = new google.maps.Map(document.getElementById("map"), {
           center: { lat: 0, lng: 0 },
           zoom: 1,
@@ -378,7 +382,7 @@ function newMap() {
   // Makes it so the opacity and size changes when hovering on and off the world map
   const mapDiv = document.getElementById("floating-panel")
   mapDiv.addEventListener("mouseover", () => {
-    mapDiv.style.opacity = 1;
+    mapDiv.style.opacity = 0.8;
     mapDiv.style.height = "35%";
     mapDiv.style.width = "35%";
     mapDiv.style.top = "65%";
@@ -438,7 +442,7 @@ function newMap() {
 
     linePath = new google.maps.Polyline({
       path: lineCoordinates,
-      geodesic: false,
+      geodesic: true,
       strokeColor: "#FF0000",
       strokeOpacity: 1.0,
       strokeWeight: 2,
@@ -458,7 +462,7 @@ function newMap() {
 
 function checkDistance() {
   var lat1 = guessMarker.position.lat()
-  var lng1 = guessMarker.position.lng(  )
+  var lng1 = guessMarker.position.lng()
   var lat2 = latitude
   var lng2 = longitude
 
@@ -493,4 +497,33 @@ randomNumber = Math.random();
   longitude = randomCoordinates.longitude;  
 
 findNearestStreetView(latitude, longitude);
+
+timer = setTimeout(() => {
+  if (!played) {
+    played = true;
+    document.getElementById("mybutton").value = "Time's up! Play Again!";
+    document.getElementById("mybutton").style.color = "red";
+    showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
+  }
+}, time_ms);
+
+ // Update the countdown every second
+ const countdownElement = document.getElementById("countdown");
+ let secondsLeft = time_ms / 1000;
+
+ function updateCountdown() {
+  if (!played) {
+   const minutes = Math.floor(secondsLeft / 60);
+   const seconds = secondsLeft % 60;
+   countdownElement.innerHTML = `<strong>Time Left:</strong> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+   secondsLeft--;
+
+   if (secondsLeft >= 0) {
+     setTimeout(updateCountdown, 1000);
+   }
+ }
+}
+
+ updateCountdown();
+
 }
