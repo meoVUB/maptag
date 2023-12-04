@@ -1,7 +1,6 @@
 body, html {
+  background-color: black;
   height: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 #pano {
@@ -26,7 +25,7 @@ body, html {
   width: 100%;
 }
 
-#mybutton {
+#guessbutton {
   background-color: #3498db;
   color: #fff;
   text-align: center;
@@ -38,31 +37,45 @@ body, html {
 
 #locationInfo {
   position: absolute;
-  z-index: 1; 
-  background-color: black; 
-  top: 5%;
-  text-align: center;
+  z-index: 1;
+  background-color: black;
+  top: 120px;
+  right: 0;
   opacity: 0;
   height: 12%;
   width: 15%;
+  overflow: hidden;
+  color: white; 
+  font-family: 'Arial', sans-serif; 
+  font-size: 16px; 
+  padding: 10px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
 }
+
+#locationInfo p {
+  margin: 0; 
+  line-height: 1.5; 
+}
+
+
 .custom-navbar {
   background-color: rgba(0, 0, 0, 0.3); 
   padding: 10px;
   position: fixed;
-  top: 0;
   width: 100%;
-  height: 5%;
+  height: 120px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000; 
+  z-index: 10;
+  overflow: hidden; 
 }
 
 .navbar-logo {
-  height: 48px;
-  width: 48px;
+  height: 80px;
+  width: 80px;
 }
 .navbar-content {
   color: white;
+  font-size: 200%;
 }

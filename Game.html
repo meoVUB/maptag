@@ -7,25 +7,25 @@
     <title>MapTag</title>
   </head>
 
-  <body>
+  <body id="body">
     <nav class="custom-navbar">
       <div class="navbar-content">
           <img src= 'Website/MapTag/static/images/maptag_logo.png' alt="Logo" class="navbar-logo">
       </div>
       <div class="navbar-content">
-          <div id="countdown"><strong>Time Left: 1:00</strong></div>
-          <span id="currentScore">Current Score: 0</span>
-          <span id="currentMap">Map 1/5</span>
+          <span id="countdown"><strong>Time Left: </strong>1:00</span>
+          <span id="currentScore"><strong>Current Score: </strong>0</span>
+          <span id="currentMap"><strong>Map: </strong>1/5</span>
       </div>
     </nav>
-    <div id="pano"></div>
-
+    <div id="pano"></div> 
     <div id="floating-panel">
-          <input type="button" id="mybutton" value="Zoom in and double click the map to make your guess!" onclick="playAgain()" />
+          <input type="button" id="guessbutton" value="Zoom in and double click the map to make your guess!" onclick="playAgain()" />
           <div id="map"></div>
     </div>
     <div id="locationInfo"></div>
-    <div id="infoWindowContainer"></div>
+
+
     <script src="Game.js" defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&callback=newMap&v=weekly" defer> </script>
   </body>
@@ -33,4 +33,3 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
 <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-<style type="text/css">
