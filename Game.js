@@ -364,8 +364,12 @@ function updateCountdown() {
     setTimeout(updateCountdown, 1000);
   } else {
     played = true;
-    document.getElementById("guessbutton").value = "Time's up! Play Again!";
-    document.getElementById("guessbutton").style.color = "red";
+    timeUp = new google.maps.InfoWindow({
+    });
+  
+    timeUp.setContent("Time's up! Play Again!")
+    timeUp.open(map, targetMarker);
+    
     showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
     targetLatLng = new google.maps.LatLng(mapLocation.latLng.lat(), mapLocation.latLng.lng());
     targetMarker = new google.maps.Marker({

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map and Location Submission</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer> </script>
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        .submission-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        form {
+            margin-bottom: 30px;
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+        }
+
+        input,
+        select,
+        textarea {
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function toggleTimerInput() {
+            var timerActiveSelect = document.getElementById("timerActive");
+            var timerSection = document.getElementById("timerSection");
+
+            // Show or hide the timer input based on the selection
+            timerSection.style.display = (timerActiveSelect.value === "yes") ? "block" : "none";
+        }
+
+        function validateForm() {
+            var mapTitle = document.getElementById("mapTitle").value;
+            var canMove = document.getElementById("canMove").value;
+            var timerActive = document.getElementById("timerActive").value;
+            var timerDuration = document.getElementById("timerDuration").value;
+            var mapDescription = document.getElementById("mapDescription").value;
+            var lat1 = document.getElementById("lat1").value;
+            var long1 = document.getElementById("long1").value;
+            // Check if required fields are filled
+            if (mapTitle && canMove && timerActive && mapDescription && lat1 && long1) {
+                // If Timer is set to "Yes," ensure Timer Duration is filled
+                if (timerActive === "yes" && !timerDuration) {
+                    alert("Please fill the Timer Duration.");
+                }
+                checkCoordinates();
+            } else {
+                alert("Please fill in all required fields.");
+            }
+        }
+
+        // Array to store invalid locations
+        var invalidLocations = [];
+
+        function checkCoordinates() {
+            invalidLocations = [];
+            var timerDuration = document.getElementById("timerDuration").value;
+            if (timerDuration > 600) {
+                alert("Timer duration cannot exceed 10 minutes.");
+                return;
+            }
+            // Check each set of coordinates
+            for (var i = 1; i <= 5; i++) {
+                var lat = parseFloat(document.getElementById("lat" + i).value);
+                var long = parseFloat(document.getElementById("long" + i).value);
+                var validStreet = validStreetView(lat, long, i);
+         }
+         // Check and alert for invalid locations
+         var alertMessage = "Please enter valid coordinates for Locations: "
+         setTimeout(() => { 
+                if (invalidLocations.length > 0) {  
+                invalidLocations.forEach(function (index) {
+                    alertMessage = alertMessage + index + " ";
+                });
+                alert(alertMessage);
+            } else {
+                console.log("All coordinates are valid");
+            }
+            }, 300);
+        }
+
+        function validStreetView(latitude, longitude, i) {
+            const streetViewService = new google.maps.StreetViewService();
+            const streetViewLocation = { lat: latitude, lng: longitude };
+            streetViewService.getPanorama(
+                { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST},
+                (data, status) => {
+                    if (status === "OK") {
+                        console.log("Location " + i + " is valid");
+                    } else {
+                        invalidLocations.push(i);
+                    }
+                }
+            );
+        }   
+
+    </script>
+</head>
+<body>
+
+    <div class="container submission-container">
+        <h2>Map and Location Submission</h2>
+        <form id="mapSubmissionForm">
+            <div class="form-group">
+                <label for="mapTitle">Map Title:</label>
+                <input type="text" class="form-control" id="mapTitle" name="mapTitle" required>
+            </div>
+
+            <div class="form-group">
+                <label for="canMove">Can Players Move?</label>
+                <select class="form-control" id="canMove" name="canMove">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="timerActive">Is Timer Active?</label>
+                <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput()">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+
+            <div id="timerSection" style="display: none;">
+                <div class="form-group">
+                    <label for="timerDuration">Timer Duration (in seconds, max 10 min):</label>
+                    <input type="number" class="form-control" id="timerDuration" name="timerDuration" min="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="mapDescription">Map Description:</label>
+                <textarea class="form-control" id="mapDescription" name="mapDescription" rows="4" required></textarea>
+            </div>
+        </form>
+
+        <form id="locationSubmissionForm">
+            <!-- Location 1 -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="lat1">Latitude (Location 1):</label>
+                    <input type="text" class="form-control" id="lat1" name="lat1" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="long1">Longitude (Location 1):</label>
+                    <input type="text" class="form-control" id="long1" name="long1" required>
+                </div>
+            </div>
+
+            <!-- Location 2 -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="lat2">Latitude (Location 2):</label>
+                    <input type="text" class="form-control" id="lat2" name="lat2" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="long2">Longitude (Location 2):</label>
+                    <input type="text" class="form-control" id="long2" name="long2" required>
+                </div>
+            </div>
+
+            <!-- Location 3 -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="lat3">Latitude (Location 3):</label>
+                    <input type="text" class="form-control" id="lat3" name="lat3" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="long3">Longitude (Location 3):</label>
+                    <input type="text" class="form-control" id="long3" name="long3" required>
+                </div>
+            </div>
+
+            <!-- Location 4 -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="lat4">Latitude (Location 4):</label>
+                    <input type="text" class="form-control" id="lat4" name="lat4" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="long4">Longitude (Location 4):</label>
+                    <input type="text" class="form-control" id="long4" name="long4" required>
+                </div>
+            </div>
+
+            <!-- Location 5 -->
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="lat5">Latitude (Location 5):</label>
+                    <input type="text" class="form-control" id="lat5" name="lat5" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="long5">Longitude (Location 5):</label>
+                    <input type="text" class="form-control" id="long5" name="long5" required>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="validateForm()">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+
