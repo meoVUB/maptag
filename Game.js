@@ -11,7 +11,7 @@ let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, ran
 ///////////////////////////////////////////////////////////////////////
 // Variables for the gamemodes
 timer = true;
-let time_ms = 3000;
+let time_ms = 60000;
 let secondsLeft;
 /////////////////////
 move_enabled = true;
