@@ -97,7 +97,7 @@ const areaOfEarth = 153030000;
 
  const continents ={
   Scandinavia: {
-    weight: areaOfEarth / 2417901.60,
+    weight:  2417901.60 / areaOfEarth,
     coordinates: [
       [71.14084246427528, 5.034565097476516],
       [71.30034606248509, 32.18062094906504],
@@ -106,7 +106,7 @@ const areaOfEarth = 153030000;
       ],
   },
   Iceland: {
-    weight: areaOfEarth / 190883.29,
+    weight:  190883.29 / areaOfEarth,
     coordinates: [
       [66.51924679143653, -24.638559481991866],
       [66.5329835378412, -13.300064245743673],
@@ -115,7 +115,7 @@ const areaOfEarth = 153030000;
       ],
   },
   EuropeMainLand: {
-    weight: areaOfEarth / 8509244.32,
+    weight:  8509244.32 / areaOfEarth,
     coordinates: [
       [58.82120051117042, -10.19889105971192],
       [58.76715539096427, 39.240253055989676],
@@ -124,7 +124,7 @@ const areaOfEarth = 153030000;
     ],
   },
   CanaryIslands: {
-    weight: areaOfEarth / 85677.20,
+    weight:  85677.20 / areaOfEarth,
     coordinates: [
       [29.258488255121286, -18.224358355185416],
       [29.292993906896275, -13.404653644679778],
@@ -133,7 +133,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NorthAfrica: {
-    weight: areaOfEarth / 17950200.79,
+    weight:  17950200.79 / areaOfEarth,
     coordinates: [
       [34.26839092120326, -16.87370216328901],
       [32.87508627991171, 34.445690851542615],
@@ -142,7 +142,7 @@ const areaOfEarth = 153030000;
     ],
   },
   HornOfAfrica: {
-    weight: areaOfEarth / 3188423.24,
+    weight:  3188423.24 / areaOfEarth,
     coordinates: [
       [11.971662709145162, 33.958313045371035],
       [11.971662709145162, 51.53643671916674],
@@ -151,7 +151,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthAfrica: {
-    weight: areaOfEarth / 13038281.14,
+    weight:  13038281.14 / areaOfEarth,
     coordinates: [
       [-1.3675028286942212, 8.421060488982992],
       [-1.8898906611289705, 42.39010881855585],
@@ -160,7 +160,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Madagascar: {
-    weight: areaOfEarth / 2971404.54,
+    weight:  2971404.54 / areaOfEarth,
     coordinates:[
       [-10.847488407040432, 42.80651522994556],
       [-10.956347988960186, 59.21384834438676],
@@ -169,7 +169,7 @@ const areaOfEarth = 153030000;
     ],
   },
   MiddleEast: {
-    weight: areaOfEarth / 8862414.40,
+    weight:  8862414.40 / areaOfEarth,
     coordinates:[
       [36.92862346119149, 34.825132589008064],
       [36.99884948801137, 69.62981746312354],
@@ -178,7 +178,7 @@ const areaOfEarth = 153030000;
     ],
   },
   AsiaMainLand: {
-    weight: areaOfEarth / 17676417.52,
+    weight:  17676417.52 / areaOfEarth,
     coordinates:[
       [63.02637770782962, 34.397860637633194],
       [63.22682150351833, 134.31999744269888],
@@ -187,7 +187,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthAsia: {
-    weight: areaOfEarth / 6033971.90,
+    weight:  6033971.90 / areaOfEarth,
     coordinates:[
       [29.710208926569106, 70.80438972927725],
       [29.63384311888109, 91.98602875620105],
@@ -196,7 +196,7 @@ const areaOfEarth = 153030000;
     ],
   },
   China: {
-    weight: areaOfEarth / 6528543.87,
+    weight:  6528543.87 / areaOfEarth,
     coordinates:[
       [38.0773918055009, 92.30102912919395],
       [38.138861058426684, 123.62752091050231],
@@ -205,7 +205,7 @@ const areaOfEarth = 153030000;
     ],
   },
   KoreaJapan: {
-    weight: areaOfEarth / 3043807.10,
+    weight:  3043807.10 / areaOfEarth,
     coordinates:[
       [46.27923647779601, 125.26623189749401],
       [46.27923647779601, 145.8440165646783],
@@ -214,7 +214,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthEastAsia: {
-    weight: areaOfEarth / 14090205.70,
+    weight:  14090205.70 / areaOfEarth,
     coordinates:[
       [20.640847756994816, 91.69960669878705],
       [20.640847756994816, 126.5097593875339],
@@ -223,7 +223,7 @@ const areaOfEarth = 153030000;
     ],
   },
   AustraliaMainLand: {
-    weight: areaOfEarth / 12657201.17,
+    weight:  12657201.17 / areaOfEarth,
     coordinates:[
       [-11.388585409286607, 112.82548543009061],
       [-10.957462565613936, 153.95829482677254],
@@ -232,7 +232,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Tasmania: {
-    weight: areaOfEarth / 103621.70,
+    weight:  103621.70 / areaOfEarth,
     coordinates:[
       [-40.67081455786152, 144.52413571834464],
       [-40.701003913327746, 148.3461037562941],
@@ -241,7 +241,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NewZealand: {
-    weight: areaOfEarth / 1485709.42,
+    weight:  1485709.42 / areaOfEarth,
     coordinates:[
       [-34.513888885458215, 166.04621354872063],
       [-34.47486807170346, 178.5452704048375],
@@ -250,7 +250,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Greenland: {
-    weight: areaOfEarth / 3554469.57,
+    weight:  3554469.57 / areaOfEarth,
     coordinates:[
       [79.95069876351401, -65.79252415542695],
       [80.07265252113781, -23.253464864840904],
@@ -259,7 +259,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NorthAmericaMainLand: {
-    weight: areaOfEarth / 20890866.90,
+    weight:  20890866.90 / areaOfEarth,
     coordinates:[
       [70.1060979309805, -132.09658369580458],
       [70.6898481390013, -61.49639633823274],
@@ -268,7 +268,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Alaska: {
-    weight: areaOfEarth / 3097313.91,
+    weight:  3097313.91 / areaOfEarth,
     coordinates:[
       [71.08431749178665, -165.80448293849207],
       [70.92247891270657, -131.2501658867228],
@@ -277,7 +277,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Mexico: {
-    weight: areaOfEarth / 1912253.26,
+    weight:  1912253.26 / areaOfEarth,
     coordinates:[
       [28.869903535868485, -108.2313370578962],
       [29.023724245377217, -96.01454110460818],
@@ -286,7 +286,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Guatemala: {
-    weight: areaOfEarth / 832379.07,
+    weight:  832379.07 / areaOfEarth,
     coordinates:[
       [21.703437463912234, -94.87849759879659],
       [21.70343746391225, -86.83380302700942],
@@ -295,7 +295,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Panama: {
-    weight: areaOfEarth / 211133.66,
+    weight:  211133.66 / areaOfEarth, 
     coordinates:[
       [9.841056806074487, -83.6665996368072],
       [9.716209334566162, -77.45888256566438],
@@ -304,7 +304,7 @@ const areaOfEarth = 153030000;
     ],
   },
   DominicanRepublic: {
-    weight: areaOfEarth / 57191.02,
+    weight:  57191.02 / areaOfEarth,
     coordinates:[
       [19.889153100340057, -70.85724832916344],
       [19.876866899669405, -68.1789195185625],
@@ -313,7 +313,7 @@ const areaOfEarth = 153030000;
     ],
   },
   PuertoRico: {
-    weight: areaOfEarth / 12031.64,
+    weight:  12031.64 / areaOfEarth,
     coordinates:[
       [18.52859363935658, -67.2484958735337],
       [18.52122765284481, -65.57826696927778],
@@ -322,7 +322,7 @@ const areaOfEarth = 153030000;
     ],
   },
   VirginIslands: {
-    weight: areaOfEarth / 6912.29,
+    weight:  6912.29 / areaOfEarth,
     coordinates:[
       [18.522672542801782, -65.03847034700321],
       [18.522672542801782, -64.35484177223798],
@@ -331,7 +331,7 @@ const areaOfEarth = 153030000;
     ],
   },
   FrenchAntilles: {
-    weight: areaOfEarth / 44022.58,
+    weight:  44022.58 / areaOfEarth,
     coordinates:[
       [16.509217947494847, -61.8230405133189],
       [16.509217947494847, -60.83453564662678],
@@ -340,7 +340,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NorthOfSouthAmerica: {
-    weight: areaOfEarth / 19439522.23,
+    weight:  19439522.23 / areaOfEarth,
     coordinates:[
       [11.916899850639044, -81.73975420181262],
       [11.74485278746788, -35.5092889397299],
@@ -349,7 +349,7 @@ const areaOfEarth = 153030000;
     ],
   },
   MiddleOfSouthAmerica: {
-    weight: areaOfEarth / 6905291.84,
+    weight: 6905291.84 / areaOfEarth, 
     coordinates:[
       [-18.56274384611329, -72.3529821642851],
       [-17.97852882361089, -39.39400027591817],
@@ -358,7 +358,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthOfSouthAmerica: {
-    weight: areaOfEarth / 1787154.89,
+    weight: 1787154.89 / areaOfEarth,
     coordinates:[
       [-39.63621149105558, -75.76244806273877],
       [-39.77144992188392, -62.66674592576097],
@@ -367,7 +367,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Hawaii: {
-    weight: areaOfEarth / 223829.42,
+    weight: 223829.42 / areaOfEarth, 
     coordinates:[
       [22.418182065624222, -160.27214494653106],
       [22.377551979794113, -154.82292660765438],
