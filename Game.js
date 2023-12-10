@@ -8,13 +8,21 @@ let current_map = 1;
 let latitude, longitude;
 let mapLocation;
 let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea;
-///////////////////////////////////////////////////////////////////////
+
+
+// Function to get query parameters from the URL
+function getQueryParam(key) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(key);
+}
+// Game.html?timer=true to have timer on true
 // Variables for the gamemodes
-timer = true;
+let timer = getQueryParam('timer') === 'true';
 let time_ms = 60000;
 let secondsLeft;
 /////////////////////
-move_enabled = true;
+let move_enabled = true;
 ///////////////////////////////////////////////////////////////////////
 function playAgain() {
   if (current_map != total_maps) {
@@ -367,7 +375,7 @@ const areaOfEarth = 153030000;
       [18.840839181664133, -160.27214494653106],
     ],
   },
-  };
+};
   
 function getRandomArea() {
     const totalWeight = Object.values(continents).reduce((sum, continent) => sum + continent.weight, 0);
