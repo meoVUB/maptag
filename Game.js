@@ -16,14 +16,47 @@ function getQueryParam(key) {
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(key);
 }
-// Game.html?timer=true to have timer on true
+
 // Variables for the gamemodes
-let timer = getQueryParam('timer') === 'true';
+let timer = true;
+let timerStarted = false;
 let time_ms = 60000;
 let secondsLeft;
 /////////////////////
 let move_enabled = true;
 ///////////////////////////////////////////////////////////////////////
+// Gamemodes
+// Game.html?gamemode=1 to have gamemode 1
+const gamemode = getQueryParam('gamemode');
+
+// Gamemode 1 - Normal : Timer 1 min, Move enabled
+if (gamemode === '1') {
+  timer = true;
+  time_ms = 60000;
+  move_enabled = true;
+}
+
+// Gamemode 2 - No move: Timer 1 min, Move disabled
+if (gamemode === '2') {
+  timer = true;
+  time_ms = 60000;
+  move_enabled = false;
+}
+
+// Gamemode 3 - Easy : Timer 5 min, Move enabled
+if (gamemode === '3') {
+  timer = true;
+  time_ms = 300000;
+  move_enabled = true;
+}
+
+// Gamemode 4 - Imposiible: Timer 5 sec, Move disabled
+if (gamemode === '4') {
+  timer = true;
+  time_ms = 5000;
+  move_enabled = false;
+}
+
 function playAgain() {
   if (current_map != total_maps) {
     if (played === true) {
@@ -439,6 +472,7 @@ function findNearestStreetView(latitude, longitude) {
             }
           );
           map.setStreetView(panorama);
+          timerStarted = true;
         } else {
             if (randomNumber < 0) {
             console.log("random");
@@ -459,6 +493,9 @@ const countdownElement = document.getElementById("countdown");
 
 function updateCountdown() {
  if (!played) {
+  if (timerStarted === false) {
+    setTimeout(updateCountdown, 1000);
+  } else {
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
   countdownElement.innerHTML = `<strong>Time Left:</strong> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
@@ -492,9 +529,10 @@ function updateCountdown() {
   }
 }
 }
+}
 
 function newMap() {
-  
+  timerStarted = false;
   // Makes it so the opacity and size changes when hovering on and off the world map
   const mapDiv = document.getElementById("floating-panel")
   mapDiv.addEventListener("mouseover", () => {
