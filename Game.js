@@ -10,21 +10,22 @@ let latitude, longitude;
 let mapLocation;
 let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
 
-
-// Function to get query parameters from the URL
-function getQueryParam(key) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(key);
-}
-
 // Variables for the gamemodes
 let timer = true;
 let time_ms = 60000;
 let secondsLeft;
 /////////////////////
 let move_enabled = true;
+/////////////////////
+let sigma = 1000; // Used for the score calculation (the higher the sigma the more forgiving the game is)
+
 ///////////////////////////////////////////////////////////////////////
+// Function to get query parameters from the URL
+function getQueryParam(key) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(key);
+}
 // Gamemodes
 // Game.html?gamemode=1 to have gamemode 1
 const gamemode = getQueryParam('gamemode');
@@ -128,9 +129,9 @@ function showLocalinfo(latitude, longitude){
       const icon = "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
 
       locationInfoElement.innerHTML = `
-      <p>Welcome to <strong>${city}</strong> <img src="${countryFlag}" alt="${countryCode}" style="width: 48px; height: 48px;"> 
-        <p></p>
-        <img src="${icon}" style="width: 48px; height: 48px;">  <strong>${temperature}</strong></p>
+      <p>Welcome to <strong>${city}</strong> <img src="${countryFlag}" alt="${countryCode}" style="width: 64px; height: 64px;"> 
+      <br> </br>
+      <strong>${temperature}</strong> <img src="${icon}" style="width: 80px; height: 80px;"> </p>
         <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
       `;
       locationInfoElement.style.opacity = 0.85;
@@ -141,7 +142,7 @@ function showLocalinfo(latitude, longitude){
   }
 // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
 function calculateScore(distance) {
-  sigma = 1000  // the higher the sigma the more forgiving the game is
+  // the higher the sigma the more forgiving the game is
   current_score = Math.round(1000 * Math.exp(-0.5 * (distance / sigma)**2));
 }
 
@@ -572,7 +573,7 @@ function newMap() {
     mapDiv.style.height = "35%";
     mapDiv.style.width = "40%";
     mapDiv.style.top = "65%";
-    mapDiv.style.left = "65%";
+    mapDiv.style.left = "60%";
   });
 
   mapDiv.addEventListener("mouseout", () => {
@@ -602,7 +603,13 @@ map = new google.maps.Map(document.getElementById("map"), {
   },
 });
 
-myInfoWindowLatLng = new google.maps.LatLng(85, 0);
+myInfoWindowLatLng = new google.maps.LatLng(0, 0);
+myinfowindow = new google.maps.InfoWindow({
+  position: myInfoWindowLatLng,
+  content: "Zoom in and double click the map to make your guess!",
+});
+
+myinfowindow.open(map);
 
 map.addListener("dblclick", (mapsMouseEvent) => {
 
