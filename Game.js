@@ -7,7 +7,7 @@ let total_maps = 5;
 let current_map = 1;
 let latitude, longitude;
 let mapLocation;
-let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea;
+let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
 
 
 // Function to get query parameters from the URL
@@ -418,7 +418,8 @@ function getRandomArea() {
         const continent = continents[continentName];
         randomWeight -= continent.weight;
         if (randomWeight <= 0) {
-            return continent.coordinates;
+            console.log(continentName);
+            return continent.coordinates; 
         }
     }
 }
@@ -448,7 +449,7 @@ function findNearestStreetView(latitude, longitude) {
     const streetViewService = new google.maps.StreetViewService();
     const streetViewLocation = { lat: latitude, lng: longitude };
     streetViewService.getPanorama(
-      { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
+      { location: streetViewLocation, radius: radius, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
       (data, status) => {
         if (status === "OK") {
           mapLocation = data.location;
@@ -473,6 +474,7 @@ function findNearestStreetView(latitude, longitude) {
           );
           map.setStreetView(panorama);
           timerStarted = true;
+          console.log(radius);
         } else {
             if (randomNumber < 0) {
             console.log("random");
@@ -482,6 +484,8 @@ function findNearestStreetView(latitude, longitude) {
             }
             latitude = randomCoordinates.latitude;
             longitude = randomCoordinates.longitude;
+            radius += 1000;
+            console.log("Retry");
             findNearestStreetView(latitude, longitude);
           }
       }
@@ -506,8 +510,7 @@ function updateCountdown() {
   } else {
     played = true;
 
-    const timeUp = new google.maps.InfoWindow({
-    });
+    const timeUp = new google.maps.InfoWindow({});
   
     showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
 
@@ -522,8 +525,11 @@ function updateCountdown() {
     targetMarker.setMap(map);
     timeUp.open(map, targetMarker);
     timeUp.setContent("Time's up! Play Again!")
+    document.getElementById("guessbutton").style.color = "red";
+    document.getElementById("guessbutton").value = "Time's up! Play Again!"; 
     setTimeout(() => { 
         document.getElementById("guessbutton").style.color = "white";
+        document.getElementById("guessbutton").value = "Play Again!"; 
       }
     , 3000);
   }
@@ -532,6 +538,7 @@ function updateCountdown() {
 }
 
 function newMap() {
+  radius = 1000;
   timerStarted = false;
   // Makes it so the opacity and size changes when hovering on and off the world map
   const mapDiv = document.getElementById("floating-panel")
