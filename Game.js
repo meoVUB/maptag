@@ -5,6 +5,7 @@ let total_score = 0;
 let current_score = 0;
 let total_maps = 5;
 let current_map = 1;
+let mapFound = false;
 let latitude, longitude;
 let mapLocation;
 let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
@@ -19,7 +20,6 @@ function getQueryParam(key) {
 
 // Variables for the gamemodes
 let timer = true;
-let timerStarted = false;
 let time_ms = 60000;
 let secondsLeft;
 /////////////////////
@@ -57,44 +57,65 @@ if (gamemode === '4') {
   move_enabled = false;
 }
 
+///////////////////////////////
+
+function mapFoundTest() {
+  console.log(mapFound, "mapFound");
+  if (mapFound === true) {
+    console.log("Map found");
+    newMap();
+    var modal = document.getElementById('id01');
+    modal.style.display = "none";
+    mapFound = false;
+  } else {
+    console.log("Waiting for map to be found");
+    setTimeout(mapFoundTest, 1000);
+  }
+}
+
 function playAgain() {
   if (current_map != total_maps) {
     if (played === true) {
       played = false;
-      document.getElementById("guessbutton").value = "Zoom in and double click the map to make your guess!";
-      document.getElementById("locationInfo").style.opacity = 0;
+      mapFound = false;
       /////////////////////////////
       current_map += 1;
       const mapElement = document.getElementById("currentMap");
       mapElement.innerHTML = `<strong> Map: </strong> ${current_map}/${total_maps}`;
       /////////////////////////////
-      newMap();
-    } else {
-      document.getElementById("guessbutton").value = "Click the map to make your guess!";
-      document.getElementById("guessbutton").style.color = "red";
-      //wait 2 seconds
-      setTimeout(function() {
-        document.getElementById("guessbutton").value = "Zoom in and double click the map to make your guess!";
-        document.getElementById("guessbutton").style.color = "white";
-      }, 1300);
-    }
+      initStreetView(true);
+      mapFoundTest();
+    } 
   } else {
-    document.getElementById("guessbutton").value = "Game Over!";
-    document.getElementById("guessbutton").style.color = "red";
-    //wait 2 seconds
-    setTimeout(function() {
-      document.getElementById("guessbutton").value = "Play Again!";
-      document.getElementById("guessbutton").style.color = "white";
-    }, 1300);
+    console.log('Game over');
   }
+}
+
+function showModal() {
+  document.getElementById('id01').style.display='block';
+
+  const mapElement = document.getElementById("current-map-modal");
+  mapElement.innerHTML = `<strong> Map overview </strong> ${current_map}/${total_maps}`;
+
+  const scoreElement = document.getElementById("current-score-modal");
+  scoreElement.innerHTML = `<strong> Score: <span id="total-score">${total_score - current_score}</span> + <span id="current-score">${current_score}/1000</span></strong>`;
+
+  setTimeout(() => {
+    scoreElement.classList.add("combine-scores");
+  }, 2000);
+
+  setTimeout(() => {
+    scoreElement.innerHTML = `<strong> Score: <span id="total-score"> ${total_score}</span></strong>`;
+    scoreElement.classList.remove("combine-scores");
+  }, 3000); 
 }
 
 //Weather API from https://openweathermap.org/api
 function showLocalinfo(latitude, longitude){
   const apiKey = '9becfeed140c9639fe192941f0633492';
-
   const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
   const locationInfoElement = document.getElementById('locationInfo');
+  showModal();
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
@@ -473,23 +494,39 @@ function findNearestStreetView(latitude, longitude) {
             }
           );
           map.setStreetView(panorama);
-          timerStarted = true;
+          mapFound = true;
+          if (timer) {
+            updateCountdown();
+            }
           console.log(radius);
         } else {
-            if (randomNumber < 0) {
-            console.log("random");
-            randomCoordinates = randomcoordinates();
-            } else {
-              randomCoordinates = getRandomCoordinates(randomArea);
-            }
-            latitude = randomCoordinates.latitude;
-            longitude = randomCoordinates.longitude;
+            mapFound = false;
             radius += 1000;
             console.log("Retry");
-            findNearestStreetView(latitude, longitude);
+            initStreetView(false);
           }
       }
     );
+  }
+
+  function initStreetView(newArea) {
+    randomNumber = Math.random();       
+    
+      if (randomNumber < 0) {
+        // 10% of an actual random coordinate in the whole world
+        console.log("random");
+        randomCoordinates = randomcoordinates();
+      } else {
+        // 90% chance for a coordinate in the defined Areas
+        if (newArea === true) {
+          randomArea = getRandomArea();
+        }
+        randomCoordinates = getRandomCoordinates(randomArea);
+      }
+    latitude = randomCoordinates.latitude;
+    longitude = randomCoordinates.longitude;  
+
+    findNearestStreetView(latitude, longitude);
   }
 
 // Update the countdown every second
@@ -497,9 +534,6 @@ const countdownElement = document.getElementById("countdown");
 
 function updateCountdown() {
  if (!played) {
-  if (timerStarted === false) {
-    setTimeout(updateCountdown, 1000);
-  } else {
   const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
   countdownElement.innerHTML = `<strong>Time Left:</strong> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
@@ -525,78 +559,33 @@ function updateCountdown() {
     targetMarker.setMap(map);
     timeUp.open(map, targetMarker);
     timeUp.setContent("Time's up! Play Again!")
-    document.getElementById("guessbutton").style.color = "red";
-    document.getElementById("guessbutton").value = "Time's up! Play Again!"; 
-    setTimeout(() => { 
-        document.getElementById("guessbutton").style.color = "white";
-        document.getElementById("guessbutton").value = "Play Again!"; 
-      }
-    , 3000);
   }
-}
 }
 }
 
 function newMap() {
   radius = 1000;
-  timerStarted = false;
   // Makes it so the opacity and size changes when hovering on and off the world map
   const mapDiv = document.getElementById("floating-panel")
   mapDiv.addEventListener("mouseover", () => {
     mapDiv.style.opacity = 0.8;
     mapDiv.style.height = "35%";
-    mapDiv.style.width = "35%";
+    mapDiv.style.width = "40%";
     mapDiv.style.top = "65%";
     mapDiv.style.left = "65%";
   });
 
   mapDiv.addEventListener("mouseout", () => {
     mapDiv.style.opacity = 0.5;
-    mapDiv.style.height = "25%";
-    mapDiv.style.width = "25%";
-    mapDiv.style.top = "75%";
-    mapDiv.style.left = "75%";
+    mapDiv.style.height = "30%";
+    mapDiv.style.width = "35%";
+    mapDiv.style.top = "70%";
+    mapDiv.style.left = "65%";
   });
-  /////////////////////////////////////////////////////////////////////////
-
-function checkDistance() {
-  var lat1 = guessMarker.position.lat()
-  var lng1 = guessMarker.position.lng()
-  var lat2 = latitude
-  var lng2 = longitude
-
-  var R = 6371; //Radius of the earth in km
-  var dLat = deg2rad(lat2-lat1);
-  var dLng = deg2rad(lng2-lng1);
-  var a = 
-  Math.sin(dLat/2) * Math.sin(dLat/2) +
-  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-  Math.sin(dLng/2) * Math.sin(dLng/2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  var distance = R * c;
-  return distance;
+/////////////////////////////////////////////////////////////////////////
+if (mapFound === false) {
+  initStreetView(true);
 }
-
-function deg2rad(deg) {
-  return deg * (Math.PI/180)
-}
-
-randomNumber = Math.random();       
-  
-    if (randomNumber < 0) {
-      // 10% of an actual random coordinate in the whole world
-      console.log("random");
-      randomCoordinates = randomcoordinates();
-    } else {
-      // 90% chance for a coordinate in the defined Areas
-      randomArea = getRandomArea();
-      randomCoordinates = getRandomCoordinates(randomArea);
-    }
-  latitude = randomCoordinates.latitude;
-  longitude = randomCoordinates.longitude;  
-
-findNearestStreetView(latitude, longitude);
-
 map = new google.maps.Map(document.getElementById("map"), {
   center: { lat: 0, lng: 0 },
   zoom: 1,
@@ -641,7 +630,7 @@ map.addListener("dblclick", (mapsMouseEvent) => {
 
   targetMarker.setMap(map);
 
-  distance = checkDistance();
+  distance = google.maps.geometry.spherical.computeDistanceBetween(guessLatLng, targetLatLng) / 1000;
 
   const distanceinfowindow = new google.maps.InfoWindow({
   });
@@ -670,15 +659,9 @@ map.addListener("dblclick", (mapsMouseEvent) => {
   console.log('Curr score', current_score);
   const scoreElement = document.getElementById("currentScore");
   scoreElement.innerHTML = `<strong> Current Score: </strong>  ${total_score}`;
-
-  document.getElementById("guessbutton").value = "Play Again!"; 
-    
   showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
 
 });
 
 secondsLeft = time_ms / 1000;
-if (timer) {
-updateCountdown();
-}
 }
