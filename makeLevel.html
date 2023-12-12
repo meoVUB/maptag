@@ -111,7 +111,96 @@
                     }
                 }
             );
-        }   
+        }
+        /////////////////////////////////////////////////////////////////
+        // Code to add divs
+        function addCoordinate() {
+        // Create a new form row
+        var newFormRow = document.createElement('div');
+        newFormRow.classList.add('form-row');
+
+        // Get the number of the new coordinate
+        var coordinateNumber = document.getElementsByClassName('form-row').length + 1;
+
+        // Create latitude input with label
+        var latInput = createInput('text', 'form-control', 'Latitude (Location ' + coordinateNumber + '):');
+        latInput.name = 'lat' + coordinateNumber;
+
+        // Create longitude input with label
+        var longInput = createInput('text', 'form-control', 'Longitude (Location ' + coordinateNumber + '):');
+        longInput.name = 'long' + coordinateNumber;
+
+        // Append inputs to the new form row
+        newFormRow.appendChild(createFormGroup('col-md-6', latInput));
+        newFormRow.appendChild(createFormGroup('col-md-6', longInput));
+
+        // Get the locationSubmissionForm
+        var locationForm = document.getElementById('locationSubmissionForm');
+
+        // Insert the new form row before the last child (Submit button)
+        locationForm.insertBefore(newFormRow, locationForm.lastElementChild);
+
+        // Add Delete button if there's more than one coordinate
+        if (document.getElementsByClassName('form-row').length > 1) {
+            addDeleteButton();
+        }
+    }
+
+    // Code to add delete button
+    function addDeleteButton() {
+        // Check if delete button already exists
+        if (!document.getElementById('deleteCoordinateBtn')) {
+            var deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.classList.add('btn', 'btn-danger', 'ml-2'); // Added margin-left class
+            deleteBtn.textContent = 'Delete Coordinate';
+            deleteBtn.id = 'deleteCoordinateBtn';
+            deleteBtn.onclick = deleteCoordinate;
+
+            // Insert the delete button after the Add Coordinate button
+            document.querySelector('.submission-container').appendChild(deleteBtn);
+        }
+    }
+
+    // Code to delete the last added coordinate
+    function deleteCoordinate() {
+        var formRows = document.getElementsByClassName('form-row');
+        if (formRows.length > 1) {
+            formRows[formRows.length - 1].remove();
+        }
+
+        // Remove Delete button if there's only one coordinate left
+        if (formRows.length <= 1) {
+            var deleteBtn = document.getElementById('deleteCoordinateBtn');
+            if (deleteBtn) {
+                deleteBtn.remove();
+            }
+        }
+    }
+            function createFormGroup(className, input) {
+                var formGroup = document.createElement('div');
+                formGroup.classList.add('form-group', className);
+                formGroup.appendChild(input);
+                return formGroup;
+            }
+
+            function createInput(type, className, label) {
+                var input = document.createElement('input');
+                input.type = type;
+                input.classList.add(className);
+                input.required = true;
+
+                var inputLabel = document.createElement('label');
+                inputLabel.textContent = label;
+
+                var inputContainer = document.createElement('div');
+                inputContainer.appendChild(inputLabel);
+                inputContainer.appendChild(input);
+
+                return inputContainer;
+            }
+
+        /////////////////////////////////////////////////////////////////   
 
     </script>
 </head>
@@ -154,6 +243,8 @@
             </div>
         </form>
 
+        <button type="button" class="btn btn-secondary" onclick="addCoordinate()">Add Coordinate</button>
+
         <form id="locationSubmissionForm">
             <!-- Location 1 -->
             <div class="form-row">
@@ -167,54 +258,6 @@
                 </div>
             </div>
 
-            <!-- Location 2 -->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="lat2">Latitude (Location 2):</label>
-                    <input type="text" class="form-control" id="lat2" name="lat2" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="long2">Longitude (Location 2):</label>
-                    <input type="text" class="form-control" id="long2" name="long2" required>
-                </div>
-            </div>
-
-            <!-- Location 3 -->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="lat3">Latitude (Location 3):</label>
-                    <input type="text" class="form-control" id="lat3" name="lat3" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="long3">Longitude (Location 3):</label>
-                    <input type="text" class="form-control" id="long3" name="long3" required>
-                </div>
-            </div>
-
-            <!-- Location 4 -->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="lat4">Latitude (Location 4):</label>
-                    <input type="text" class="form-control" id="lat4" name="lat4" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="long4">Longitude (Location 4):</label>
-                    <input type="text" class="form-control" id="long4" name="long4" required>
-                </div>
-            </div>
-
-            <!-- Location 5 -->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="lat5">Latitude (Location 5):</label>
-                    <input type="text" class="form-control" id="lat5" name="lat5" required>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="long5">Longitude (Location 5):</label>
-                    <input type="text" class="form-control" id="long5" name="long5" required>
-                </div>
-            </div>
-
             <button type="button" class="btn btn-primary" onclick="validateForm()">Submit</button>
         </form>
     </div>
@@ -225,4 +268,7 @@
 
 </body>
 </html>
+
+
+
 
