@@ -5,55 +5,118 @@ let total_score = 0;
 let current_score = 0;
 let total_maps = 5;
 let current_map = 1;
+let mapFound = false;
 let latitude, longitude;
 let mapLocation;
-let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea;
-///////////////////////////////////////////////////////////////////////
+let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
+
 // Variables for the gamemodes
-timer = true;
+let timer = true;
 let time_ms = 60000;
 let secondsLeft;
 /////////////////////
-move_enabled = true;
+let move_enabled = true;
+/////////////////////
+let sigma = 1000; // Used for the score calculation (the higher the sigma the more forgiving the game is)
+
 ///////////////////////////////////////////////////////////////////////
+// Function to get query parameters from the URL
+function getQueryParam(key) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(key);
+}
+// Gamemodes
+// Game.html?gamemode=1 to have gamemode 1
+const gamemode = getQueryParam('gamemode');
+
+// Gamemode 1 - Normal : Timer 1 min, Move enabled
+if (gamemode === '1') {
+  timer = true;
+  time_ms = 60000;
+  move_enabled = true;
+}
+
+// Gamemode 2 - No move: Timer 1 min, Move disabled
+if (gamemode === '2') {
+  timer = true;
+  time_ms = 60000;
+  move_enabled = false;
+}
+
+// Gamemode 3 - Easy : Timer 5 min, Move enabled
+if (gamemode === '3') {
+  timer = true;
+  time_ms = 300000;
+  move_enabled = true;
+}
+
+// Gamemode 4 - Imposiible: Timer 5 sec, Move disabled
+if (gamemode === '4') {
+  timer = true;
+  time_ms = 5000;
+  move_enabled = false;
+}
+
+///////////////////////////////
+
+function mapFoundTest() {
+  console.log(mapFound, "mapFound");
+  if (mapFound === true) {
+    console.log("Map found");
+    newMap();
+    var modal = document.getElementById('id01');
+    modal.style.display = "none";
+    mapFound = false;
+  } else {
+    console.log("Waiting for map to be found");
+    setTimeout(mapFoundTest, 1000);
+  }
+}
+
 function playAgain() {
   if (current_map != total_maps) {
     if (played === true) {
       played = false;
-      document.getElementById("guessbutton").value = "Zoom in and double click the map to make your guess!";
-      document.getElementById("locationInfo").style.opacity = 0;
+      mapFound = false;
       /////////////////////////////
       current_map += 1;
       const mapElement = document.getElementById("currentMap");
       mapElement.innerHTML = `<strong> Map: </strong> ${current_map}/${total_maps}`;
       /////////////////////////////
-      newMap();
-    } else {
-      document.getElementById("guessbutton").value = "Click the map to make your guess!";
-      document.getElementById("guessbutton").style.color = "red";
-      //wait 2 seconds
-      setTimeout(function() {
-        document.getElementById("guessbutton").value = "Zoom in and double click the map to make your guess!";
-        document.getElementById("guessbutton").style.color = "white";
-      }, 1300);
-    }
+      initStreetView(true);
+      mapFoundTest();
+    } 
   } else {
-    document.getElementById("guessbutton").value = "Game Over!";
-    document.getElementById("guessbutton").style.color = "red";
-    //wait 2 seconds
-    setTimeout(function() {
-      document.getElementById("guessbutton").value = "Play Again!";
-      document.getElementById("guessbutton").style.color = "white";
-    }, 1300);
+    console.log('Game over');
   }
+}
+
+function showModal() {
+  document.getElementById('id01').style.display='block';
+
+  const mapElement = document.getElementById("current-map-modal");
+  mapElement.innerHTML = `<strong> Map overview </strong> ${current_map}/${total_maps}`;
+
+  const scoreElement = document.getElementById("current-score-modal");
+  scoreElement.innerHTML = `<strong> Score: <span id="total-score">${total_score - current_score}</span> + <span id="current-score">${current_score}/1000</span></strong>`;
+
+  setTimeout(() => {
+    scoreElement.classList.add("combine-scores");
+  }, 2000);
+
+  setTimeout(() => {
+    scoreElement.innerHTML = `<strong> Score: <span id="total-score"> ${total_score}</span></strong>`;
+    scoreElement.classList.remove("combine-scores");
+  }, 3000); 
 }
 
 //Weather API from https://openweathermap.org/api
 function showLocalinfo(latitude, longitude){
   const apiKey = '9becfeed140c9639fe192941f0633492';
-
   const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
   const locationInfoElement = document.getElementById('locationInfo');
+  showModal();
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
@@ -66,9 +129,9 @@ function showLocalinfo(latitude, longitude){
       const icon = "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
 
       locationInfoElement.innerHTML = `
-      <p>Welcome to <strong>${city}</strong> <img src="${countryFlag}" alt="${countryCode}" style="width: 48px; height: 48px;"> 
-        <p></p>
-        <img src="${icon}" style="width: 48px; height: 48px;">  <strong>${temperature}</strong></p>
+      <p>Welcome to <strong>${city}</strong> <img src="${countryFlag}" alt="${countryCode}" style="width: 64px; height: 64px;"> 
+      <br> </br>
+      <strong>${temperature}</strong> <img src="${icon}" style="width: 80px; height: 80px;"> </p>
         <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
       `;
       locationInfoElement.style.opacity = 0.85;
@@ -79,7 +142,7 @@ function showLocalinfo(latitude, longitude){
   }
 // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
 function calculateScore(distance) {
-  sigma = 1000  // the higher the sigma the more forgiving the game is
+  // the higher the sigma the more forgiving the game is
   current_score = Math.round(1000 * Math.exp(-0.5 * (distance / sigma)**2));
 }
 
@@ -89,7 +152,7 @@ const areaOfEarth = 153030000;
 
  const continents ={
   Scandinavia: {
-    weight: areaOfEarth / 2417901.60,
+    weight:  2417901.60 / areaOfEarth,
     coordinates: [
       [71.14084246427528, 5.034565097476516],
       [71.30034606248509, 32.18062094906504],
@@ -98,7 +161,7 @@ const areaOfEarth = 153030000;
       ],
   },
   Iceland: {
-    weight: areaOfEarth / 190883.29,
+    weight:  190883.29 / areaOfEarth,
     coordinates: [
       [66.51924679143653, -24.638559481991866],
       [66.5329835378412, -13.300064245743673],
@@ -107,7 +170,7 @@ const areaOfEarth = 153030000;
       ],
   },
   EuropeMainLand: {
-    weight: areaOfEarth / 8509244.32,
+    weight:  8509244.32 / areaOfEarth,
     coordinates: [
       [58.82120051117042, -10.19889105971192],
       [58.76715539096427, 39.240253055989676],
@@ -116,7 +179,7 @@ const areaOfEarth = 153030000;
     ],
   },
   CanaryIslands: {
-    weight: areaOfEarth / 85677.20,
+    weight:  85677.20 / areaOfEarth,
     coordinates: [
       [29.258488255121286, -18.224358355185416],
       [29.292993906896275, -13.404653644679778],
@@ -125,7 +188,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NorthAfrica: {
-    weight: areaOfEarth / 17950200.79,
+    weight:  17950200.79 / areaOfEarth,
     coordinates: [
       [34.26839092120326, -16.87370216328901],
       [32.87508627991171, 34.445690851542615],
@@ -134,7 +197,7 @@ const areaOfEarth = 153030000;
     ],
   },
   HornOfAfrica: {
-    weight: areaOfEarth / 3188423.24,
+    weight:  3188423.24 / areaOfEarth,
     coordinates: [
       [11.971662709145162, 33.958313045371035],
       [11.971662709145162, 51.53643671916674],
@@ -143,7 +206,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthAfrica: {
-    weight: areaOfEarth / 13038281.14,
+    weight:  13038281.14 / areaOfEarth,
     coordinates: [
       [-1.3675028286942212, 8.421060488982992],
       [-1.8898906611289705, 42.39010881855585],
@@ -152,7 +215,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Madagascar: {
-    weight: areaOfEarth / 2971404.54,
+    weight:  2971404.54 / areaOfEarth,
     coordinates:[
       [-10.847488407040432, 42.80651522994556],
       [-10.956347988960186, 59.21384834438676],
@@ -161,7 +224,7 @@ const areaOfEarth = 153030000;
     ],
   },
   MiddleEast: {
-    weight: areaOfEarth / 8862414.40,
+    weight:  8862414.40 / areaOfEarth,
     coordinates:[
       [36.92862346119149, 34.825132589008064],
       [36.99884948801137, 69.62981746312354],
@@ -170,7 +233,7 @@ const areaOfEarth = 153030000;
     ],
   },
   AsiaMainLand: {
-    weight: areaOfEarth / 17676417.52,
+    weight:  17676417.52 / areaOfEarth,
     coordinates:[
       [63.02637770782962, 34.397860637633194],
       [63.22682150351833, 134.31999744269888],
@@ -179,7 +242,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthAsia: {
-    weight: areaOfEarth / 6033971.90,
+    weight:  6033971.90 / areaOfEarth,
     coordinates:[
       [29.710208926569106, 70.80438972927725],
       [29.63384311888109, 91.98602875620105],
@@ -188,7 +251,7 @@ const areaOfEarth = 153030000;
     ],
   },
   China: {
-    weight: areaOfEarth / 6528543.87,
+    weight:  6528543.87 / areaOfEarth,
     coordinates:[
       [38.0773918055009, 92.30102912919395],
       [38.138861058426684, 123.62752091050231],
@@ -197,7 +260,7 @@ const areaOfEarth = 153030000;
     ],
   },
   KoreaJapan: {
-    weight: areaOfEarth / 3043807.10,
+    weight:  3043807.10 / areaOfEarth,
     coordinates:[
       [46.27923647779601, 125.26623189749401],
       [46.27923647779601, 145.8440165646783],
@@ -206,7 +269,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthEastAsia: {
-    weight: areaOfEarth / 14090205.70,
+    weight:  14090205.70 / areaOfEarth,
     coordinates:[
       [20.640847756994816, 91.69960669878705],
       [20.640847756994816, 126.5097593875339],
@@ -215,7 +278,7 @@ const areaOfEarth = 153030000;
     ],
   },
   AustraliaMainLand: {
-    weight: areaOfEarth / 12657201.17,
+    weight:  12657201.17 / areaOfEarth,
     coordinates:[
       [-11.388585409286607, 112.82548543009061],
       [-10.957462565613936, 153.95829482677254],
@@ -224,7 +287,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Tasmania: {
-    weight: areaOfEarth / 103621.70,
+    weight:  103621.70 / areaOfEarth,
     coordinates:[
       [-40.67081455786152, 144.52413571834464],
       [-40.701003913327746, 148.3461037562941],
@@ -233,7 +296,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NewZealand: {
-    weight: areaOfEarth / 1485709.42,
+    weight:  1485709.42 / areaOfEarth,
     coordinates:[
       [-34.513888885458215, 166.04621354872063],
       [-34.47486807170346, 178.5452704048375],
@@ -242,7 +305,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Greenland: {
-    weight: areaOfEarth / 3554469.57,
+    weight:  3554469.57 / areaOfEarth,
     coordinates:[
       [79.95069876351401, -65.79252415542695],
       [80.07265252113781, -23.253464864840904],
@@ -251,7 +314,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NorthAmericaMainLand: {
-    weight: areaOfEarth / 20890866.90,
+    weight:  20890866.90 / areaOfEarth,
     coordinates:[
       [70.1060979309805, -132.09658369580458],
       [70.6898481390013, -61.49639633823274],
@@ -260,7 +323,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Alaska: {
-    weight: areaOfEarth / 3097313.91,
+    weight:  3097313.91 / areaOfEarth,
     coordinates:[
       [71.08431749178665, -165.80448293849207],
       [70.92247891270657, -131.2501658867228],
@@ -269,7 +332,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Mexico: {
-    weight: areaOfEarth / 1912253.26,
+    weight:  1912253.26 / areaOfEarth,
     coordinates:[
       [28.869903535868485, -108.2313370578962],
       [29.023724245377217, -96.01454110460818],
@@ -278,7 +341,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Guatemala: {
-    weight: areaOfEarth / 832379.07,
+    weight:  832379.07 / areaOfEarth,
     coordinates:[
       [21.703437463912234, -94.87849759879659],
       [21.70343746391225, -86.83380302700942],
@@ -287,7 +350,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Panama: {
-    weight: areaOfEarth / 211133.66,
+    weight:  211133.66 / areaOfEarth, 
     coordinates:[
       [9.841056806074487, -83.6665996368072],
       [9.716209334566162, -77.45888256566438],
@@ -296,7 +359,7 @@ const areaOfEarth = 153030000;
     ],
   },
   DominicanRepublic: {
-    weight: areaOfEarth / 57191.02,
+    weight:  57191.02 / areaOfEarth,
     coordinates:[
       [19.889153100340057, -70.85724832916344],
       [19.876866899669405, -68.1789195185625],
@@ -305,7 +368,7 @@ const areaOfEarth = 153030000;
     ],
   },
   PuertoRico: {
-    weight: areaOfEarth / 12031.64,
+    weight:  12031.64 / areaOfEarth,
     coordinates:[
       [18.52859363935658, -67.2484958735337],
       [18.52122765284481, -65.57826696927778],
@@ -314,7 +377,7 @@ const areaOfEarth = 153030000;
     ],
   },
   VirginIslands: {
-    weight: areaOfEarth / 6912.29,
+    weight:  6912.29 / areaOfEarth,
     coordinates:[
       [18.522672542801782, -65.03847034700321],
       [18.522672542801782, -64.35484177223798],
@@ -323,7 +386,7 @@ const areaOfEarth = 153030000;
     ],
   },
   FrenchAntilles: {
-    weight: areaOfEarth / 44022.58,
+    weight:  44022.58 / areaOfEarth,
     coordinates:[
       [16.509217947494847, -61.8230405133189],
       [16.509217947494847, -60.83453564662678],
@@ -332,7 +395,7 @@ const areaOfEarth = 153030000;
     ],
   },
   NorthOfSouthAmerica: {
-    weight: areaOfEarth / 19439522.23,
+    weight:  19439522.23 / areaOfEarth,
     coordinates:[
       [11.916899850639044, -81.73975420181262],
       [11.74485278746788, -35.5092889397299],
@@ -341,7 +404,7 @@ const areaOfEarth = 153030000;
     ],
   },
   MiddleOfSouthAmerica: {
-    weight: areaOfEarth / 6905291.84,
+    weight: 6905291.84 / areaOfEarth, 
     coordinates:[
       [-18.56274384611329, -72.3529821642851],
       [-17.97852882361089, -39.39400027591817],
@@ -350,7 +413,7 @@ const areaOfEarth = 153030000;
     ],
   },
   SouthOfSouthAmerica: {
-    weight: areaOfEarth / 1787154.89,
+    weight: 1787154.89 / areaOfEarth,
     coordinates:[
       [-39.63621149105558, -75.76244806273877],
       [-39.77144992188392, -62.66674592576097],
@@ -359,7 +422,7 @@ const areaOfEarth = 153030000;
     ],
   },
   Hawaii: {
-    weight: areaOfEarth / 223829.42,
+    weight: 223829.42 / areaOfEarth, 
     coordinates:[
       [22.418182065624222, -160.27214494653106],
       [22.377551979794113, -154.82292660765438],
@@ -367,7 +430,7 @@ const areaOfEarth = 153030000;
       [18.840839181664133, -160.27214494653106],
     ],
   },
-  };
+};
   
 function getRandomArea() {
     const totalWeight = Object.values(continents).reduce((sum, continent) => sum + continent.weight, 0);
@@ -377,7 +440,8 @@ function getRandomArea() {
         const continent = continents[continentName];
         randomWeight -= continent.weight;
         if (randomWeight <= 0) {
-            return continent.coordinates;
+            console.log(continentName);
+            return continent.coordinates; 
         }
     }
 }
@@ -407,7 +471,7 @@ function findNearestStreetView(latitude, longitude) {
     const streetViewService = new google.maps.StreetViewService();
     const streetViewLocation = { lat: latitude, lng: longitude };
     streetViewService.getPanorama(
-      { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
+      { location: streetViewLocation, radius: radius, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
       (data, status) => {
         if (status === "OK") {
           mapLocation = data.location;
@@ -431,19 +495,39 @@ function findNearestStreetView(latitude, longitude) {
             }
           );
           map.setStreetView(panorama);
-        } else {
-            if (randomNumber < 0) {
-            console.log("random");
-            randomCoordinates = randomcoordinates();
-            } else {
-              randomCoordinates = getRandomCoordinates(randomArea);
+          mapFound = true;
+          if (timer) {
+            updateCountdown();
             }
-            latitude = randomCoordinates.latitude;
-            longitude = randomCoordinates.longitude;
-            findNearestStreetView(latitude, longitude);
+          console.log(radius);
+        } else {
+            mapFound = false;
+            radius += 1000;
+            console.log("Retry");
+            initStreetView(false);
           }
       }
     );
+  }
+
+  function initStreetView(newArea) {
+    randomNumber = Math.random();       
+    
+      if (randomNumber < 0) {
+        // 10% of an actual random coordinate in the whole world
+        console.log("random");
+        randomCoordinates = randomcoordinates();
+      } else {
+        // 90% chance for a coordinate in the defined Areas
+        if (newArea === true) {
+          randomArea = getRandomArea();
+        }
+        randomCoordinates = getRandomCoordinates(randomArea);
+      }
+    latitude = randomCoordinates.latitude;
+    longitude = randomCoordinates.longitude;  
+
+    findNearestStreetView(latitude, longitude);
   }
 
 // Update the countdown every second
@@ -461,8 +545,7 @@ function updateCountdown() {
   } else {
     played = true;
 
-    const timeUp = new google.maps.InfoWindow({
-    });
+    const timeUp = new google.maps.InfoWindow({});
   
     showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
 
@@ -477,73 +560,33 @@ function updateCountdown() {
     targetMarker.setMap(map);
     timeUp.open(map, targetMarker);
     timeUp.setContent("Time's up! Play Again!")
-    setTimeout(() => { 
-        document.getElementById("guessbutton").style.color = "white";
-      }
-    , 3000);
   }
 }
 }
 
 function newMap() {
-  
+  radius = 1000;
   // Makes it so the opacity and size changes when hovering on and off the world map
   const mapDiv = document.getElementById("floating-panel")
   mapDiv.addEventListener("mouseover", () => {
     mapDiv.style.opacity = 0.8;
     mapDiv.style.height = "35%";
-    mapDiv.style.width = "35%";
+    mapDiv.style.width = "40%";
     mapDiv.style.top = "65%";
-    mapDiv.style.left = "65%";
+    mapDiv.style.left = "60%";
   });
 
   mapDiv.addEventListener("mouseout", () => {
     mapDiv.style.opacity = 0.5;
-    mapDiv.style.height = "25%";
-    mapDiv.style.width = "25%";
-    mapDiv.style.top = "75%";
-    mapDiv.style.left = "75%";
+    mapDiv.style.height = "30%";
+    mapDiv.style.width = "35%";
+    mapDiv.style.top = "70%";
+    mapDiv.style.left = "65%";
   });
-  /////////////////////////////////////////////////////////////////////////
-
-function checkDistance() {
-  var lat1 = guessMarker.position.lat()
-  var lng1 = guessMarker.position.lng()
-  var lat2 = latitude
-  var lng2 = longitude
-
-  var R = 6371; //Radius of the earth in km
-  var dLat = deg2rad(lat2-lat1);
-  var dLng = deg2rad(lng2-lng1);
-  var a = 
-  Math.sin(dLat/2) * Math.sin(dLat/2) +
-  Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-  Math.sin(dLng/2) * Math.sin(dLng/2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  var distance = R * c;
-  return distance;
+/////////////////////////////////////////////////////////////////////////
+if (mapFound === false) {
+  initStreetView(true);
 }
-
-function deg2rad(deg) {
-  return deg * (Math.PI/180)
-}
-
-randomNumber = Math.random();       
-  
-    if (randomNumber < 0) {
-      // 10% of an actual random coordinate in the whole world
-      console.log("random");
-      randomCoordinates = randomcoordinates();
-    } else {
-      // 90% chance for a coordinate in the defined Areas
-      randomArea = getRandomArea();
-      randomCoordinates = getRandomCoordinates(randomArea);
-    }
-  latitude = randomCoordinates.latitude;
-  longitude = randomCoordinates.longitude;  
-
-findNearestStreetView(latitude, longitude);
-
 map = new google.maps.Map(document.getElementById("map"), {
   center: { lat: 0, lng: 0 },
   zoom: 1,
@@ -560,7 +603,13 @@ map = new google.maps.Map(document.getElementById("map"), {
   },
 });
 
-myInfoWindowLatLng = new google.maps.LatLng(85, 0);
+myInfoWindowLatLng = new google.maps.LatLng(0, 0);
+myinfowindow = new google.maps.InfoWindow({
+  position: myInfoWindowLatLng,
+  content: "Zoom in and double click the map to make your guess!",
+});
+
+myinfowindow.open(map);
 
 map.addListener("dblclick", (mapsMouseEvent) => {
 
@@ -588,7 +637,7 @@ map.addListener("dblclick", (mapsMouseEvent) => {
 
   targetMarker.setMap(map);
 
-  distance = checkDistance();
+  distance = google.maps.geometry.spherical.computeDistanceBetween(guessLatLng, targetLatLng) / 1000;
 
   const distanceinfowindow = new google.maps.InfoWindow({
   });
@@ -617,15 +666,9 @@ map.addListener("dblclick", (mapsMouseEvent) => {
   console.log('Curr score', current_score);
   const scoreElement = document.getElementById("currentScore");
   scoreElement.innerHTML = `<strong> Current Score: </strong>  ${total_score}`;
-
-  document.getElementById("guessbutton").value = "Play Again!"; 
-    
   showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
 
 });
 
 secondsLeft = time_ms / 1000;
-if (timer) {
-updateCountdown();
-}
 }

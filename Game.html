@@ -18,12 +18,23 @@
           <span id="currentMap"><strong>Map: </strong>1/5</span>
       </div>
     </nav>
+
+  <div id="id01" class="modal">
+  
+  <div class="modal-content animate" id="modal1" action="/action_page.php" method="post" >
+    <h1 id="current-map-modal">Map overview</h1>
+    <div class="container">
+      <div id="locationInfo"></div>
+      <div id="current-score-modal"></div>
+      <input type="button" class="custom-button" value="Play again" onclick="playAgain()"/>
+    </div>
+
+  </div>
+</div>
     <div id="pano"></div> 
     <div id="floating-panel">
-          <input type="button" id="guessbutton" value="Zoom in and double click the map to make your guess!" onclick="playAgain()" />
           <div id="map"></div>
     </div>
-    <div id="locationInfo"></div>
 
     <script src="Game.js" defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&callback=newMap&v=weekly" defer> </script>
