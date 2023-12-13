@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer> </script>
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh; /* Set minimum height to full viewport height */
+                margin: 0;
+                font-family: 'Helvetica', sans-serif;
+                background-color: #2c3333; /* Greyish background color */
+                background-image: url("{% static 'images/background-space.jpg' %}");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+        
+            .footer {
+                margin-top: auto; /* Push the footer to the bottom */
+                background-color: #2b054a;
+                color: white;
+                padding: 20px 0;
+                text-align: center;
+            }
+
+            /* Style for the social media icons */
+            .social-icon {
+                color: white;
+                margin: 0 10px;
+                text-decoration: none;
+                width: 1em;
+                height: 1em;
+            }
+
+            .dropbtn {
+                background-color: #3498DB;
+                color: white;
+                padding: 16px;
+                font-size: 16px;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+              }
+              
+            .dropbtn:hover, .dropbtn:focus {
+                background-color: #2980B9;
+            }
+              
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+              
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #f1f1f1;
+                min-width: 160px;
+                overflow: auto;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                left: -80px;
+                z-index: 1;
+            }
+              
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+              
+            .dropdown a:hover {background-color: #ddd;}
+              
+            .show {display: block;}
+
+            .tabs {
+                width: 90%;
+                margin: 0 auto;
+            }
+        
+            .w3-bar {
+                display: flex;
+            }
+        
+            .tablink {
+                flex: 1;
+                width: 50%;
+                box-sizing: border-box;
+                color: white;
+                transition: background-color 0.3s ease;
+            }
+
+            .mode {
+                background-color: rgba(211,211,211,0.7);
+            }
+        </style>
+    </head>
+    <body>
+
+        <nav class="navbar bg-body-tertiary" style="background-image: linear-gradient(to right, #2b054a, #090979);">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="{% static 'images/maptag_logo.png' %}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+                    <span class="ms-2">MapTag</span>
+                </a>
+
+                <div class="dropdown">
+                    <button onclick="myFunction()" class="dropbtn">{{fname}}</button>
+                    <div id="myDropdown" class="dropdown-content">
+                      <a href="#">My profile</a>
+                      <a href="#">Edit profile</a>
+                      <a href="#">Friends</a>
+                      <a href="/mygames">My games</a>
+                      <a href="/signout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="w3-container tabs">
+
+            <div class="w3-bar w3-grey">
+              <button class="w3-bar-item w3-button tablink w3-dark-grey" onclick="openMode(event,'Your Games')">Your Games</button>
+              <button class="w3-bar-item w3-button tablink" onclick="openMode(event,'Create a Game')">Create a Game</button>
+            </div>
+            
+            <div id="Your Games" class="w3-container w3-border mode">
+              <h2>Your Games</h2>
+            </div>
+          
+            <div id="Create a Game" class="w3-container w3-border mode" style="display:none">
+              <h2>Create a Game</h2>
+
+              <div class="container submission-container">
+                <form id="mapSubmissionForm">
+                    <div class="form-group">
+                        <label for="mapTitle">Map Title:</label>
+                        <input type="text" class="form-control" id="mapTitle" name="mapTitle" required>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="canMove">Can Players Move?</label>
+                        <select class="form-control" id="canMove" name="canMove">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="timerActive">Is Timer Active?</label>
+                        <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput()">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select>
+                    </div>
+        
+                    <div id="timerSection" style="display: none;">
+                        <div class="form-group">
+                            <label for="timerDuration">Timer Duration (in seconds, max 10 min):</label>
+                            <input type="number" class="form-control" id="timerDuration" name="timerDuration" min="1">
+                        </div>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="mapDescription">Map Description:</label>
+                        <textarea class="form-control" id="mapDescription" name="mapDescription" rows="4" required></textarea>
+                    </div>
+                </form>
+        
+                <div id="addOrDeleteButtons">
+                    <button type="button" class="btn btn-secondary" onclick="addCoordinate()">Add Coordinate</button>
+                </div>
+                
+                <form id="locationSubmissionForm">
+                    <!-- Location 1 -->
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="lat1">Latitude (Location 1):</label>
+                            <input type="text" class="form-control" id="lat1" name="lat1" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="long1">Longitude (Location 1):</label>
+                            <input type="text" class="form-control" id="long1" name="long1" required>
+                        </div>
+                    </div>
+        
+                    <button type="button" class="btn btn-primary" onclick="validateForm()">Submit</button>
+                </form>
+              </div>
+            </div>
+            
+        </div>
+
+        <div class="footer">
+            <div class="container">
+                <!-- Social media links with Bootstrap icons and text -->
+                <a href="#" class="social-icon"><i class="bi bi-facebook"></i> Facebook</a>
+                <a href="#" class="social-icon"><i class="bi bi-instagram"></i> Instagram</a>
+                <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i> Twitter</a>
+                <a href="#" class="social-icon"><i class="bi bi-twitch"></i> Twitch</a>
+                <a href="#" class="social-icon"><i class="bi bi-discord"></i> Discord</a>
+    
+                <!-- Bug reporting and feature request links -->
+                <div class="mt-3">
+                    <a href="#" class="social-icon"><i class="bi bi-bug-fill"></i> Report a Bug</a> | <a href="#" class="social-icon"><i class="bi bi-plus-circle"></i> Request a Feature</a>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            /* When the user clicks on the button, 
+            toggle between hiding and showing the dropdown content */
+            function myFunction() {
+              document.getElementById("myDropdown").classList.toggle("show");
+            }
+            
+            // Close the dropdown if the user clicks outside of it
+            window.onclick = function(event) {
+              if (!event.target.matches('.dropbtn')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                  var openDropdown = dropdowns[i];
+                  if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                  }
+                }
+              }
+            }
+
+            function openMode(evt, name) {
+                var i, x, tablinks;
+                x = document.getElementsByClassName("mode");
+                for (i = 0; i < x.length; i++) {
+                  x[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablink");
+                for (i = 0; i < x.length; i++) {
+                  tablinks[i].className = tablinks[i].className.replace(" w3-dark-grey", "");
+                }
+                document.getElementById(name).style.display = "block";
+                evt.currentTarget.className += " w3-dark-grey";
+              }
+
+              function toggleTimerInput() {
+                var timerActiveSelect = document.getElementById("timerActive");
+                var timerSection = document.getElementById("timerSection");
+    
+                // Show or hide the timer input based on the selection
+                timerSection.style.display = (timerActiveSelect.value === "yes") ? "block" : "none";
+            }
+    
+            function validateForm() {
+                var mapTitle = document.getElementById("mapTitle").value;
+                var canMove = document.getElementById("canMove").value;
+                var timerActive = document.getElementById("timerActive").value;
+                var timerDuration = document.getElementById("timerDuration").value;
+                var mapDescription = document.getElementById("mapDescription").value;
+                var lat1 = document.getElementById("lat1").value;
+                var long1 = document.getElementById("long1").value;
+                var formRows = document.getElementsByClassName('form-row');
+                var maps = formRows.length;
+                console.log(maps);
+                // Check if required fields are filled
+                if (mapTitle && canMove && timerActive && mapDescription && lat1 && long1) {
+                    // If Timer is set to "Yes," ensure Timer Duration is filled
+                    if (timerActive === "yes" && !timerDuration) {
+                        alert("Please fill the Timer Duration.");
+                    }
+                    checkCoordinates(maps);
+                } else {
+                    alert("Please fill in all required fields.");
+                }
+            }
+    
+            // Array to store invalid locations
+            var invalidLocations = [];
+    
+            function checkCoordinates(maps) {
+                invalidLocations = [];
+                var timerDuration = document.getElementById("timerDuration").value;
+                if (timerDuration > 600) {
+                    alert("Timer duration cannot exceed 10 minutes.");
+                    return;
+                }
+                // Check each set of coordinates
+                for (var i = 1; i <= maps; i++) {
+                    console.log("lat" + i);
+                    var lat = parseFloat(document.getElementById("lat" + i).value);
+                    var long = parseFloat(document.getElementById("long" + i).value);
+                    console.log(lat);
+                    console.log(long);
+                    var validStreet = validStreetView(lat, long, i);
+             }
+             // Check and alert for invalid locations
+             var alertMessage = "Please enter valid coordinates for Locations: "
+             setTimeout(() => { 
+                    if (invalidLocations.length > 0) {  
+                    invalidLocations.forEach(function (index) {
+                        alertMessage = alertMessage + index + " ";
+                    });
+                    alert(alertMessage);
+                } else {
+                    console.log("All coordinates are valid");
+                }
+                }, 300);
+            }
+    
+            function validStreetView(latitude, longitude, i) {
+                const streetViewService = new google.maps.StreetViewService();
+                const streetViewLocation = { lat: latitude, lng: longitude };
+                streetViewService.getPanorama(
+                    { location: streetViewLocation, radius: 1000, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST},
+                    (data, status) => {
+                        if (status === "OK") {
+                            console.log("Location " + i + " is valid");
+                        } else {
+                            invalidLocations.push(i);
+                        }
+                    }
+                );
+            }
+            /////////////////////////////////////////////////////////////////
+            // Code to add divs
+            function addCoordinate() {
+            // Create a new form row
+            var newFormRow = document.createElement('div');
+            newFormRow.classList.add('form-row');
+    
+            // Get the number of the new coordinate
+            var coordinateNumber = document.getElementsByClassName('form-row').length + 1;
+    
+            // Create latitude input with label
+            var latInput = createInput('text', 'form-control', 'Latitude (Location ' + coordinateNumber + '):', "lat" + coordinateNumber);
+            latInput.name = "lat" + coordinateNumber;
+    
+            // Create longitude input with label
+            var longInput = createInput('text', 'form-control', 'Longitude (Location ' + coordinateNumber + '):', "long" + coordinateNumber);
+            longInput.name = "long" + coordinateNumber;
+    
+            // Append inputs to the new form row
+            newFormRow.appendChild(createFormGroup('col-md-6', latInput));
+            newFormRow.appendChild(createFormGroup('col-md-6', longInput));
+    
+            // Get the locationSubmissionForm
+            var locationForm = document.getElementById('locationSubmissionForm');
+    
+            // Insert the new form row before the last child (Submit button)
+            locationForm.insertBefore(newFormRow, locationForm.lastElementChild);
+    
+            // Add Delete button if there's more than one coordinate
+            if (document.getElementsByClassName('form-row').length > 1) {
+                addDeleteButton();
+            }
+            }
+    
+        // Code to add delete button
+        function addDeleteButton() {
+            // Check if delete button already exists
+            if (!document.getElementById('deleteCoordinateBtn')) {
+                var deleteBtn = document.createElement('button');
+                deleteBtn.type = 'button';
+                deleteBtn.classList.add('btn', 'btn-danger', 'ml-2'); // Added margin-left class
+                deleteBtn.textContent = 'Delete Coordinate';
+                deleteBtn.id = 'deleteCoordinateBtn';
+                deleteBtn.onclick = deleteCoordinate;
+    
+                // Insert the delete button after the Add Coordinate button
+                document.getElementById('addOrDeleteButtons').appendChild(deleteBtn);
+            }
+        }
+    
+        // Code to delete the last added coordinate
+        function deleteCoordinate() {
+            var formRows = document.getElementsByClassName('form-row');
+            if (formRows.length > 1) {
+                formRows[formRows.length - 1].remove();
+            }
+    
+            // Remove Delete button if there's only one coordinate left
+            if (formRows.length <= 1) {
+                var deleteBtn = document.getElementById('deleteCoordinateBtn');
+                if (deleteBtn) {
+                    deleteBtn.remove();
+                }
+            }
+        }
+    
+        function createFormGroup(className, input) {
+            var formGroup = document.createElement('div');
+            formGroup.classList.add('form-group', className);
+            formGroup.appendChild(input);
+            return formGroup;
+        }
+    
+        function createInput(type, className, label, id) {
+            var input = document.createElement('input');
+            input.type = type;
+            input.classList.add(className);
+            input.required = true;
+            input.id = id
+    
+            var inputLabel = document.createElement('label');
+            inputLabel.textContent = label;
+    
+            var inputContainer = document.createElement('div');
+            inputContainer.appendChild(inputLabel);
+            inputContainer.appendChild(input);
+    
+            return inputContainer;
+        }
+        </script>
+    </body>
+</html>
