@@ -10,7 +10,7 @@ let latitude, longitude;
 let mapLocation;
 let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
 
-// Variables for the gamemodes
+// Variables for the difficulty
 let timer = true;
 let time_ms = 60000;
 let secondsLeft;
@@ -28,33 +28,35 @@ function getQueryParam(key) {
 }
 // Gamemodes
 // Game.html?gamemode=1 to have gamemode 1
-const gamemode = getQueryParam('gamemode');
+const difficulty = getQueryParam('difficulty');
 
 // Gamemode 1 - Normal : Timer 1 min, Move enabled
-if (gamemode === '1') {
+if (difficulty === 'normal') {
   timer = true;
   time_ms = 60000;
+  sigma = 1500;
   move_enabled = true;
 }
 
 // Gamemode 2 - No move: Timer 1 min, Move disabled
-if (gamemode === '2') {
+if (difficulty === '2') {
   timer = true;
   time_ms = 60000;
   move_enabled = false;
 }
 
 // Gamemode 3 - Easy : Timer 5 min, Move enabled
-if (gamemode === '3') {
-  timer = true;
-  time_ms = 300000;
+if (difficulty === 'easy') {
+  timer = false;
+  sigma = 3000;
   move_enabled = true;
 }
 
-// Gamemode 4 - Imposiible: Timer 5 sec, Move disabled
-if (gamemode === '4') {
+// Gamemode 4 - Impossible: Timer 5 sec, Move disabled
+if (difficulty === 'impossible') {
   timer = true;
-  time_ms = 5000;
+  time_ms = 30000;
+  sigma = 500;
   move_enabled = false;
 }
 
