@@ -139,35 +139,58 @@
                 font-size: 5vw;
             }
 
-                .icon.easy {
-                  background-color: #3498db;
-                }
+            .icon.easy {
+                background-color: #3498db;
+            }
 
-                .icon.normal {
-                  background-color: #2ecc71;
-                }
+            .icon.normal {
+                background-color: #2ecc71;
+            }
 
-                .icon.impossible {
-                  background-color: #e74c3c;
-                }
+            .icon.impossible {
+                background-color: #e74c3c;
+            }
 
-                .icon.custom {
-                  background-color: #f1c40f;
-                }
-      
-              i {
-                  color: white;
-              }
+            .icon.custom {
+                background-color: #f1c40f;
+            }
+    
+            i {
+                color: white;
+            }
 
-              h2 {
-                font-size: 2.5vw; 
-                margin-top: 10px; 
-              }
-      
-              /* Optional: Hover effect */
-              .selection-frame:hover .icon {
-                opacity: 0.8;
-              }
+            h2 {
+            font-size: 2.5vw; 
+            margin-top: 10px; 
+            }
+    
+            /* Optional: Hover effect */
+            .selection-frame:hover .icon {
+            opacity: 0.8;
+            }
+
+            /* The Modal (background) */
+            .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            padding-top: 60px;
+            }
+
+            /* Modal Content/Box */
+            .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+            border: 1px solid #888;
+            width: 30%; /* Could be more or less, depending on screen size */
+            }
           </style>
     </head>
     <body>
@@ -241,7 +264,7 @@
               </div>
             </div>
 
-            <div class="selection-frame" onmouseover="updateInfo('impossible')" onmouseout="resetInfo()">
+            <div class="selection-frame" onmouseover="updateInfo('impossible')" onmouseout="resetInfo()" >
                 <div class="icon Impossible">
                   <a href="C:\Users\ellio\Documents\WebTech\Game.html?difficulty=impossible" class="selection-frame">
                   <!-- Another icon for the second selection frame -->
@@ -252,9 +275,9 @@
                 </div>
               </div>
 
-              <div class="selection-frame" onmouseover="updateInfo('custom')" onmouseout="resetInfo()">
+              <div class="selection-frame" onmouseover="updateInfo('custom')" onmouseout="resetInfo()" onclick= "document.getElementById('customgame-modal').style.display='block'">
                 <div class="icon custom">
-                  <a href="/home" class="selection-frame">
+                  <a class="selection-frame">
                   <!-- Another icon for the second selection frame -->
                   <!-- Example with Font Awesome icon: -->
                   <i class="fa-solid fa-gears"></i>
@@ -264,6 +287,26 @@
               </div>
         </div>
 
+        </div>
+
+        <div id="customgame-modal" class="modal">
+    
+            <form class="modal-content animate" action="/action_page.php" method="post">
+    
+                <h1>LOG IN</h1>
+    
+                <div class="container">
+                <label for="uname"><b>Username</b></label>
+                <input type="text" placeholder="Enter Username" name="uname" required>
+    
+                <label for="psw"><b>Password</b></label>
+                <input type="password" placeholder="Enter Password" name="psw" required>
+                    
+                <button type="submit" class="submit-button">Custom Game</button>
+                </div>
+    
+                <button type="button" onclick="document.getElementById('customgame-modal').style.display='none'" class="cancelbtn">Cancel</button>
+            </form>
         </div>
 
         <div class="footer">
@@ -304,6 +347,14 @@
                 document.querySelectorAll('.info-container').forEach(container => container.style.display = 'none');
             }
 
+             // Function to handle clicks outside of the modal
+            window.onclick = function (event) {
+                var modal = document.getElementById('customgame-modal');
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+
             /* When the user clicks on the button, 
             toggle between hiding and showing the dropdown content */
             function myFunction() {
@@ -312,6 +363,10 @@
             
             // Close the dropdown if the user clicks outside of it
             window.onclick = function(event) {
+                var modal = document.getElementById('customgame-modal');
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
               if (!event.target.matches('.dropbtn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 var i;
