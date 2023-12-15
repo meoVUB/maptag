@@ -80,3 +80,6 @@ def mygames(request):
     
     else:
         return redirect('home') 
+    
+def game(request):
+    return render(request, "game/Game.html")
