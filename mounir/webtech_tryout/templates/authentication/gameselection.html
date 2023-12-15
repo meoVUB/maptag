@@ -11,10 +11,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
         <script src="https://kit.fontawesome.com/584b8ea9ce.js" crossorigin="anonymous"></script>
         <style>
-            body {
-                font-family: 'Helvetica', sans-serif;
-                background-color: #2c3333; /* Greyish background color */
-            }
+
             /* Add a new class for the main container */
             .main-container {
                 display: flex;
@@ -25,32 +22,69 @@
                 height: 100vh;
                 overflow: hidden;
             }
-        
-            .header-container {
+
+            /* Style for the form */
+            body {
+                font-family: 'Helvetica', sans-serif;
+                background-color: #2c3333;
                 text-align: center;
-                margin-bottom: 20px; 
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
             }
-        
-            h1 {
-                font-size: 4vw; 
-                color: white; 
+            
+            .make-game {
+                max-width: 40vw; /* Adjust the maximum width of the form as needed */
+                width: 100%;
+                padding: 2vw;
+                background-color: #fefefe;
+                border: 0.5vw solid #888;
+                border-radius: 2vw;
+                box-shadow: 0px 0.4vw 0.8vw rgba(0, 0, 0, 0.1);
+            }
+            
+            h3 {
+                font-size: 2vw; /* Adjust the font size using vw */
+                margin-bottom: 2vw;
             }
 
-            .info-container {
-                display: none;
-                justify-content: space-around;
+            #form-div {
+                display: flex;
+                font-size: 1.5vw;
+                flex-direction: column;
+            }
+            
+            .form-group {
+                margin-bottom: 2vw;
+                text-align: left;
+            }
+            
+            label {
+                display: block;
+                margin-bottom: 0.5vw;
+                color: #333;
+                font-weight: bold;
+            }
+            
+            select,
+            input {
+                width: 100%;
+                padding: 1vw;
+                height: 2.0vw;
+                border: 0.1vw solid #ddd;
+                border-radius: 0.5vw;
+            }
+            
+            .button-container {
+                display: flex;
+                justify-content: center;
                 align-items: center;
             }
-        
-            .info-container div {
-                text-align: center;
-                color: #ecf0f1; /* Text color */
-            }
-        
-            h2 {
-                font-size: 2vw; /* Adjust the font size using vw */
-                margin: 0; /* Remove default margins */
-            }
+            
+            .submit-button {
+                width: 100%;
+            }     
 
             /* Style for the footer */
             .footer {
@@ -76,18 +110,18 @@
                 border: none;
                 cursor: pointer;
                 border-radius: 5px;
-              }
+            }
+            
+            .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+            }
+            
+            .dropdown {
+            position: relative;
+            display: inline-block;
+            }
               
-              .dropbtn:hover, .dropbtn:focus {
-                background-color: #2980B9;
-              }
-              
-              .dropdown {
-                position: relative;
-                display: inline-block;
-              }
-              
-              .dropdown-content {
+            .dropdown-content {
                 display: none;
                 position: absolute;
                 background-color: #f1f1f1;
@@ -96,215 +130,35 @@
                 box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
                 left: -80px;
                 z-index: 1;
-              }
+            }
               
-              .dropdown-content a {
+            .dropdown-content a {
                 color: black;
                 padding: 12px 16px;
                 text-decoration: none;
                 display: block;
-              }
+            }
               
-              .dropdown a:hover {background-color: #ddd;}
+            .dropdown a:hover {background-color: #ddd;}
               
-              .show {display: block;}
+            .show {display: block;}
 
-
-              /* Style for the selection frame */
-              .frame-box {
-                text-align: center; 
-                color: white;
-                display: flex;
-                justify-content: space-around;
-            }
-      
-              .selection-frame {
-                flex: 1;
-                display: inline-block;
-                margin: 10px;
-                z-index: 1;
-            }
-        
-            .icon {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                width: 20vw;
-                height: 30vh;
-                background-color: #3498db;
-                border-radius: 10px;
-                text-align: center;
-                font-size: 5vw;
-            }
-
-            .icon.easy {
-                background-color: #3498db;
-            }
-
-            .icon.normal {
-                background-color: #2ecc71;
-            }
-
-            .icon.impossible {
-                background-color: #e74c3c;
-            }
-
-            .icon.custom {
-                background-color: #f1c40f;
-            }
-    
-            i {
-                color: white;
-            }
-
-            h2 {
-            font-size: 2.5vw; 
-            }
-    
-            /* Optional: Hover effect */
-            .selection-frame:hover .icon {
-            opacity: 0.8;
-            }
-
-            /* The Modal (background) */
-            .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: #2c3333; /* Greyish background color */
-            opacity: 0.98;
-            font-size: 1.2vw;
-            }
-
-            /* Modal Content/Box */
-            .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-            border: 1px solid #888;
-            width: 30%; 
-            }
-
-            .modal h3 {
-                text-align: center;
-                font-size: 2vw;
-            }
-
-            option {
-                font-size: 0.8vw;
-            }
-
-            .button-container {
-                display: flex;  
-            }
-
-            .submit-button,.cancelbtn {
-            width: 50%; 
-            }
           </style>
     </head>
     <body>
 
 
         <!-- Navigation bar -->
-        <nav class="navbar bg-body-tertiary" style="background-image: linear-gradient(to right, #2b054a, #090979);">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <a class="navbar-brand d-flex align-items-center" href="#">
-                    <img src="{% static 'images/maptag_logo.png' %}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
-                    <span class="ms-2">MapTag</span>
-                </a>
 
-                <div class="dropdown">
-                    <button onclick="myFunction()" class="dropbtn">{{fname}}</button>
-                    <div id="myDropdown" class="dropdown-content">
-                      <a href="#">My profile</a>
-                      <a href="#">Edit profile</a>
-                      <a href="#">Friends</a>
-                      <a href="#">My games</a>
-                      <a href="/signout">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
 
         <!-- Main container div -->
         <div class="main-container">
-
-        <div class="header-container">
-            <h1>Choose your difficulty</h1>
-        </div>
-
-        <!-- Information container -->
-        <div class="info-container">
-            <div id= "easy-info">
-                <h2>Easy: Timer: Off Moving: On Score Calculation: Generous</h2>
-            </div>
-            <div id= "normal-info">
-                <h2>Normal: Timer: 1 min Moving: On Score Calculation: Normal</h2>
-            </div>
-            <div id= "impossible-info">
-                <h2>Impossible: Timer: 30 sec Moving: Off Score Calculation: Ungenerous</h2>
-            </div>
-            <div id= "custom-info">
-                <h2>Custom: Start a game with your own custom Settings</h2>
-            </div>
-        </div>
-        
-        <div class="frame-box">
-
-          <div class="selection-frame" onmouseover="updateInfo('easy')" onmouseout="resetInfo()">
-            <div class="icon easy">
-              <a href="C:\Users\ellio\Documents\WebTech\Game.html?difficulty=easy" class="selection-frame">
-              <!-- Another icon for the second selection frame -->
-              <!-- Example with Font Awesome icon: -->
-              <i class="fa-solid fa-baby"></i>
-              </a>
-              <h2>Easy</h2>
-            </div>
-          </div>
-            
-            <div class="selection-frame" onmouseover="updateInfo('normal')" onmouseout="resetInfo()">
-              <div class="icon normal">
-                <a href="C:\Users\ellio\Documents\WebTech\Game.html?gamemode=normal" class="selection-frame">
-                <!-- Another icon for the second selection frame -->
-                <!-- Example with Font Awesome icon: -->
-                <i class="fa-solid fa-person"></i>
-                </a>
-                <h2>Normal</h2>
-              </div>
-            </div>
-
-            <div class="selection-frame" onmouseover="updateInfo('impossible')" onmouseout="resetInfo()" >
-                <div class="icon Impossible">
-                  <a href="C:\Users\ellio\Documents\WebTech\Game.html?difficulty=impossible" class="selection-frame">
-                  <!-- Another icon for the second selection frame -->
-                  <!-- Example with Font Awesome icon: -->
-                  <i class="fa-solid fa-skull-crossbones"></i>
-                  </a>
-                  <h2>Impossible</h2>
-                </div>
-              </div>
-
-              <div class="selection-frame" onmouseover="updateInfo('custom')" onmouseout="resetInfo()" onclick= "document.getElementById('customgame-modal').style.display='block'">
-                <div class="icon custom">
-                  <a class="selection-frame">
-                  <!-- Another icon for the second selection frame -->
-                  <!-- Example with Font Awesome icon: -->
-                  <i class="fa-solid fa-gears"></i>
-                  </a>
-                  <h2>Custom Settings</h2>
-                </div>
-              </div>
-        </div>
-
-        </div>
-
-        <div id="customgame-modal" class="modal">
     
-            <form class="modal-content" action="/action_page.php" method="post">
+            <form class="make-game"  method="post">
     
                 <h3><strong>Custom Settings</strong></h3>
+
+                <div id="form-div">
     
                 <div class="form-group">
                     <label for="canMove">Can You Move?</label>
@@ -327,7 +181,7 @@
     
                 <div class="form-group">
                     <label for="timerActive">Is Timer Active?</label>
-                    <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput()">
+                    <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput(this)">
                         <option value=false>No</option>
                         <option value=true>Yes</option>
                     </select>
@@ -335,18 +189,15 @@
     
                 <div id="timerSection" style="display: none;">
                     <div class="form-group">
-                        <label for="timerDuration">Timer Duration (in seconds, max 10 min):</label>
-                        <input type="number" class="form-control" id="timerDuration" name="timerDuration" min="1">
+                        <label for="timerDuration">Timer Duration (in minutes, max 10 min):</label>
+                        <input type="time" class="form-control" id="timerDuration" name="timerDuration">
                     </div>
-                </div>
-
-                    
+                </div>             
                     
                 <div class="button-container">
-                    <button type="submit" class="submit-button">Create Game</button>
-                    <button type="button" onclick="document.getElementById('customgame-modal').style.display='none'" class="cancelbtn">Cancel</button>
+                    <button type="submit" class="submit-button" onclick="validateForm()">Create Game</button>
                 </div>
-    
+                </div>
             </form>
         </div>
 
@@ -368,33 +219,6 @@
         
         <script>
 
-            function updateInfo(difficulty) {
-                var infoContainer = document.querySelector('.info-container');
-                var childrenDivs = infoContainer.querySelectorAll('div');
-                // Hide all info containers
-                childrenDivs.forEach(container => {
-                    if (container.id == difficulty + '-info') {
-                        container.style.display = 'block';
-                        infoContainer.style.display = 'block';
-                    }
-                    else {
-                    container.style.display = 'none';
-                    }
-                });
-            }
-        
-            function resetInfo() {        
-                // Hide all other info containers
-                document.querySelectorAll('.info-container').forEach(container => container.style.display = 'none');
-            }
-
-             // Function to handle clicks outside of the modal
-            window.onclick = function (event) {
-                var modal = document.getElementById('customgame-modal');
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            };
 
             /* When the user clicks on the button, 
             toggle between hiding and showing the dropdown content */
@@ -404,10 +228,6 @@
             
             // Close the dropdown if the user clicks outside of it
             window.onclick = function(event) {
-                var modal = document.getElementById('customgame-modal');
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
               if (!event.target.matches('.dropbtn')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 var i;
@@ -420,14 +240,55 @@
               }
             }
 
-
-            function toggleTimerInput() {
-                var timerActiveSelect = document.getElementById("timerActive");
+            function toggleTimerInput(selectElement) {
                 var timerSection = document.getElementById("timerSection");
-    
+                console.log(selectElement.value);
+        
                 // Show or hide the timer input based on the selection
-                timerSection.style.display = (timerActiveSelect.value === "yes") ? "block" : "none";
+                timerSection.style.display = (selectElement.value === "true") ? "block" : "none";
             }
+
+            function validateForm() {
+                var sigma = document.getElementById("scoreCalulation").value;
+                var canMove = document.getElementById("canMove").value;
+                var timerActive = document.getElementById("timerActive").value;
+                let timerDuration;
+                console.log(sigma);
+                if (timerActive === "true") {
+                    var time = convertTimeToSeconds(document.getElementById("timerDuration").value);
+                    console.log(time);
+                    if (time) {
+                        if (time > 600) {
+                            alert("Please enter a time less than 10 minutes.");
+                            return;
+                        }else{
+                            timerDuration = time;
+                        }
+                    } else {
+                        alert("Please enter a valid time.");
+                        return;
+                    }
+                }
+            }
+
+            function convertTimeToSeconds(timeStr) {
+                try {
+                    // Split the time string into minutes and seconds
+                    const [minutes, seconds] = timeStr.split(':').map(Number);
+            
+                    // Check if the time is in the correct format
+                    if (Number.isInteger(minutes) && Number.isInteger(seconds) && minutes >= 0 && minutes < 60 && seconds >= 0 && seconds < 60) {
+                        // Convert minutes and seconds to seconds
+                        const totalSeconds = minutes * 60 + seconds;
+                        return totalSeconds;
+                    } else {
+                        return false; // Incorrect time format
+                    }
+                } catch (error) {
+                    return false; // Incorrect format (not two integers separated by a colon)
+                }
+            }
+
         </script>
     </body>
 </html>
