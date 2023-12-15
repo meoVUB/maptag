@@ -9,7 +9,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-        <script src="https://kit.fontawesome.com/584b8ea9ce.js" crossorigin="anonymous"></script>
         <style>
             body {
                 margin: 0;
@@ -53,7 +52,6 @@
                 font-size: 16px;
                 border: none;
                 cursor: pointer;
-                border-radius: 5px;
               }
               
               .dropbtn:hover, .dropbtn:focus {
@@ -87,63 +85,18 @@
               
               .show {display: block;}
 
-
-              /* Style for the selection frame */
-              .frame-box {
-                  position: absolute;
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%);
-                  text-align: center;
-                  color: white;
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-around;
-                  /* Updated to use flexbox */
+              .foreground-box {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                text-align: center;
+                color: white;
               }
-      
-              .selection-frame {
-                  flex: 1;
-                  /* Each selection frame takes equal space */
-                  display: inline-block;
-                  margin: 10px;
-                  z-index: 1;
-                  /* Place the selection frame above the background image */
+              a {
+                color: white;
               }
-      
-              .icon {
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                  width: 20vw;
-                  /* 20% of the viewport width */
-                  height: 30vh;
-                  /* 20% of the viewport height */
-                  background-color: #3498db;
-                  /* Set your desired background color */
-                  border-radius: 10px;
-                  /* Add rounded corners */
-                  text-align: center;
-                  font-size: 5vw;
-                  /* 5% of the viewport width for font size */
-              }
-      
-              i {
-                  color: white;
-              }
-
-              h2 {
-                font-size: 2.5vw; /* Adjust the font size as needed */
-                margin-top: 10px; /* Add some spacing between the icon and text */
-              }
-      
-              /* Optional: Hover effect */
-              .selection-frame:hover .icon {
-                  background-color: #2980b9;
-                  /* Set a different background color on hover */
-              }
-          </style>
+        </style>
     </head>
     <body>
 
@@ -161,7 +114,7 @@
                       <a href="#">My profile</a>
                       <a href="#">Edit profile</a>
                       <a href="#">Friends</a>
-                      <a href="#">My games</a>
+                      <a href="/mygames">My games</a>
                       <a href="/signout">Logout</a>
                     </div>
                 </div>
@@ -173,33 +126,10 @@
 
             <!-- Blurry background image -->
             <img class="blurry-background" src="{% static 'images/background.jpg' %}" alt="Background">
-            
-            <!-- Selection frame with icon -->
-        
-        <div class="frame-box">
 
-          <div class="selection-frame">
-            <div class="icon">
-              <a href="/home" class="selection-frame">
-              <!-- Another icon for the second selection frame -->
-              <!-- Example with Font Awesome icon: -->
-              <i class="fa-solid fa-location-dot"></i>
-              </a>
-              <h2>Play Game</h2>
+            <div class="foreground-box">
+              <button type="submit" class="btn btn-primary"><a href="/game">Start Game</a></button>
             </div>
-          </div>
-            
-            <div class="selection-frame">
-              <div class="icon">
-                <a href="/home" class="selection-frame">
-                <!-- Another icon for the second selection frame -->
-                <!-- Example with Font Awesome icon: -->
-                <i class="fa-solid fa-magnifying-glass"></i>
-                </a>
-                <h2>Search for a map</h2>
-              </div>
-            </div>
-        </div>
 
         </div>
 
