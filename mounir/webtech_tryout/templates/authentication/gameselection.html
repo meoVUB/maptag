@@ -12,7 +12,6 @@
         <script src="https://kit.fontawesome.com/584b8ea9ce.js" crossorigin="anonymous"></script>
         <style>
             body {
-                margin: 0;
                 font-family: 'Helvetica', sans-serif;
                 background-color: #2c3333; /* Greyish background color */
             }
@@ -161,7 +160,6 @@
 
             h2 {
             font-size: 2.5vw; 
-            margin-top: 10px; 
             }
     
             /* Optional: Hover effect */
@@ -174,14 +172,10 @@
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            padding-top: 60px;
+            background-color: #2c3333; /* Greyish background color */
+            opacity: 0.98;
+            font-size: 1.2vw;
             }
 
             /* Modal Content/Box */
@@ -189,7 +183,24 @@
             background-color: #fefefe;
             margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
             border: 1px solid #888;
-            width: 30%; /* Could be more or less, depending on screen size */
+            width: 30%; 
+            }
+
+            .modal h3 {
+                text-align: center;
+                font-size: 2vw;
+            }
+
+            option {
+                font-size: 0.8vw;
+            }
+
+            .button-container {
+                display: flex;  
+            }
+
+            .submit-button,.cancelbtn {
+            width: 50%; 
             }
           </style>
     </head>
@@ -291,21 +302,51 @@
 
         <div id="customgame-modal" class="modal">
     
-            <form class="modal-content animate" action="/action_page.php" method="post">
+            <form class="modal-content" action="/action_page.php" method="post">
     
-                <h1>LOG IN</h1>
+                <h3><strong>Custom Settings</strong></h3>
     
-                <div class="container">
-                <label for="uname"><b>Username</b></label>
-                <input type="text" placeholder="Enter Username" name="uname" required>
-    
-                <label for="psw"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="psw" required>
-                    
-                <button type="submit" class="submit-button">Custom Game</button>
+                <div class="form-group">
+                    <label for="canMove">Can You Move?</label>
+                    <select class="form-control" id="canMove" name="canMove">
+                        <option value=false>No</option>
+                        <option value=true>Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="scoreCalulation">Score Calculation</label>
+                    <select class="form-control" id="scoreCalulation" name="scoreCalulation">
+                        <option value=100>Impossible</option>
+                        <option value=500>Very Hard</option>
+                        <option value=1000>Hard</option>
+                        <option value=1500>Normal</option>
+                        <option value=2500>Easy</option>
+                    </select>
                 </div>
     
-                <button type="button" onclick="document.getElementById('customgame-modal').style.display='none'" class="cancelbtn">Cancel</button>
+                <div class="form-group">
+                    <label for="timerActive">Is Timer Active?</label>
+                    <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput()">
+                        <option value=false>No</option>
+                        <option value=true>Yes</option>
+                    </select>
+                </div>
+    
+                <div id="timerSection" style="display: none;">
+                    <div class="form-group">
+                        <label for="timerDuration">Timer Duration (in seconds, max 10 min):</label>
+                        <input type="number" class="form-control" id="timerDuration" name="timerDuration" min="1">
+                    </div>
+                </div>
+
+                    
+                    
+                <div class="button-container">
+                    <button type="submit" class="submit-button">Create Game</button>
+                    <button type="button" onclick="document.getElementById('customgame-modal').style.display='none'" class="cancelbtn">Cancel</button>
+                </div>
+    
             </form>
         </div>
 
@@ -377,6 +418,15 @@
                   }
                 }
               }
+            }
+
+
+            function toggleTimerInput() {
+                var timerActiveSelect = document.getElementById("timerActive");
+                var timerSection = document.getElementById("timerSection");
+    
+                // Show or hide the timer input based on the selection
+                timerSection.style.display = (timerActiveSelect.value === "yes") ? "block" : "none";
             }
         </script>
     </body>

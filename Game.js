@@ -47,7 +47,8 @@ if (difficulty === '2') {
 
 // Gamemode 3 - Easy : Timer 5 min, Move enabled
 if (difficulty === 'easy') {
-  timer = false;
+  timer = true;
+  time_ms = 600000;
   sigma = 3000;
   move_enabled = true;
 }
