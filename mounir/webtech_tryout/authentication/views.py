@@ -83,3 +83,6 @@ def mygames(request):
     
 def game(request):
     return render(request, "game/Game.html")
+
+def gameselection(request):
+    return render(request, "game/gameselection.html")

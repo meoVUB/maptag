@@ -150,11 +150,30 @@
 
         <!-- Navigation bar -->
 
+        <nav class="navbar bg-body-tertiary" style="background-image: linear-gradient(to right, #2b054a, #090979);">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="{% static 'images/maptag_logo.png' %}" alt="Logo" width="40" height="40" class="d-inline-block align-text-top">
+                    <span class="ms-2">MapTag</span>
+                </a>
+
+                <div class="dropdown">
+                    <button onclick="myFunction()" class="dropbtn">{{fname}}</button>
+                    <div id="myDropdown" class="dropdown-content">
+                      <a href="#">My profile</a>
+                      <a href="#">Edit profile</a>
+                      <a href="#">Friends</a>
+                      <a href="/mygames">My games</a>
+                      <a href="/signout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
         <!-- Main container div -->
         <div class="main-container">
     
-            <form class="make-game"  method="post">
+            <form class="make-game" onsubmit="return validateForm();">
     
                 <h3><strong>Custom Settings</strong></h3>
 
@@ -195,7 +214,7 @@
                 </div>             
                     
                 <div class="button-container">
-                    <button type="submit" class="submit-button" onclick="validateForm()">Create Game</button>
+                    <button type="submit" class="submit-button">Start Game</button>
                 </div>
                 </div>
             </form>
@@ -253,22 +272,27 @@
                 var canMove = document.getElementById("canMove").value;
                 var timerActive = document.getElementById("timerActive").value;
                 let timerDuration;
-                console.log(sigma);
+        
                 if (timerActive === "true") {
                     var time = convertTimeToSeconds(document.getElementById("timerDuration").value);
-                    console.log(time);
+        
                     if (time) {
                         if (time > 600) {
                             alert("Please enter a time less than 10 minutes.");
-                            return;
-                        }else{
+                            return false;
+                        } else {
                             timerDuration = time;
                         }
                     } else {
                         alert("Please enter a valid time.");
-                        return;
+                        return false;
                     }
                 }
+        
+                // If all validation passes, redirect to the specified link
+                window.location.href = "/game?sigma=" + sigma + "&canMove=" + canMove + "&timerActive=" + timerActive + "&timerDuration=" + timerDuration*1000 + "&custom=true";
+
+                return false;
             }
 
             function convertTimeToSeconds(timeStr) {

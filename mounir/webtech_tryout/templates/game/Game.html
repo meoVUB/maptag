@@ -259,7 +259,25 @@ function getQueryParam(key) {
 // Gamemodes
 // Game.html?gamemode=1 to have gamemode 1
 const gamemode = getQueryParam('gamemode');
+// Game.html?custom=true 
+const custom = getQueryParam('custom');
 
+if (custom === "true") {
+  timer = getQueryParam('timerActive');
+  if (timer === "true") {
+    timer = true;
+    time_ms = parseInt(getQueryParam('timerDuration'));
+  } else {
+    timer = false;
+  }
+  move_enabled = getQueryParam('canMove');
+  if (move_enabled === "true") {
+    move_enabled = true;
+  } else {
+    move_enabled = false;
+  }
+  sigma = parseInt(getQueryParam('sigma'));
+} else {
 // Gamemode 1 - Normal : Timer 1 min, Move enabled
 if (gamemode === '1') {
   timer = true;
@@ -286,6 +304,7 @@ if (gamemode === '4') {
   timer = true;
   time_ms = 5000;
   move_enabled = false;
+}
 }
 
 ///////////////////////////////
