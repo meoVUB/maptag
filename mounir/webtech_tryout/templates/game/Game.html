@@ -71,15 +71,20 @@
       }
       
       #id01 {
-        background-color: #2c3333;
         background-image: url('{% static 'images/backgroundgame.jpg' %}');
         background-size: cover;
         z-index: 9;
       }
-      
+
+      #id02 {
+        background-image: url('{% static 'images/backgroundgame.jpg' %}');
+        background-size: cover;
+        z-index: 9;
+        display: block;
+      }
+
       #modal1 {
-        background-color: #2c3333;
-        
+        background-color: #2c3333; 
       }
       
       #locationInfo {
@@ -139,8 +144,7 @@
         width: 100%; /* Full width */
         height: 100%; /* Full height */
         overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        background-color: #2c3333;
         padding-top: 60px;
       }
       
@@ -193,7 +197,30 @@
       @keyframes animatezoom {
         from {transform: scale(0)} 
         to {transform: scale(1)}
-      }      
+      }  
+      
+      
+      /* Styles for loading button */
+      .loader { 
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #3498db;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+      }
+      
+      /* Safari */
+      @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
     </style>
   </head>
 
@@ -211,34 +238,50 @@
 
   <div id="id01" class="modal">
   
-  <div class="modal-content animate" id="modal1" action="/action_page.php" method="post" >
-    <h1 id="current-map-modal">Map overview</h1>
-    <div class="container">
-      <div id="locationInfo"></div>
-      <div id="current-score-modal"></div>
-      <input type="button" class="custom-button" value="Play again" onclick="playAgain()"/>
+    <div class="modal-content animate" id="modal1" action="/action_page.php" method="post" >
+      <h1 id="current-map-modal">Map overview</h1>
+      <div class="container">
+        <div id="locationInfo"></div>
+        <div id="current-score-modal"></div>
+        <input type="button" class="custom-button" id="playButton" value="Play again" onclick="playAgain()"/>
+        <div class="loader" id="loader1" style="display:none;"></div>
+      </div>
     </div>
-
   </div>
-</div>
+
+  <div id="id02" class="modal">
+  
+    <div class="modal-content animate" id="modal1" action="/action_page.php" method="post" >
+      <h1 id="current-map-modal">Map overview</h1>
+      <div class="container">
+        <div id="locationInfo"></div>
+        <div id="current-score-modal"></div>
+        <input type="button" class="custom-button" id="startButton" value="Play MapTag" onclick="startGame()"/>
+        <div class="loader" id="loader2" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
     <div id="pano"></div> 
     <div id="floating-panel">
           <div id="map"></div>
     </div>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&callback=newMap&v=weekly" defer> </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer> </script>
     <script>
-      // Global variables
+
+// Global variables
 let played = false;
 let weatherInfoElement;
 let total_score = 0;
 let current_score = 0;
 let total_maps = 5;
-let current_map = 1;
+let current_map = 0;
+let radius = 1000;
 let mapFound = false;
 let latitude, longitude;
 let mapLocation;
-let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
+let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea;
 
 // Variables for the gamemodes
 let timer = true;
@@ -299,31 +342,59 @@ if (gamemode === '3') {
   move_enabled = true;
 }
 
-// Gamemode 4 - Imposiible: Timer 5 sec, Move disabled
+// Gamemode 4 - Impossible: Timer 5 sec, Move disabled
 if (gamemode === '4') {
   timer = true;
   time_ms = 5000;
   move_enabled = false;
 }
 }
+console.log("Timer: " + timer);
+console.log("Time: " + time_ms);
+console.log("Move: " + move_enabled);
+console.log("Sigma: " + sigma);
+
 
 ///////////////////////////////
 
+function toggleLoader(on) {
+  var loader1 = document.getElementById('loader1');
+  var loader2 = document.getElementById('loader2');
+  var button1 = document.getElementById('playButton');
+  var button2 = document.getElementById('startButton');
+  if (on) {
+    loader1.style.display = 'block';
+    loader2.style.display = 'block';
+    button1.style.display = 'none';
+    button2.style.display = 'none';
+  } else {
+    loader1.style.display = 'none';
+    loader2.style.display = 'none';
+    button1.style.display = 'block';
+    button2.style.display = 'block';
+  }
+}
+
 function mapFoundTest() {
-  console.log(mapFound, "mapFound");
   if (mapFound === true) {
     console.log("Map found");
+    toggleLoader(false);
     newMap();
-    var modal = document.getElementById('id01');
-    modal.style.display = "none";
-    mapFound = false;
+    if (start === true) {
+      var modal = document.getElementById('id02');
+      modal.style.display = "none";
+      start = false;
+    } else {
+      var modal = document.getElementById('id01');
+      modal.style.display = "none";
+    }
   } else {
-    console.log("Waiting for map to be found");
     setTimeout(mapFoundTest, 1000);
   }
 }
 
 function playAgain() {
+  toggleLoader(true);
   if (current_map != total_maps) {
     if (played === true) {
       played = false;
@@ -340,6 +411,14 @@ function playAgain() {
     console.log('Game over');
   }
 }
+
+function startGame() {
+  toggleLoader(true);
+  start = true;
+  initStreetView(true);
+  mapFoundTest();
+}
+
 
 function showModal() {
   document.getElementById('id01').style.display='block';
@@ -689,7 +768,6 @@ function getRandomArea() {
         const continent = continents[continentName];
         randomWeight -= continent.weight;
         if (randomWeight <= 0) {
-            console.log(continentName);
             return continent.coordinates; 
         }
     }
@@ -743,12 +821,8 @@ function findNearestStreetView(latitude, longitude) {
               clickToGo: move_enabled,
             }
           );
-          map.setStreetView(panorama);
           mapFound = true;
-          if (timer) {
-            updateCountdown();
-            }
-          console.log(radius);
+          map.setStreetView(panorama);
         } else {
             mapFound = false;
             radius += 1000;
@@ -762,7 +836,7 @@ function findNearestStreetView(latitude, longitude) {
   function initStreetView(newArea) {
     randomNumber = Math.random();       
     
-      if (randomNumber < 0) {
+      if (randomNumber < 0.0) {
         // 10% of an actual random coordinate in the whole world
         console.log("random");
         randomCoordinates = randomcoordinates();
@@ -774,8 +848,7 @@ function findNearestStreetView(latitude, longitude) {
         randomCoordinates = getRandomCoordinates(randomArea);
       }
     latitude = randomCoordinates.latitude;
-    longitude = randomCoordinates.longitude;  
-
+    longitude = randomCoordinates.longitude; 
     findNearestStreetView(latitude, longitude);
   }
 
@@ -833,9 +906,13 @@ function newMap() {
     mapDiv.style.left = "65%";
   });
 /////////////////////////////////////////////////////////////////////////
-if (mapFound === false) {
+
+secondsLeft = time_ms / 1000;
+
+if (mapFound === false) { // if a map has been found already, don't generate a new one
   initStreetView(true);
 }
+
 map = new google.maps.Map(document.getElementById("map"), {
   center: { lat: 0, lng: 0 },
   zoom: 1,
@@ -859,6 +936,10 @@ myinfowindow = new google.maps.InfoWindow({
 });
 
 myinfowindow.open(map);
+
+if (timer) { // if a map has been found and timer is enabled, start the timer
+  updateCountdown();
+}
 
 map.addListener("dblclick", (mapsMouseEvent) => {
 
@@ -919,7 +1000,6 @@ map.addListener("dblclick", (mapsMouseEvent) => {
 
 });
 
-secondsLeft = time_ms / 1000;
 }
     </script>
     
