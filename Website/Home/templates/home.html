@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Home - MapTag
+{% endblock %}
+
+{% block extra_head %}
+  <!-- Required stylesheets -->
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/home.css' %}">
+
+  <!-- Required scripts -->
+  
+{% endblock %}
+
+{% block content %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      <strong>Message:</strong> {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="close"><span aria-hidden="true">&times;</span></button>
+    </div>
+  {% endfor %}
+
+  <!-- Main container -->
+  <div class="main-container">
+    <!-- Blurry background image -->
+    <img class="blurry-background" src="{% static 'images/background.jpg' %}" alt="Background" />
+
+    <!-- Foreground box -->
+    <div class="foreground-box">
+      {% if user.is_authenticated %} <!-- User logged in -->
+        <!-- Box text -->
+        <div class="box-text">Jump right into the game!</div>
+
+        <!-- Buttons -->
+        <div class="btn-container">
+          <button type="submit" class="btn btn-primary"><a href="{% url "gameselection" %}">Start Game</a></button>
+        </div>
+      {% else %} <!-- User not logged in -->
+        <!-- Box text -->
+        <div class="box-text">Create an Account to Play for Free!</div>
+
+        <!-- Small font text -->
+        <div class="small-text">Get access to different challenges and find out your personal highscore for free!</div>
+
+        <!-- Buttons -->
+        <div class="btn-container">
+          <button type="submit" class="btn btn-primary"><a href="{% url 'log_in' %}">Log In</a></button>
+          <button type="submit" class="btn btn-success"><a href="{% url 'register' %}">Register</a></button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Section with information and boxes -->
+  <div class="container mt-5 container-section">
+    <div class="row text-center">
+      <!-- Information section -->
+      <div class="col-12 mb-5">
+        <h2>Why Create an Account?</h2>
+        <p>Discover the exciting world of MapTag and enjoy exclusive benefits!</p>
+      </div>
+
+      <!-- Boxes with symbols and text -->
+      <div class="col-md-4">
+        <div class="feature-box">
+          <span class="symbol">&#9733;</span>
+          <p>Find out your own highscore!</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <span class="symbol">&#127759;</span>
+          <p>Guess the place!</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <span class="symbol">&#128100;</span>
+          <p>Challenge your friends!</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <span class="symbol">&#127918;</span>
+          <p>Create your own custom games!</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <span class="symbol">&#127942;</span>
+          <p>Choose your own difficulty!</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+          <span class="symbol">&#127891;</span>
+          <p>Learn more about the world around you!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

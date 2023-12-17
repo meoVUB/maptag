@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Game Selection - MapTag
+{% endblock %}
+
+{% block extra_head %}
+  <!-- Required stylesheets -->
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/gameselection.css' %}" />
+
+  <!-- Required scripts -->
+  <script src="{% static 'scripts/gameselection.js' %}" defer></script>
+  <script src="https://kit.fontawesome.com/584b8ea9ce.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+  <!-- Main container div -->
+  <div class="main-container">
+    <form class="make-game" onsubmit="return validateForm();">
+      <h3><strong>Custom Settings</strong></h3>
+
+      <div id="form-div">
+        <div class="form-group">
+          <label for="canMove">Can You Move?</label>
+          <select class="form-control" id="canMove" name="canMove">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="scoreCalulation">Score Calculation</label>
+          <select class="form-control" id="scoreCalulation" name="scoreCalulation">
+            <option value="100">Impossible</option>
+            <option value="500">Very Hard</option>
+            <option value="1000">Hard</option>
+            <option value="1500">Normal</option>
+            <option value="2500">Easy</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="timerActive">Is Timer Active?</label>
+          <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput(this)">
+            <option value="false">No</option>
+            <option value="true">Yes</option>
+          </select>
+        </div>
+
+        <div id="timerSection" style="display: none;">
+          <div class="form-group">
+            <label for="timerDuration">Timer Duration (in minutes, max 10 min):</label>
+            <input type="time" class="form-control" id="timerDuration" name="timerDuration" />
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button type="submit" class="submit-button">Start Game</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

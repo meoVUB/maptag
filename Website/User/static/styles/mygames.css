@@ -1,0 +1,30 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url("{% static 'images/background-space.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.tabs {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.w3-bar {
+    display: flex;
+}
+
+.tablink {
+    flex: 1;
+    width: 50%;
+    box-sizing: border-box;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.mode {
+    background-color: rgba(211, 211, 211, 0.7);
+}

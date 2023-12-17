@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'Home',
+    'Game',
+    'User',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +57,12 @@ ROOT_URLCONF = "MapTag.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'MapTag/templates'],
+        "DIRS": [
+            BASE_DIR / 'MapTag/templates',
+            BASE_DIR / 'Home/templates',
+            BASE_DIR / 'User/templates',
+            BASE_DIR / 'Game/templates',
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -119,6 +127,9 @@ STATIC_URL = "static/"
 
 STATICFILES_DIRS = [ 
     BASE_DIR / 'MapTag/static',
+    BASE_DIR / 'Home/static',
+    BASE_DIR / 'User/static',
+    BASE_DIR / 'Game/static',
     ]
 
 # Default primary key field type
