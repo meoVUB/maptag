@@ -7,7 +7,7 @@ const start_map = 1; // Starting map
 const base_radius = 1000; // Base radius for the Street View panorama search
 const base_sigma = 1000; // Base sigma for the score calculation
 
-const base_total_maps = 3; // Base total maps for the game
+const base_total_maps = 5; // Base total maps for the game
 const base_timer = 60000; // Base timer for the game
 
 // Global variables
@@ -79,32 +79,29 @@ function setVariables(){
 ///////////////////////////////
 
 function toggleLoader(on) {
-    console.log("Toggling loader");
-    var loader1 = document.getElementById('loader1');
-    var loader2 = document.getElementById('loader2');
-    var button1 = document.getElementById('playButton');
-    var button2 = document.getElementById('startButton');
-    var button3 = document.getElementById('back1');
-    var button4 = document.getElementById('back2');
+
+    var loaders = document.querySelectorAll('.loader');
+    var buttons = document.querySelectorAll('.custom-button');
+
     if (on) {
-        console.log("Showing loader");
-        loader1.style.display = 'block';
-        loader2.style.display = 'block';
-        button1.style.display = 'none';
-        button2.style.display = 'none';
-        button3.style.display = 'none';
-        button4.style.display = 'none';
-        
+        loaders.forEach(function (loader) {
+            loader.style.display = 'block';
+        });
+
+        buttons.forEach(function (button) {
+            button.style.display = 'none';
+        });
     } else {
-        console.log("Hiding loader");
-        loader1.style.display = 'none';
-        loader2.style.display = 'none';
-        button1.style.display = 'block';
-        button2.style.display = 'block';
-        button3.style.display = 'block';
-        button4.style.display = 'block';
+        loaders.forEach(function (loader) {
+            loader.style.display = 'none';
+        });
+
+        buttons.forEach(function (button) {
+            button.style.display = 'block';
+        });
     }
 }
+
 
 function mapFoundTest() {
     if (map_found === true) {
