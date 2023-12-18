@@ -72,6 +72,7 @@ function setVariables(){
         move_enabled = true;
         total_maps = base_total_maps;
         sigma = base_sigma;
+        map_found = false;
 
     }
 
@@ -150,7 +151,6 @@ function redirectToSettings() {
 }
 
 function startGame() {
-    map_found = false;
     setVariables();
     toggleLoader(true);
     start = true;
@@ -178,7 +178,9 @@ function showModal() {
         score_element.classList.remove("combine-scores");
     }, 3000);
 } else { // If all the map have been played
-    document.getElementById('id03').style.display = 'block';
+    const game_over_modal = document.getElementById('id03');
+    game_over_modal.style.display = 'block';
+    game_over_modal.style.zIndex = 1000;
 }
 }
 
