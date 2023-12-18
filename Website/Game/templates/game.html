@@ -45,7 +45,7 @@
           <div id="locationInfo"></div>
           <div id="current-score-modal"></div>
           <div id="button-container">
-            <input type="button" class="custom-button" id="Back" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()" />
+            <input type="button" class="custom-button" id="back1" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()" />
             <input type="button" class="custom-button" id="playButton" value="Play again" onclick="playAgain()" />
         </div>
           <div class="loader" id="loader1" style="display:none;"></div>
@@ -59,28 +59,13 @@
         <div class="container">
           Can you find the location on the map?
           <div id="button-container">
-            <input type="button" class="custom-button" id="Back" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()"/>
+            <input type="button" class="custom-button" id="back2" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()"/>
             <input type="button" class="custom-button" id="startButton" value="Start Game" onclick="startGame()" />
         </div>
           <div class="loader" id="loader2" style="display:none;"></div>
         </div>
       </div>
     </div>
-
-    <div id="id03" class="modal">
-        <div class="modal-content animate" id="modal1" action="/action_page.php" method="post">
-          <h1 id="current-map-modal">Game Over</h1>
-          <div class="container">
-            Good game, {{ user.username }}!
-            Start a new game or go back to the game settings.
-            <div id="button-container">
-              <input type="button" class="custom-button" id="Back" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()"/>
-              <input type="button" class="custom-button" id="GameOverButton" value="Start New Game" onclick="startGame()" />
-          </div>
-            <div class="loader" id="loader3" style="display:none;"></div>
-          </div>
-        </div>
-      </div>
 
     <div id="pano"></div>
     <div id="floating-panel">

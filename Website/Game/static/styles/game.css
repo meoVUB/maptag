@@ -107,12 +107,6 @@ html {
     display: block;
 }
 
-#id03 {
-    background-image: url('../images/backgroundgame.jpg');
-    background-size: cover;
-    z-index: 9;
-}
-
 #modal1 {
     background-color: #2c3333;
 }
