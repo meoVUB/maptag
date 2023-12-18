@@ -7,11 +7,11 @@
 
 {% block extra_head %}
   <!-- Required stylesheets -->
-  <link rel="stylesheet" type="text/css" href="{% static 'styles/mygames.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/mygames.css' %}" />
 
   <!-- Required scripts -->
   <script src="{% static 'scripts/mygames.js' %}" defer></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer> </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -29,7 +29,8 @@
       <h2>Create a Game</h2>
 
       <div class="container submission-container">
-        <form id="mapSubmissionForm">
+        <form id="mapSubmissionForm" method="post" action="{% url 'create_game' %}">
+          {% csrf_token %}
           <div class="form-group">
             <label for="mapTitle">Map Title:</label>
             <input type="text" class="form-control" id="mapTitle" name="mapTitle" required />
@@ -40,6 +41,17 @@
             <select class="form-control" id="canMove" name="canMove">
               <option value="no">No</option>
               <option value="yes">Yes</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="scoreCalc">What's the difficulty?</label>
+            <select class="form-control" id="scoreCalc" name="scoreCalc">
+              <option value="Impossible">Impossible</option>
+              <option value="Very Hard">Very Hard</option>
+              <option value="Hard">Hard</option>
+              <option value="Normal">Normal</option>
+              <option value="Easy">Easy</option>
             </select>
           </div>
 
@@ -62,26 +74,26 @@
             <label for="mapDescription">Map Description:</label>
             <textarea class="form-control" id="mapDescription" name="mapDescription" rows="4" required></textarea>
           </div>
-        </form>
 
-        <div id="addOrDeleteButtons">
-          <button type="button" class="btn btn-secondary" onclick="addCoordinate()">Add Coordinate</button>
-        </div>
+          <div id="addOrDeleteButtons">
+            <button type="button" class="btn btn-secondary" onclick="addCoordinate()">Add Coordinate</button>
+          </div>
 
-        <form id="locationSubmissionForm">
-          <!-- Location 1 -->
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="lat1">Latitude (Location 1):</label>
-              <input type="text" class="form-control" id="lat1" name="lat1" required />
-            </div>
-            <div class="form-group col-md-6">
-              <label for="long1">Longitude (Location 1):</label>
-              <input type="text" class="form-control" id="long1" name="long1" required />
+          <div id="locationSubmissionForm">
+            <!-- Location 1 -->
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="lat1">Latitude (Location 1):</label>
+                <input type="text" class="form-control" id="lat1" name="lat1" required />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="long1">Longitude (Location 1):</label>
+                <input type="text" class="form-control" id="long1" name="long1" required />
+              </div>
             </div>
           </div>
 
-          <button type="button" class="btn btn-primary" onclick="validateForm()">Submit</button>
+          <button type="submit" class="btn btn-primary" onclick="validateForm()">Submit</button>
         </form>
       </div>
     </div>
