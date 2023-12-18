@@ -54,7 +54,10 @@
         <div class="modal-content animate" id="modal1" action="/action_page.php" method="post">
           <h1 id="current-map-modal">Game Over</h1>
           <div class="container">
-            <input type="button" class="custom-button" id="GameOverButton" value="Start new Game" onclick="startGame()" />
+            <div id="button-container">
+              <input type="button" class="custom-button" id="Back" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()" />
+              <input type="button" class="custom-button" id="GameOverButton" value="Start New Game" onclick="startGame()" />
+          </div>
             <div class="loader" id="loader3" style="display:none;"></div>
           </div>
         </div>
@@ -64,7 +67,10 @@
       <div class="modal-content animate" id="modal1" action="/action_page.php" method="post">
         <h1 id="current-map-modal">MapTag</h1>
         <div class="container">
-          <input type="button" class="custom-button" id="startButton" value="Start Game" onclick="startGame()" />
+          <div id="button-container">
+            <input type="button" class="custom-button" id="Back" value="Back to Game Settings" data-url="{% url 'gameselection' %}" onclick="redirectToSettings()" />
+            <input type="button" class="custom-button" id="startButton" value="Start Game" onclick="startGame()" />
+        </div>
           <div class="loader" id="loader2" style="display:none;"></div>
         </div>
       </div>

@@ -22,14 +22,13 @@ let map_location;
 let guess_marker, target_marker, line_path, line_coordinates, random_coordinates, random_area;
 
 // Variables for the gamemodes
-let timer = true;
+let timer, seconds_left;;
 let time_ms = base_timer;
-let seconds_left;
 /////////////////////
-let move_enabled = true;
+let move_enabled;
 /////////////////////
-let sigma = base_sigma; // Used for the score calculation (the higher the sigma the more forgiving the game is)
-let total_maps = base_total_maps;
+let sigma; // Used for the score calculation (the higher the sigma the more forgiving the game is)
+let total_maps;
 ///////////////////////////////////////////////////////////////////////
 // Function to get query parameters from the URL
 function getQueryParam(key) {
@@ -63,10 +62,8 @@ function setVariables(){
         total_maps = getQueryParam('totalMaps');
         if (total_maps !== null && total_maps !== undefined && total_maps !== '') { // If totalMaps query is not empty
             total_maps =  parseInt(total_maps);
-            console.log("Total maps: ${total_maps}");
         } else {
             total_maps = base_total_maps;
-            console.log("Total maps: ${total_maps}");
         }
         sigma = parseInt(getQueryParam('sigma'));
     } else{
@@ -108,7 +105,6 @@ function toggleLoader(on) {
 
 function mapFoundTest() {
     if (map_found === true) {
-        console.log("Map found");
         toggleLoader(false);
         newMap();
         const map_element = document.getElementById("currentMap");
@@ -118,7 +114,6 @@ function mapFoundTest() {
         if (start === true) {
             var modal = document.getElementById('id02');
             modal.style.display = "none";
-            console.log('Start eeeeeeee');
             var modal2 = document.getElementById('id03');
             modal2.style.display = "none";
             start = false;
@@ -148,9 +143,14 @@ function playAgain() {
     }
 }
 
+function redirectToSettings() {
+    const button = document.getElementById('Back');
+    const url = button.getAttribute('data-url');
+    window.location.href = url;
+}
+
 function startGame() {
     map_found = false;
-    console.log('Start game');
     setVariables();
     toggleLoader(true);
     start = true;
@@ -749,7 +749,6 @@ function newMap() {
         calculateScore(distance);
 
         total_score += map_score;
-        console.log('Curr score', map_score);
         const score_element = document.getElementById("currentScore");
         score_element.innerHTML = `<strong> Score: </strong>  ${total_score}`;
         showLocalinfo(map_location.latLng.lat(), map_location.latLng.lng());
