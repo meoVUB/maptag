@@ -7,13 +7,13 @@ const start_map = 1; // Starting map
 const base_radius = 1000; // Base radius for the Street View panorama search
 const base_sigma = 1000; // Base sigma for the score calculation
 
-const base_total_maps = 1; // Base total maps for the game
+const base_total_maps = 5; // Base total maps for the game
 const base_timer = 60000; // Base timer for the game
 
 // Global variables
-let played = false;
-let total_score = start_score;
-let current_score = start_score;
+let played; // Variable to check if the round has been played
+let total_score = start_score; // Variable to store the total score
+let map_score = start_score; // Variable to store the current score of the 
 let current_map = start_map;
 let radius = base_radius;
 let map_found;
@@ -39,8 +39,10 @@ function getQueryParam(key) {
 }
 
 function setVariables(){
-    current_score = start_score;
-    current_map = start_map;
+    map_score = start_score; // Reset the score
+    total_score = start_score; // Reset the total score
+    current_map = start_map; // Reset the map
+    played = false; // Reset the played variable
     // Game.html?custom=true 
     const custom = getQueryParam('custom');
 
@@ -165,7 +167,7 @@ function showModal() {
     map_element.innerHTML = `<strong> Map overview </strong> ${current_map}/${total_maps}`;
 
     const score_element = document.getElementById("current-score-modal");
-    score_element.innerHTML = `<strong> Score: <span id="total-score">${total_score - current_score}</span> + <span id="current-score">${current_score}/${max_score}</span></strong>`;
+    score_element.innerHTML = `<strong> Score: <span id="total-score">${total_score - map_score}</span> + <span id="current-score">${map_score}/${max_score}</span></strong>`;
 
     setTimeout(() => {
         score_element.classList.add("combine-scores");
@@ -222,7 +224,7 @@ function showLocalinfo(latitude, longitude) {
 // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
 function calculateScore(distance) {
     // the higher the sigma the more forgiving the game is
-    current_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma * 2)) ** 2));
+    map_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma * 2)) ** 2));
 }
 
 // const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
@@ -746,8 +748,8 @@ function newMap() {
         played = true;
         calculateScore(distance);
 
-        total_score += current_score;
-        console.log('Curr score', current_score);
+        total_score += map_score;
+        console.log('Curr score', map_score);
         const score_element = document.getElementById("currentScore");
         score_element.innerHTML = `<strong> Score: </strong>  ${total_score}`;
         showLocalinfo(map_location.latLng.lat(), map_location.latLng.lng());
