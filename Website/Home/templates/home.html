@@ -52,6 +52,56 @@
     </div>
   </div>
 
+  {% if user.is_authenticated %}
+   <!-- Section with information and boxes -->
+   <div class="container mt-5 container-section">
+    <div class="row text-center">
+      <!-- Information section -->
+      <div class="col-12 mb-5">
+        <h2>MAPTAG</h2>
+        <p>Discover the exciting world of MapTag and enjoy exclusive benefits!</p>
+      </div>
+      <!-- Boxes with symbols and text -->
+        <div class="col-md-4">
+          <div class="feature-box">
+            <p>Check out you and your friends highscores!</p>
+            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127942;</span> Friends <span class="symbol">&#127942;</span></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <p>Explore custom made games!</p>
+            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127759;</span> Custom Games <span class="symbol">&#127759;</span></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <p>Check out your account!</p>
+            <a href="#" class="btn btn-outline-light"> <span class="symbol">&#128100;</span> My Account <span class="symbol">&#128100;</span></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <p>Play on different difficulties!</p>
+            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127918;</span> Play MapTag <span class="symbol">&#127918;</span></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <p>Show off your custom games!</p>
+            <a href="#" class="btn btn-outline-light"><span class="symbol">&#9733;</span> My Games <span class="symbol">&#9733;</span></a>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="feature-box">
+            <p>Compete with your friends!</p>
+            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127891;</span> Friends <span class="symbol">&#127891;</span></a>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  {% else %}
   <!-- Section with information and boxes -->
   <div class="container mt-5 container-section">
     <div class="row text-center">
@@ -100,4 +150,5 @@
       </div>
     </div>
   </div>
+  {% endif %}
 {% endblock %}
