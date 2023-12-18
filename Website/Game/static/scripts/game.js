@@ -1,25 +1,35 @@
+// Description: This file contains the code for the game.html page
+
+// Global constants
+const max_score = 5000; // Max score for each round
+const start_score = 0; // Starting score
+const start_map = 1; // Starting map
+const base_radius = 1000; // Base radius for the Street View panorama search
+const base_sigma = 1000; // Base sigma for the score calculation
+
+const base_total_maps = 1; // Base total maps for the game
+const base_timer = 60000; // Base timer for the game
+
 // Global variables
 let played = false;
-let weatherInfoElement;
-let total_score = 0;
-let current_score = 0;
-let total_maps = 5;
-let current_map = 0;
-let radius = 1000;
-let mapFound = false;
+let total_score = start_score;
+let current_score = start_score;
+let current_map = start_map;
+let radius = base_radius;
+let map_found;
 let latitude, longitude;
-let mapLocation;
-let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea;
+let map_location;
+let guess_marker, target_marker, line_path, line_coordinates, random_coordinates, random_area;
 
 // Variables for the gamemodes
 let timer = true;
-let time_ms = 60000;
-let secondsLeft;
+let time_ms = base_timer;
+let seconds_left;
 /////////////////////
 let move_enabled = true;
 /////////////////////
-let sigma = 1000; // Used for the score calculation (the higher the sigma the more forgiving the game is)
-
+let sigma = base_sigma; // Used for the score calculation (the higher the sigma the more forgiving the game is)
+let total_maps = base_total_maps;
 ///////////////////////////////////////////////////////////////////////
 // Function to get query parameters from the URL
 function getQueryParam(key) {
@@ -27,90 +37,88 @@ function getQueryParam(key) {
     const urlParams = new URLSearchParams(queryString);
     return urlParams.get(key);
 }
-// Gamemodes
-// Game.html?gamemode=1 to have gamemode 1
-const gamemode = getQueryParam('gamemode');
-// Game.html?custom=true 
-const custom = getQueryParam('custom');
 
-if (custom === "true") {
-    timer = getQueryParam('timerActive');
-    if (timer === "true") {
+function setVariables(){
+    current_score = start_score;
+    current_map = start_map;
+    // Game.html?custom=true 
+    const custom = getQueryParam('custom');
+
+    if (custom === "true") {
+        timer = getQueryParam('timerActive');
+        if (timer === "true") {
+            timer = true;
+            time_ms = parseInt(getQueryParam('timerDuration'));
+        } else {
+            timer = false;
+        }
+        move_enabled = getQueryParam('canMove');
+        if (move_enabled === "true") {
+            move_enabled = true;
+        } else {
+            move_enabled = false;
+        }
+        total_maps = getQueryParam('totalMaps');
+        if (total_maps !== null && total_maps !== undefined && total_maps !== '') { // If totalMaps query is not empty
+            total_maps =  parseInt(total_maps);
+            console.log("Total maps: ${total_maps}");
+        } else {
+            total_maps = base_total_maps;
+            console.log("Total maps: ${total_maps}");
+        }
+        sigma = parseInt(getQueryParam('sigma'));
+    } else{
         timer = true;
-        time_ms = parseInt(getQueryParam('timerDuration'));
-    } else {
-        timer = false;
-    }
-    move_enabled = getQueryParam('canMove');
-    if (move_enabled === "true") {
+        time_ms = base_timer;
         move_enabled = true;
-    } else {
-        move_enabled = false;
-    }
-    sigma = parseInt(getQueryParam('sigma'));
-} else {
-    // Gamemode 1 - Normal : Timer 1 min, Move enabled
-    if (gamemode === '1') {
-        timer = true;
-        time_ms = 60000;
-        move_enabled = true;
+        total_maps = base_total_maps;
+        sigma = base_sigma;
+
     }
 
-    // Gamemode 2 - No move: Timer 1 min, Move disabled
-    if (gamemode === '2') {
-        timer = true;
-        time_ms = 60000;
-        move_enabled = false;
-    }
-
-    // Gamemode 3 - Easy : Timer 5 min, Move enabled
-    if (gamemode === '3') {
-        timer = true;
-        time_ms = 300000;
-        move_enabled = true;
-    }
-
-    // Gamemode 4 - Impossible: Timer 5 sec, Move disabled
-    if (gamemode === '4') {
-        timer = true;
-        time_ms = 5000;
-        move_enabled = false;
-    }
 }
-console.log("Timer: " + timer);
-console.log("Time: " + time_ms);
-console.log("Move: " + move_enabled);
-console.log("Sigma: " + sigma);
-
-
 ///////////////////////////////
 
 function toggleLoader(on) {
     var loader1 = document.getElementById('loader1');
     var loader2 = document.getElementById('loader2');
+    var loader3 = document.getElementById('loader3');
     var button1 = document.getElementById('playButton');
     var button2 = document.getElementById('startButton');
+    var button3 = document.getElementById('GameOverButton');
     if (on) {
         loader1.style.display = 'block';
         loader2.style.display = 'block';
+        loader3.style.display = 'block';
         button1.style.display = 'none';
         button2.style.display = 'none';
+        button3.style.display = 'none';
+        
     } else {
         loader1.style.display = 'none';
         loader2.style.display = 'none';
+        loader3.style.display = 'none';
         button1.style.display = 'block';
         button2.style.display = 'block';
+        button3.style.display = 'block';
     }
 }
 
 function mapFoundTest() {
-    if (mapFound === true) {
+    if (map_found === true) {
         console.log("Map found");
         toggleLoader(false);
         newMap();
+        const map_element = document.getElementById("currentMap");
+        map_element.innerHTML = `<strong> Round: </strong> ${current_map}/${total_maps}`;   
+        const score_element = document.getElementById("currentScore");
+        score_element.innerHTML = `<strong> Score: </strong>  ${total_score}`;
         if (start === true) {
             var modal = document.getElementById('id02');
             modal.style.display = "none";
+            console.log('Start eeeeeeee');
+            var modal2 = document.getElementById('id03');
+            modal2.style.display = "none";
             start = false;
         } else {
             var modal = document.getElementById('id01');
@@ -123,14 +131,12 @@ function mapFoundTest() {
 
 function playAgain() {
     toggleLoader(true);
-    if (current_map != total_maps) {
+    if (current_map !== total_maps) {
         if (played === true) {
             played = false;
-            mapFound = false;
+            map_found = false;
             /////////////////////////////
             current_map += 1;
-            const mapElement = document.getElementById("currentMap");
-            mapElement.innerHTML = `<strong> Map: </strong> ${current_map}/${total_maps}`;
             /////////////////////////////
             initStreetView(true);
             mapFoundTest();
@@ -141,6 +147,9 @@ function playAgain() {
 }
 
 function startGame() {
+    map_found = false;
+    console.log('Start game');
+    setVariables();
     toggleLoader(true);
     start = true;
     initStreetView(true);
@@ -149,57 +158,71 @@ function startGame() {
 
 
 function showModal() {
+    if (current_map !== base_total_maps) {
     document.getElementById('id01').style.display = 'block';
 
-    const mapElement = document.getElementById("current-map-modal");
-    mapElement.innerHTML = `<strong> Map overview </strong> ${current_map}/${total_maps}`;
+    const map_element = document.getElementById("current-map-modal");
+    map_element.innerHTML = `<strong> Map overview </strong> ${current_map}/${total_maps}`;
 
-    const scoreElement = document.getElementById("current-score-modal");
-    scoreElement.innerHTML = `<strong> Score: <span id="total-score">${total_score - current_score}</span> + <span id="current-score">${current_score}/1000</span></strong>`;
+    const score_element = document.getElementById("current-score-modal");
+    score_element.innerHTML = `<strong> Score: <span id="total-score">${total_score - current_score}</span> + <span id="current-score">${current_score}/${max_score}</span></strong>`;
 
     setTimeout(() => {
-        scoreElement.classList.add("combine-scores");
+        score_element.classList.add("combine-scores");
     }, 2000);
 
     setTimeout(() => {
-        scoreElement.innerHTML = `<strong> Score: <span id="total-score"> ${total_score}</span></strong>`;
-        scoreElement.classList.remove("combine-scores");
+        score_element.innerHTML = `<strong> Score: <span id="total-score"> ${total_score}</span></strong>`;
+        score_element.classList.remove("combine-scores");
     }, 3000);
+} else { // If all the map have been played
+    document.getElementById('id03').style.display = 'block';
+}
 }
 
 //Weather API from https://openweathermap.org/api
 function showLocalinfo(latitude, longitude) {
-    const apiKey = '9becfeed140c9639fe192941f0633492';
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
-    const locationInfoElement = document.getElementById('locationInfo');
+    const api_key = '9becfeed140c9639fe192941f0633492';
+    const api_url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${api_key}&units=metric`;
+    const location_info_element = document.getElementById('locationInfo');
+
     showModal();
-    fetch(apiUrl)
-        .then(response => response.json())
+
+    fetch(api_url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
             // Handle the weather data here
-            const countryCode = data.sys.country;
-            const countryFlag = `https://flagsapi.com/${countryCode}/flat/64.png`;//https://flagsapi.com/
+            const country_code = data.sys.country;
+            const country_flag = `https://flagsapi.com/${country_code}/flat/64.png`;
             const city = data.name;
             const description = data.weather[0].description;
             const temperature = `${data.main.temp}°C`;
             const icon = "https://openweathermap.org/img/wn/" + data.weather[0].icon + ".png";
 
-            locationInfoElement.innerHTML = `
-      <p>Welcome to <strong>${city}</strong> <img src="${countryFlag}" alt="${countryCode}" style="width: 64px; height: 64px;"> 
-      <br> </br>
-      <strong>${temperature}</strong> <img src="${icon}" style="width: 80px; height: 80px;"> </p>
-        <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
-      `;
-            locationInfoElement.style.opacity = 0.85;
+            location_info_element.innerHTML = `
+                <p>Welcome to <strong>${city}</strong> <img src="${country_flag}" alt="${country_code}" style="width: 64px; height: 64px;"> 
+                <br> </br>
+                <strong>${temperature}</strong> <img src="${icon}" style="width: 80px; height: 80px;"> </p>
+                <p>from openweathermap <img src="https://pbs.twimg.com/profile_images/1173919481082580992/f95OeyEW_400x400.jpg" style="width: 15px; height: 15px;"> </p>
+            `;
+            location_info_element.style.opacity = 0.85;
         })
         .catch(error => {
-            console.log('Error fetching weather data:', error);
+            console.error('Error fetching weather data:', error);
+            // Handle the error, display an error message, or take appropriate action
         });
 }
+
+
 // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
 function calculateScore(distance) {
     // the higher the sigma the more forgiving the game is
-    current_score = Math.round(1000 * Math.exp(-0.5 * (distance / sigma) ** 2));
+    current_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma * 2)) ** 2));
 }
 
 // const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
@@ -489,19 +512,19 @@ const continents = {
 };
 
 function getRandomArea() {
-    const totalWeight = Object.values(continents).reduce((sum, continent) => sum + continent.weight, 0);
-    let randomWeight = Math.random() * totalWeight;
+    const total_weight = Object.values(continents).reduce((sum, continent) => sum + continent.weight, 0);
+    let random_weight = Math.random() * total_weight;
 
     for (const continentName in continents) {
         const continent = continents[continentName];
-        randomWeight -= continent.weight;
-        if (randomWeight <= 0) {
+        random_weight -= continent.weight;
+        if (random_weight <= 0) {
             return continent.coordinates;
         }
     }
 }
 
-function getRandomCoordinates(area) {
+function getrandomCoordinates(area) {
     // Extracting bounds
     const [upleft, upright, downright, downleft] = area;
     const [upleftY, upleftX] = upleft;
@@ -515,7 +538,7 @@ function getRandomCoordinates(area) {
     return { latitude, longitude };
 }
 // Get random coordinates
-function randomcoordinates() {
+function randomCoordinates() {
     const latitude = Math.random() * 180 - 90;
     const longitude = Math.random() * 360 - 180;
     return { latitude, longitude };
@@ -523,17 +546,17 @@ function randomcoordinates() {
 
 // Function to find  the nearest Street View panorama
 function findNearestStreetView(latitude, longitude) {
-    const streetViewService = new google.maps.StreetViewService();
-    const streetViewLocation = { lat: latitude, lng: longitude };
-    streetViewService.getPanorama(
-        { location: streetViewLocation, radius: radius, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
+    const street_view_service = new google.maps.StreetViewService();
+    const street_view_location = { lat: latitude, lng: longitude };
+    street_view_service.getPanorama(
+        { location: street_view_location, radius: radius, source: google.maps.StreetViewSource.OUTDOOR, preference: google.maps.StreetViewPreference.NEAREST },
         (data, status) => {
             if (status === "OK") {
-                mapLocation = data.location;
+                map_location = data.location;
                 const panorama = new google.maps.StreetViewPanorama(
                     document.getElementById("pano"),
                     {
-                        pano: mapLocation.pano,
+                        pano: map_location.pano,
                         pov: {
                             heading: 0,
                             pitch: 0,
@@ -549,11 +572,11 @@ function findNearestStreetView(latitude, longitude) {
                         clickToGo: move_enabled,
                     }
                 );
-                mapFound = true;
+                map_found = true;
                 map.setStreetView(panorama);
             } else {
-                mapFound = false;
-                radius += 1000;
+                map_found = false;
+                radius += base_radius;
                 console.log("Retry");
                 initStreetView(false);
             }
@@ -562,82 +585,83 @@ function findNearestStreetView(latitude, longitude) {
 }
 
 function initStreetView(newArea) {
-    randomNumber = Math.random();
+    random_number = Math.random();
 
-    if (randomNumber < 0.0) {
+    if (random_number < 0.0) {
         // 10% of an actual random coordinate in the whole world
-        console.log("random");
-        randomCoordinates = randomcoordinates();
+        random_coordinates = randomCoordinates();
     } else {
         // 90% chance for a coordinate in the defined Areas
         if (newArea === true) {
-            randomArea = getRandomArea();
+            random_area = getRandomArea();
         }
-        randomCoordinates = getRandomCoordinates(randomArea);
+        random_coordinates = getrandomCoordinates(random_area);
     }
-    latitude = randomCoordinates.latitude;
-    longitude = randomCoordinates.longitude;
+    latitude = random_coordinates.latitude;
+    longitude = random_coordinates.longitude;
     findNearestStreetView(latitude, longitude);
 }
 
 // Update the countdown every second
-const countdownElement = document.getElementById("countdown");
+const countdown_element = document.getElementById("countdown");
 
 function updateCountdown() {
     if (!played) {
-        const minutes = Math.floor(secondsLeft / 60);
-        const seconds = secondsLeft % 60;
-        countdownElement.innerHTML = `<strong>Time Left:</strong> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        secondsLeft--;
+        const minutes = Math.floor(seconds_left / 60);
+        const seconds = seconds_left % 60;
+        countdown_element.innerHTML = `<strong>Time Left:</strong> ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        seconds_left--;
 
-        if (secondsLeft >= 0 && played === false) {
-            setTimeout(updateCountdown, 1000);
+        if (seconds_left >= 0 && played === false) {
+            setTimeout(updateCountdown, 1000); // Update the countdown every second
         } else {
             played = true;
 
-            const timeUp = new google.maps.InfoWindow({});
+            const time_up = new google.maps.InfoWindow({});
 
-            showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
+            showLocalinfo(map_location.latLng.lat(), map_location.latLng.lng());
 
-            targetLatLng = new google.maps.LatLng(mapLocation.latLng.lat(), mapLocation.latLng.lng());
-            targetMarker = new google.maps.Marker({
-                position: targetLatLng,
+            target_lat_lng = new google.maps.LatLng(map_location.latLng.lat(), map_location.latLng.lng());
+            target_marker = new google.maps.Marker({
+                position: target_lat_lng,
                 draggable: false,
-                icon: '../images/blackMarker.png',
+                icon: 'static/images/blackMarker.png',
                 anchor: new google.maps.Point(15, 15),
             });
 
-            targetMarker.setMap(map);
-            timeUp.open(map, targetMarker);
-            timeUp.setContent("Time's up! Play Again!")
+            target_marker.setMap(map);
+            time_up.open(map, target_marker);
+            time_up.setContent("Time's up! Play Again!")
         }
     }
 }
 
 function newMap() {
-    radius = 1000;
+
+    radius = base_radius; // Reset the radius
+
     // Makes it so the opacity and size changes when hovering on and off the world map
-    const mapDiv = document.getElementById("floating-panel")
-    mapDiv.addEventListener("mouseover", () => {
-        mapDiv.style.opacity = 0.8;
-        mapDiv.style.height = "35%";
-        mapDiv.style.width = "40%";
-        mapDiv.style.top = "65%";
-        mapDiv.style.left = "60%";
+    const map_div = document.getElementById("floating-panel")
+    map_div.addEventListener("mouseover", () => {
+        map_div.style.opacity = 0.8;
+        map_div.style.height = "35%";
+        map_div.style.width = "40%";
+        map_div.style.top = "65%";
+        map_div.style.left = "60%";
     });
 
-    mapDiv.addEventListener("mouseout", () => {
-        mapDiv.style.opacity = 0.5;
-        mapDiv.style.height = "30%";
-        mapDiv.style.width = "35%";
-        mapDiv.style.top = "70%";
-        mapDiv.style.left = "65%";
+    map_div.addEventListener("mouseout", () => {
+        map_div.style.opacity = 0.5;
+        map_div.style.height = "30%";
+        map_div.style.width = "35%";
+        map_div.style.top = "70%";
+        map_div.style.left = "65%";
     });
     /////////////////////////////////////////////////////////////////////////
 
-    secondsLeft = time_ms / 1000;
+    seconds_left = time_ms / 1000;
 
-    if (mapFound === false) { // if a map has been found already, don't generate a new one
+    if (map_found === false) { // if a map has been found already, don't generate a new one
         initStreetView(true);
     }
 
@@ -657,13 +681,15 @@ function newMap() {
         },
     });
 
-    myInfoWindowLatLng = new google.maps.LatLng(0, 0);
-    myinfowindow = new google.maps.InfoWindow({
-        position: myInfoWindowLatLng,
+    if (current_map === 1) {
+    my_info_window_lat_lng = new google.maps.LatLng(0, 0);
+    my_info_window = new google.maps.InfoWindow({
+        position: my_info_window_lat_lng,
         content: "Zoom in and double click the map to make your guess!",
     });
 
-    myinfowindow.open(map);
+    my_info_window.open(map);
+    }
 
     if (timer) { // if a map has been found and timer is enabled, start the timer
         updateCountdown();
@@ -675,56 +701,56 @@ function newMap() {
             return;
         }
 
-        guessLatLng = new google.maps.LatLng(mapsMouseEvent.latLng.lat(), mapsMouseEvent.latLng.lng());
+        guess_lat_lng = new google.maps.LatLng(mapsMouseEvent.latLng.lat(), mapsMouseEvent.latLng.lng());
 
-        guessMarker = new google.maps.Marker({
+        guess_marker = new google.maps.Marker({
             position: mapsMouseEvent.latLng,
             title: "Hello World!",
             optimized: true
         });
 
-        guessMarker.setMap(map);
+        guess_marker.setMap(map);
 
-        targetLatLng = new google.maps.LatLng(mapLocation.latLng.lat(), mapLocation.latLng.lng());
-        targetMarker = new google.maps.Marker({
-            position: targetLatLng,
+        target_lat_lng = new google.maps.LatLng(map_location.latLng.lat(), map_location.latLng.lng());
+        target_marker = new google.maps.Marker({
+            position: target_lat_lng,
             draggable: false,
-            icon: '../images/blackMarker.png',
+            icon: 'static/images/blackMarker.png',
             anchor: new google.maps.Point(15, 15),
         });
 
-        targetMarker.setMap(map);
+        target_marker.setMap(map);
 
-        distance = google.maps.geometry.spherical.computeDistanceBetween(guessLatLng, targetLatLng) / 1000;
+        distance = google.maps.geometry.spherical.computeDistanceBetween(guess_lat_lng, target_lat_lng) / 1000;
 
-        const distanceinfowindow = new google.maps.InfoWindow({
+        const distance_info_window = new google.maps.InfoWindow({
         });
 
-        distanceinfowindow.setContent("You were only " + distance.toFixed(1) + " km away!")
-        distanceinfowindow.open(map, targetMarker);
+        distance_info_window.setContent("You were only " + distance.toFixed(1) +  "km away!")
+        distance_info_window.open(map, target_marker);
 
-        lineCoordinates = [
-            targetLatLng,
-            guessLatLng,
+        line_coordinates = [
+            target_lat_lng,
+            guess_lat_lng,
         ];
 
-        linePath = new google.maps.Polyline({
-            path: lineCoordinates,
+        line_path = new google.maps.Polyline({
+            path: line_coordinates,
             geodesic: true,
             strokeColor: "#FF0000",
             strokeOpacity: 1.0,
             strokeWeight: 2,
         });
 
-        linePath.setMap(map);
+        line_path.setMap(map);
         played = true;
         calculateScore(distance);
 
         total_score += current_score;
         console.log('Curr score', current_score);
-        const scoreElement = document.getElementById("currentScore");
-        scoreElement.innerHTML = `<strong> Current Score: </strong>  ${total_score}`;
-        showLocalinfo(mapLocation.latLng.lat(), mapLocation.latLng.lng());
+        const score_element = document.getElementById("currentScore");
+        score_element.innerHTML = `<strong> Score: </strong>  ${total_score}`;
+        showLocalinfo(map_location.latLng.lat(), map_location.latLng.lng());
 
     });
 
