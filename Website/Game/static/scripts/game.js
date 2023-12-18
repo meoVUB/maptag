@@ -4,11 +4,12 @@ let weatherInfoElement;
 let total_score = 0;
 let current_score = 0;
 let total_maps = 5;
-let current_map = 1;
+let current_map = 0;
+let radius = 1000;
 let mapFound = false;
 let latitude, longitude;
 let mapLocation;
-let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea, radius;
+let guessMarker, targetMarker, linePath, lineCoordinates, randomCoordinates, randomArea;
 
 // Variables for the gamemodes
 let timer = true;
@@ -29,52 +30,99 @@ function getQueryParam(key) {
 // Gamemodes
 // Game.html?gamemode=1 to have gamemode 1
 const gamemode = getQueryParam('gamemode');
+// Game.html?custom=true 
+const custom = getQueryParam('custom');
 
-// Gamemode 1 - Normal : Timer 1 min, Move enabled
-if (gamemode === '1') {
-    timer = true;
-    time_ms = 60000;
-    move_enabled = true;
-}
+if (custom === "true") {
+    timer = getQueryParam('timerActive');
+    if (timer === "true") {
+        timer = true;
+        time_ms = parseInt(getQueryParam('timerDuration'));
+    } else {
+        timer = false;
+    }
+    move_enabled = getQueryParam('canMove');
+    if (move_enabled === "true") {
+        move_enabled = true;
+    } else {
+        move_enabled = false;
+    }
+    sigma = parseInt(getQueryParam('sigma'));
+} else {
+    // Gamemode 1 - Normal : Timer 1 min, Move enabled
+    if (gamemode === '1') {
+        timer = true;
+        time_ms = 60000;
+        move_enabled = true;
+    }
 
-// Gamemode 2 - No move: Timer 1 min, Move disabled
-if (gamemode === '2') {
-    timer = true;
-    time_ms = 60000;
-    move_enabled = false;
-}
+    // Gamemode 2 - No move: Timer 1 min, Move disabled
+    if (gamemode === '2') {
+        timer = true;
+        time_ms = 60000;
+        move_enabled = false;
+    }
 
-// Gamemode 3 - Easy : Timer 5 min, Move enabled
-if (gamemode === '3') {
-    timer = true;
-    time_ms = 300000;
-    move_enabled = true;
-}
+    // Gamemode 3 - Easy : Timer 5 min, Move enabled
+    if (gamemode === '3') {
+        timer = true;
+        time_ms = 300000;
+        move_enabled = true;
+    }
 
-// Gamemode 4 - Imposiible: Timer 5 sec, Move disabled
-if (gamemode === '4') {
-    timer = true;
-    time_ms = 5000;
-    move_enabled = false;
+    // Gamemode 4 - Impossible: Timer 5 sec, Move disabled
+    if (gamemode === '4') {
+        timer = true;
+        time_ms = 5000;
+        move_enabled = false;
+    }
 }
+console.log("Timer: " + timer);
+console.log("Time: " + time_ms);
+console.log("Move: " + move_enabled);
+console.log("Sigma: " + sigma);
+
 
 ///////////////////////////////
 
+function toggleLoader(on) {
+    var loader1 = document.getElementById('loader1');
+    var loader2 = document.getElementById('loader2');
+    var button1 = document.getElementById('playButton');
+    var button2 = document.getElementById('startButton');
+    if (on) {
+        loader1.style.display = 'block';
+        loader2.style.display = 'block';
+        button1.style.display = 'none';
+        button2.style.display = 'none';
+    } else {
+        loader1.style.display = 'none';
+        loader2.style.display = 'none';
+        button1.style.display = 'block';
+        button2.style.display = 'block';
+    }
+}
+
 function mapFoundTest() {
-    console.log(mapFound, "mapFound");
     if (mapFound === true) {
         console.log("Map found");
+        toggleLoader(false);
         newMap();
-        var modal = document.getElementById('id01');
-        modal.style.display = "none";
-        mapFound = false;
+        if (start === true) {
+            var modal = document.getElementById('id02');
+            modal.style.display = "none";
+            start = false;
+        } else {
+            var modal = document.getElementById('id01');
+            modal.style.display = "none";
+        }
     } else {
-        console.log("Waiting for map to be found");
         setTimeout(mapFoundTest, 1000);
     }
 }
 
 function playAgain() {
+    toggleLoader(true);
     if (current_map != total_maps) {
         if (played === true) {
             played = false;
@@ -91,6 +139,14 @@ function playAgain() {
         console.log('Game over');
     }
 }
+
+function startGame() {
+    toggleLoader(true);
+    start = true;
+    initStreetView(true);
+    mapFoundTest();
+}
+
 
 function showModal() {
     document.getElementById('id01').style.display = 'block';
@@ -440,7 +496,6 @@ function getRandomArea() {
         const continent = continents[continentName];
         randomWeight -= continent.weight;
         if (randomWeight <= 0) {
-            console.log(continentName);
             return continent.coordinates;
         }
     }
@@ -494,12 +549,8 @@ function findNearestStreetView(latitude, longitude) {
                         clickToGo: move_enabled,
                     }
                 );
-                map.setStreetView(panorama);
                 mapFound = true;
-                if (timer) {
-                    updateCountdown();
-                }
-                console.log(radius);
+                map.setStreetView(panorama);
             } else {
                 mapFound = false;
                 radius += 1000;
@@ -513,7 +564,7 @@ function findNearestStreetView(latitude, longitude) {
 function initStreetView(newArea) {
     randomNumber = Math.random();
 
-    if (randomNumber < 0) {
+    if (randomNumber < 0.0) {
         // 10% of an actual random coordinate in the whole world
         console.log("random");
         randomCoordinates = randomcoordinates();
@@ -526,7 +577,6 @@ function initStreetView(newArea) {
     }
     latitude = randomCoordinates.latitude;
     longitude = randomCoordinates.longitude;
-
     findNearestStreetView(latitude, longitude);
 }
 
@@ -553,7 +603,7 @@ function updateCountdown() {
             targetMarker = new google.maps.Marker({
                 position: targetLatLng,
                 draggable: false,
-                icon: "{% static 'images/blackMarker.png' %}",
+                icon: '../images/blackMarker.png',
                 anchor: new google.maps.Point(15, 15),
             });
 
@@ -584,9 +634,13 @@ function newMap() {
         mapDiv.style.left = "65%";
     });
     /////////////////////////////////////////////////////////////////////////
-    if (mapFound === false) {
+
+    secondsLeft = time_ms / 1000;
+
+    if (mapFound === false) { // if a map has been found already, don't generate a new one
         initStreetView(true);
     }
+
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 0, lng: 0 },
         zoom: 1,
@@ -611,6 +665,10 @@ function newMap() {
 
     myinfowindow.open(map);
 
+    if (timer) { // if a map has been found and timer is enabled, start the timer
+        updateCountdown();
+    }
+
     map.addListener("dblclick", (mapsMouseEvent) => {
 
         if (played === true) {
@@ -631,7 +689,7 @@ function newMap() {
         targetMarker = new google.maps.Marker({
             position: targetLatLng,
             draggable: false,
-            icon: "{% static 'images/blackMarker.png' %}",
+            icon: '../images/blackMarker.png',
             anchor: new google.maps.Point(15, 15),
         });
 
@@ -670,5 +728,4 @@ function newMap() {
 
     });
 
-    secondsLeft = time_ms / 1000;
 }

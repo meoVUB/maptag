@@ -45,8 +45,7 @@ def log_in(request):
 
         if user is not None:
             login(request, user)
-            fname = user.first_name
-            return render(request, "home.html", {'fname': fname})
+            return render(request, "home.html")
 
         else:
             messages.error(request, "Bad Credentials!")
