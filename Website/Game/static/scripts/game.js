@@ -7,7 +7,7 @@ const start_map = 1; // Starting map
 const base_radius = 1000; // Base radius for the Street View panorama search
 const base_sigma = 1000; // Base sigma for the score calculation
 
-const base_total_maps = 2; // Base total maps for the game
+const base_total_maps = 5; // Base total maps for the game
 const base_timer = 60000; // Base timer for the game
 
 // Global variables
