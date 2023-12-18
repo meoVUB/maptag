@@ -75,34 +75,33 @@ function setVariables(){
         map_found = false;
 
     }
-
 }
 ///////////////////////////////
 
 function toggleLoader(on) {
-    var loader1 = document.getElementById('loader1');
-    var loader2 = document.getElementById('loader2');
-    var loader3 = document.getElementById('loader3');
-    var button1 = document.getElementById('playButton');
-    var button2 = document.getElementById('startButton');
-    var button3 = document.getElementById('GameOverButton');
+
+    var loaders = document.querySelectorAll('.loader');
+    var buttons = document.querySelectorAll('.custom-button');
+
     if (on) {
-        loader1.style.display = 'block';
-        loader2.style.display = 'block';
-        loader3.style.display = 'block';
-        button1.style.display = 'none';
-        button2.style.display = 'none';
-        button3.style.display = 'none';
-        
+        loaders.forEach(function (loader) {
+            loader.style.display = 'block';
+        });
+
+        buttons.forEach(function (button) {
+            button.style.display = 'none';
+        });
     } else {
-        loader1.style.display = 'none';
-        loader2.style.display = 'none';
-        loader3.style.display = 'none';
-        button1.style.display = 'block';
-        button2.style.display = 'block';
-        button3.style.display = 'block';
+        loaders.forEach(function (loader) {
+            loader.style.display = 'none';
+        });
+
+        buttons.forEach(function (button) {
+            button.style.display = 'block';
+        });
     }
 }
+
 
 function mapFoundTest() {
     if (map_found === true) {
@@ -112,24 +111,20 @@ function mapFoundTest() {
         map_element.innerHTML = `<strong> Round: </strong> ${current_map}/${total_maps}`;   
         const score_element = document.getElementById("currentScore");
         score_element.innerHTML = `<strong> Score: </strong>  ${total_score}`;
-        if (start === true) {
-            var modal = document.getElementById('id02');
-            modal.style.display = "none";
-            var modal2 = document.getElementById('id03');
-            modal2.style.display = "none";
-            start = false;
-        } else {
-            var modal = document.getElementById('id01');
-            modal.style.display = "none";
-        }
+        var modal = document.getElementById('id02');
+        modal.style.display = "none";
+        start = false;
+        var modal = document.getElementById('id01');
+        modal.style.display = "none";
+        
     } else {
         setTimeout(mapFoundTest, 1000);
     }
 }
 
 function playAgain() {
-    toggleLoader(true);
     if (current_map !== total_maps) {
+        toggleLoader(true);
         if (played === true) {
             played = false;
             map_found = false;
@@ -140,17 +135,20 @@ function playAgain() {
             mapFoundTest();
         }
     } else {
-        console.log('Game over');
+        map_found = false;
+        startGame();
     }
 }
 
 function redirectToSettings() {
-    const button = document.getElementById('Back');
+    const button = document.getElementById('back1');
     const url = button.getAttribute('data-url');
     window.location.href = url;
 }
 
 function startGame() {
+    console.log("Starting game");
+    document.getElementById('playButton').value = "Play Again";
     setVariables();
     toggleLoader(true);
     start = true;
@@ -160,7 +158,6 @@ function startGame() {
 
 
 function showModal() {
-    if (current_map !== base_total_maps) {
     document.getElementById('id01').style.display = 'block';
 
     const map_element = document.getElementById("current-map-modal");
@@ -177,11 +174,10 @@ function showModal() {
         score_element.innerHTML = `<strong> Score: <span id="total-score"> ${total_score}</span></strong>`;
         score_element.classList.remove("combine-scores");
     }, 3000);
-} else { // If all the map have been played
-    const game_over_modal = document.getElementById('id03');
-    game_over_modal.style.display = 'block';
-    game_over_modal.style.zIndex = 1000;
-}
+
+    if (current_map === base_total_maps) {
+        document.getElementById('playButton').value = "Start New Game";
+    }
 }
 
 //Weather API from https://openweathermap.org/api
