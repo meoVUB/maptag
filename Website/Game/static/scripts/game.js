@@ -603,7 +603,7 @@ function updateCountdown() {
             targetMarker = new google.maps.Marker({
                 position: targetLatLng,
                 draggable: false,
-                icon: '../images/blackMarker.png',
+                icon: 'static/images/blackMarker.png',
                 anchor: new google.maps.Point(15, 15),
             });
 
@@ -689,7 +689,7 @@ function newMap() {
         targetMarker = new google.maps.Marker({
             position: targetLatLng,
             draggable: false,
-            icon: '../images/blackMarker.png',
+            icon: 'static/images/blackMarker.png',
             anchor: new google.maps.Point(15, 15),
         });
 
