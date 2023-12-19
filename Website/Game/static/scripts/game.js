@@ -37,6 +37,8 @@ function getQueryParam(key) {
     return urlParams.get(key);
 }
 
+
+
 function setVariables(){
     map_score = start_score; // Reset the score
     total_score = start_score; // Reset the total score
@@ -44,6 +46,8 @@ function setVariables(){
     played = false; // Reset the played variable
     // Game.html?custom=true 
     const custom = getQueryParam('custom');
+
+    const id = getQueryParam('id');
 
     if (custom === "true") {
         timer = getQueryParam('timerActive');
@@ -66,7 +70,20 @@ function setVariables(){
             total_maps = base_total_maps;
         }
         sigma = parseInt(getQueryParam('sigma'));
-    } else{
+    } else if (game_id !== null && game_id !== undefined && game_id !== '') { // if there is a game id
+        game_id = id;
+        var api_url = '/get_game/' + game_id + '/';
+
+        fetch(api_url)
+            .then(response => response.json())
+            .then(data => {
+                // Handle the retrieved data here
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    } else {
         timer = true;
         time_ms = base_timer;
         move_enabled = true;

@@ -20,7 +20,6 @@ from Home import views as home_views
 from User import views as user_views
 from Game import views as game_views
 
-
 urlpatterns = [
     path('', home_views.home, name='home'),
     path('register', user_views.register, name="register"),
@@ -31,4 +30,5 @@ urlpatterns = [
     path('game', game_views.game, name="game"),
     path('gameselection', game_views.gameselection, name="gameselection"),
     path("admin/", admin.site.urls),
+    path('get_game/<int:game_id>/', game_views.get_game, name='get_game'),
 ]
