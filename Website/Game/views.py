@@ -3,10 +3,6 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .models import CustomGame, Location  
 from django.core import serializers
-<<<<<<< HEAD
-=======
-
->>>>>>> 16147d72c5a28fb858bef7f94fbf435cbad96106
 import json
 
 def get_game(request, game_id):
