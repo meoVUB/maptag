@@ -100,12 +100,12 @@ input[type=text], input[type=password], input[type=email] {
     opacity: 0.9;
     }
 
-    h1{
+    .modal h1{
         text-align: center;
         font-family: 'Outfit', sans-serif;
     }
 
-    a {
+    .modal a {
         color:#9521DC;
     }
 
