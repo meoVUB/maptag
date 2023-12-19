@@ -8,11 +8,28 @@
 {% block extra_head %}
   <!-- Required stylesheets -->
   <!--<link rel="stylesheet" type="text/css" href="{% static 'styles/home.css' %}">-->
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/myaccount.css' %}" />
 
   <!-- Required scripts -->
   
 {% endblock %}
 
 {% block content %}
-  <h1>HELLOOOOOOOOOOOOOOO</h1>
+<div class="profile-container">
+  <div class="profile-info">
+    <span class="label">Username:</span> JohnDoe
+  </div>
+
+  <div class="profile-info">
+    <span class="label">First Name:</span> John
+  </div>
+
+  <div class="profile-info">
+    <span class="label">Last Name:</span> Doe
+  </div>
+
+  <div class="profile-info">
+    <span class="label">Email:</span> johndoe@example.com
+  </div>
+</div>
 {% endblock %}
