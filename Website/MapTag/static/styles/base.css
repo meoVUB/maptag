@@ -146,6 +146,11 @@ button:hover {
 
 .modal h1{
     text-align: center;
+    font-family: 'Outfit', sans-serif;
+}
+
+.modal a {
+    color:#9521DC;
 }
 
 /* Center the image and position the close button */
