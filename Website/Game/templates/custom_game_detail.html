@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load game_tags %}
+
+{% block title %}
+  Custom Game Detail - MapTag
+{% endblock %}
+
+{% block extra_head %}
+  <!-- Required stylesheets -->
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/custom_games.css' %}" />
+
+  <!-- Required scripts -->
+  <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block content %}
+<div class="game-detail-title">
+    <h1><span class="title">{{ game.map_title }}</span> by <span class="creator">{{ game.creator }}</span></h1>
+    </div>
+    <div class="game-detail-container">
+        <div class="game-posted-date">
+            <p>{{ game.date_created }}</p>
+        </div>
+        <h2>Game description</h2>
+        <p>{{ game.map_description }}</p>
+        <h2>Mobility</h2>
+        {% if game.mobility %}
+        <p>Enabled, the player is able to move.</p>
+        {% else %}
+        <p>Disabled, the player is not able to move.</p>
+        {% endif %}
+        <h2>Difficulty</h2>
+        <p>{{ game.difficulty }}</p>
+        <h2>Timer</h2>
+        {% if game.timer_status %}
+        <p>Enabled, {{ game.timer_duration }} seconds.</p>
+        {% else %}
+        <p>Disabled.</p>
+        {% endif %}
+        <div class="detailed-actions">
+            <a href="#" class="game-play"><i class="fa-solid fa-play fa-sm"></i> Play</a>
+            <a href="#" class="game-like"><i class="fa-solid fa-thumbs-up fa-sm"></i> Like</a>
+            <a href="#" class="game-dislike"><i class="fa-solid fa-thumbs-down fa-sm"></i> Dislike</a>
+        </div>
+    </div>
+{% endblock %}

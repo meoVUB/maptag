@@ -339,7 +339,7 @@ function showLocalinfo(latitude, longitude) {
 // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
 function calculateScore(distance) {
     // the higher the sigma the more forgiving the game is
-    map_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma * 2)) ** 2));
+    map_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma / 8)) ** 2));
 }
 
 // const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
