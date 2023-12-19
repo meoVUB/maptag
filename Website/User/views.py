@@ -24,8 +24,10 @@ def register(request):
             return redirect('home')
         if len(username) > 10:
             messages.error(request, "Username must be under 10 characters!")
+            return redirect('home')
         if pass1 != pass2:
             messages.error(request, "Passwords do not match!")
+            return redirect('home')
         if not username.isalnum():
             messages.error(request, "Username must be Alpha-Numeric!")
             return redirect('home')
@@ -64,6 +66,18 @@ def log_out(request):
 def mygames(request):
     if request.user.is_authenticated:
         return render(request, "profile/mygames.html")
+    else:
+        return redirect('home')
+    
+def myaccount(request):
+    if request.user.is_authenticated:
+        return render(request, "profile/myaccount.html")
+    else:
+        return redirect('home')
+    
+def editaccount(request):
+    if request.user.is_authenticated:
+        return render(request, "profile/editaccount.html")
     else:
         return redirect('home')
     
