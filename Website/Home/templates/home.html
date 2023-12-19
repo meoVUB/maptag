@@ -10,8 +10,6 @@
   <link rel="stylesheet" type="text/css" href="{% static 'styles/home.css' %}">
 
   <!-- Required scripts -->
-
-  <script src="{% static 'scripts/home.js' %}"></script>
   
 {% endblock %}
 
@@ -103,44 +101,6 @@
     </div>
   </div>
 
-  <div id="reportbug-modal" class="modal">
-    
-    <form class="modal-content animate" action="/action_page.php" method="post">
-
-        <h1>Report a bug</h1>
-
-        <div class="container">
-        <label for="uname"><b>Description:  </b></label>
-        <input type="text" placeholder="Give a description of the bug" name="uname" required>
-            
-        <button type="submit" class="submit-button">Submit</button>
-        </div>
-
-        <div class="container" style="background-color:#f1f1f1">
-        <button type="button" onclick="document.getElementById('reportbug-modal').style.display='none'" class="cancelbtn">Cancel</button>
-        </div>
-    </form>
-</div>
-
-<div id="requestfeature-modal" class="modal">
-
-    <form class="modal-content animate" action="/action_page.php" method="post">
-
-        <h1>Request a feature</h1>
-
-        <div class="container">
-        <label for="uname"><b>Description:</b></label>
-        <input type="text" placeholder="Describe your idea" name="uname" required>
-            
-        <button type="submit" class="submit-button">Submit</button>
-        </div>
-
-        <div class="container" style="background-color:#f1f1f1">
-        <button type="button" onclick="document.getElementById('requestfeature-modal').style.display='none'" class="cancelbtn">Cancel</button>
-        </div>
-    </form>
-</div>
-
   {% else %}
   <!-- Section with information and boxes -->
   <div class="container mt-5 container-section">
@@ -190,6 +150,5 @@
       </div>
     </div>
   </div>
-
   {% endif %}
 {% endblock %}
