@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+from django.shortcuts import render, get_object_or_404
+from django.core.paginator import Paginator
+from .models import CustomGame
+=======
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import CustomGame, Location  
@@ -15,6 +20,7 @@ def get_locations_for_game(request, game_id):
     locations = Location.objects.filter(custom_game=custom_game)
     serialized_locations = serializers.serialize('json', locations)
     return JsonResponse({'locations': serialized_locations}, safe=False)
+>>>>>>> 35c0c624a95d00dfe647658cefaa2fd737201739
 
 # Create your views here.
 def game(request):
@@ -22,3 +28,18 @@ def game(request):
 
 def gameselection(request):
     return render(request, "gameselection.html")
+
+def custom_games(request):
+    game_list = CustomGame.objects.all()
+    paginator = Paginator(game_list, 5)  # Split game list into pages of 5
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)  # Get current page
+    context = {
+        'all_games': game_list,
+        'current_games': page_obj,
+    }
+    return render(request, "custom_games.html", context)
+
+def custom_game_detail(request, game_id):
+    game = get_object_or_404(CustomGame, pk=game_id)
+    return render(request, 'custom_game_detail.html', {'game': game})

@@ -1,3 +1,17 @@
+.nav-item a {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
+.nav-item a:hover{
+    color: #6D27DD;
+}
+
+.ms-2 {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+}
+
 body {
     margin: 0;
     font-family: 'Helvetica', sans-serif;
