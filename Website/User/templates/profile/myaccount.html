@@ -17,19 +17,20 @@
 {% block content %}
 <div class="profile-container">
   <div class="profile-info">
-    <span class="label">Username:</span> JohnDoe
+    <span class="label">Username:</span> {{ user.username }}<br>
   </div>
 
   <div class="profile-info">
-    <span class="label">First Name:</span> John
+    <span class="label">First Name:</span> {{ user.first_name }}<br>
   </div>
 
   <div class="profile-info">
-    <span class="label">Last Name:</span> Doe
+    <span class="label">Last Name:</span> {{ user.last_name }}<br>
   </div>
 
   <div class="profile-info">
-    <span class="label">Email:</span> johndoe@example.com
+    <span class="label">Email:</span> {{ user.email }}<br>
+    <button>Edit Your Account Details Here!</button>
   </div>
 </div>
 {% endblock %}

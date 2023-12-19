@@ -75,12 +75,6 @@ def myaccount(request):
     else:
         return redirect('home')
     
-def editaccount(request):
-    if request.user.is_authenticated:
-        return render(request, "profile/editaccount.html")
-    else:
-        return redirect('home')
-    
 def create_game(request):
     if request.method == 'POST':
         creator_username = request.user.username if request.user.is_authenticated else None
