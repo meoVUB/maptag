@@ -4,8 +4,14 @@ var modal2 = document.getElementById('login-modal');
 var modal3 = document.getElementById('reportbug-modal');
 var modal4 = document.getElementById('requestfeature-modal');
 
+console.log(modal1);
+console.log(modal2);
+console.log(modal3);
+console.log(modal4);
+
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
+    console.log("hey");
     if (event.target == modal1) {
         modal1.style.display = "none";
     }

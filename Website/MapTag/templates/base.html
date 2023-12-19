@@ -29,6 +29,8 @@
           <span class="ms-2">MapTag</span>
         </a>
 
+        {% if user.is_authenticated %}
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
@@ -37,7 +39,6 @@
           </ul>
         </div>
 
-        {% if user.is_authenticated %}
           <!-- User menu -->
           <div class="dropdown">
             <button onclick="myFunction()" class="dropbtn">{{ user.username }}</button>
@@ -52,8 +53,8 @@
         {% else %}
           <!-- Authentication button -->
           <div class="d-flex">
-            <button type="submit" class="btn btn-primary custom-btn"><a href="{% url 'log_in' %}">Log In</a></button>
-            <button type="submit" class="btn btn-success custom-btn"><a href="{% url 'register' %}">Register</a></button>
+            <button onclick="document.getElementById('login-modal').style.display='block'" type="button" class="btn btn-primary custom-btn">Log in</button>
+            <button onclick="document.getElementById('register-modal').style.display='block'" type="button" class="btn btn-success  custom-btn">Sign Up</button>
           </div>
         {% endif %}
       </div>
@@ -78,7 +79,8 @@
 
         <!-- Bug reporting and feature request links -->
         <div class="mt-3">
-          <a href="#" class="social-icon"><i class="bi bi-bug-fill"></i> Report a Bug</a> | <a href="#" class="social-icon"><i class="bi bi-plus-circle"></i> Request a Feature</a>
+          <a href="#" onclick="document.getElementById('reportbug-modal').style.display='block'" class="social-icon"> <i onclick="document.getElementById('reportbug-modal').style.display='block'" class="bi bi-bug-fill"></i> Report a Bug</a> | 
+          <a href="#" onclick="document.getElementById('requestfeature-modal').style.display='block'" class="social-icon"><i onclick="document.getElementById('requestfeature-modal').style.display='block'"class="bi bi-plus-circle"></i> Request a Feature</a>
         </div>
       </div>
     </footer>
