@@ -145,9 +145,8 @@ function setVariables(){
                 return response.json();
             })
             .then(data => {
-                // Handle the retrieved data here
                 var locations = JSON.parse(data.locations);
-                // Extract latitude and longitude values
+
                 latitude_array = locations.map(function(location) {
                     return location.fields.latitude;
                 });
@@ -230,7 +229,7 @@ function playAgain() {
             initStreetView(true);
             mapFoundTest();
         }
-    } else {
+    } else { // If the game is over
         map_found = false;
         startGame();
     }
@@ -265,7 +264,7 @@ getLocation();
 
 function startGame() {
     console.log("Starting game");
-    document.getElementById('playButton').value = "Play Again";
+    document.getElementById("playButton").value = "Play Again";
     setVariables();
     toggleLoader(true);
     start = true;
@@ -275,7 +274,14 @@ function startGame() {
 
 
 function showModal() {
+    console.log("current map: " + current_map);
+    console.log("total maps: " + total_maps);
     document.getElementById('id01').style.display = 'block';
+
+    if (current_map === total_maps) {
+        console.log("Game over");
+        document.getElementById("playButton").value = "Start New Game";
+    }
 
     const map_element = document.getElementById("current-map-modal");
     map_element.innerHTML = `<strong> Map overview </strong> ${current_map}/${total_maps}`;
@@ -291,10 +297,6 @@ function showModal() {
         score_element.innerHTML = `<strong> Score: <span id="total-score"> ${total_score}</span></strong>`;
         score_element.classList.remove("combine-scores");
     }, 3000);
-
-    if (current_map === base_total_maps) {
-        document.getElementById('playButton').value = "Start New Game";
-    }
 }
 
 //Weather API from https://openweathermap.org/api
