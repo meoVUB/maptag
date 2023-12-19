@@ -29,6 +29,28 @@ let move_enabled;
 /////////////////////
 let sigma; // Used for the score calculation (the higher the sigma the more forgiving the game is)
 let total_maps;
+
+let user_map = false;
+let longitude_array = [];
+let latitude_array = [];
+
+function difficultyToNumber(difficultyLabel) {
+    switch (difficultyLabel.toLowerCase()) {
+        case "impossible":
+            return 100;
+        case "very hard":
+            return 500;
+        case "hard":
+            return 1000;
+        case "normal":
+            return 1500;
+        case "easy":
+            return 2500;
+        default:
+            return 1500;
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////
 // Function to get query parameters from the URL
 function getQueryParam(key) {
@@ -37,6 +59,8 @@ function getQueryParam(key) {
     return urlParams.get(key);
 }
 
+
+
 function setVariables(){
     map_score = start_score; // Reset the score
     total_score = start_score; // Reset the total score
@@ -44,6 +68,8 @@ function setVariables(){
     played = false; // Reset the played variable
     // Game.html?custom=true 
     const custom = getQueryParam('custom');
+
+    const id = getQueryParam('id');
 
     if (custom === "true") {
         timer = getQueryParam('timerActive');
@@ -66,14 +92,84 @@ function setVariables(){
             total_maps = base_total_maps;
         }
         sigma = parseInt(getQueryParam('sigma'));
-    } else{
+    } else if (id !== null && id !== undefined && id !== '') { // if there is a game id
+        console.log("Getting game data");
+        game_id = id;
+        var api_url = '/get_game/' + game_id + '/';
+
+        // Fetch the game settings from the database
+        fetch(api_url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const gameData = JSON.parse(data.game);
+
+                // Access different elements of the 'fields' property
+                const mapTitle = gameData[0].fields.map_title;
+                const difficulty = gameData[0].fields.difficulty;
+                const timerDuration = gameData[0].fields.timer_duration;
+                const timer_status = gameData[0].fields.timer_status;
+                const canMove = gameData[0].fields.mobility;
+
+                // Log or use the retrieved values
+                console.log('Map Title:', mapTitle);
+                console.log('Difficulty:', difficulty);
+                console.log('Timer status:', timer_status);
+                console.log('Timer Duration:', timerDuration);
+                console.log('Can move:', canMove);
+
+                timer = timer_status;
+                time_ms = timerDuration * 1000;
+                move_enabled = canMove;
+                sigma = difficultyToNumber(difficulty);
+                console.log("Sigma: " + sigma);
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        // Fetch the locations from the database
+        var api_url = `http://127.0.0.1:8000/get_locations_for_game/${game_id}/`;
+
+        // Use the apiUrl for your fetch call
+        fetch(api_url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the retrieved data here
+                var locations = JSON.parse(data.locations);
+                // Extract latitude and longitude values
+                latitude_array = locations.map(function(location) {
+                    return location.fields.latitude;
+                });
+
+                longitude_array = locations.map(function(location) {
+                    return location.fields.longitude;
+                });
+
+                user_map = true;
+                total_maps = latitude_array.length;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    } else {
         timer = true;
         time_ms = base_timer;
         move_enabled = true;
         total_maps = base_total_maps;
         sigma = base_sigma;
         map_found = false;
-
     }
 }
 ///////////////////////////////
@@ -145,6 +241,27 @@ function redirectToSettings() {
     const url = button.getAttribute('data-url');
     window.location.href = url;
 }
+
+// Get the user's location
+var user_lon = 0;
+var user_lat = 0;
+var zoom = 0;
+
+function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+  
+function showPosition(position) {
+user_lat = position.coords.latitude;
+user_lon = position.coords.longitude;
+zoom = 8;
+}
+
+getLocation();
 
 function startGame() {
     console.log("Starting game");
@@ -222,7 +339,7 @@ function showLocalinfo(latitude, longitude) {
 // https://stackoverflow.com/questions/65351282/based-on-distance-away-from-a-coordinate-generate-score-lower-distance-away
 function calculateScore(distance) {
     // the higher the sigma the more forgiving the game is
-    map_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma * 2)) ** 2));
+    map_score = Math.round(max_score * Math.exp(-0.5 * (distance / (sigma / 8)) ** 2));
 }
 
 // const AREA = [[upleftY, upleftX],[uprightY, uprightX],[downrightY, downrightX],[downleftY, downleftX]];
@@ -585,21 +702,28 @@ function findNearestStreetView(latitude, longitude) {
 }
 
 function initStreetView(newArea) {
-    random_number = Math.random();
+    console.log(user_map)
+    if (user_map === true) {
+        latitude = latitude_array[current_map - 1];
+        longitude = longitude_array[current_map - 1];
 
-    if (random_number < 0.0) {
-        // 10% of an actual random coordinate in the whole world
-        random_coordinates = randomCoordinates();
+        findNearestStreetView(latitude, longitude);
     } else {
-        // 90% chance for a coordinate in the defined Areas
-        if (newArea === true) {
-            random_area = getRandomArea();
+        random_number = Math.random();
+        if (random_number < 0.0) {
+            // 10% of an actual random coordinate in the whole world
+            random_coordinates = randomCoordinates();
+        } else {
+            // 90% chance for a coordinate in the defined Areas
+            if (newArea === true) {
+                random_area = getRandomArea();
+            }
+            random_coordinates = getrandomCoordinates(random_area);
         }
-        random_coordinates = getrandomCoordinates(random_area);
+        latitude = random_coordinates.latitude;
+        longitude = random_coordinates.longitude;
+        findNearestStreetView(latitude, longitude);
     }
-    latitude = random_coordinates.latitude;
-    longitude = random_coordinates.longitude;
-    findNearestStreetView(latitude, longitude);
 }
 
 // Update the countdown every second
@@ -665,9 +789,10 @@ function newMap() {
         initStreetView(true);
     }
 
+
     map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 0, lng: 0 },
-        zoom: 1,
+        center: { lat: user_lat,  lng: user_lon },
+        zoom: zoom,
         mapTypeControl: false,
         streetViewControl: false,
         minZoom: 1,
@@ -682,7 +807,7 @@ function newMap() {
     });
 
     if (current_map === 1) {
-    my_info_window_lat_lng = new google.maps.LatLng(0, 0);
+    my_info_window_lat_lng = new google.maps.LatLng(user_lat, user_lon);
     my_info_window = new google.maps.InfoWindow({
         position: my_info_window_lat_lng,
         content: "Zoom in and double click the map to make your guess!",

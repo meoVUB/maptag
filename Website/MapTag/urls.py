@@ -20,7 +20,6 @@ from Home import views as home_views
 from User import views as user_views
 from Game import views as game_views
 
-
 urlpatterns = [
     path('', home_views.home, name='home'),
     path('register', user_views.register, name="register"),
@@ -33,4 +32,6 @@ urlpatterns = [
     path('custom_games', game_views.custom_games, name="custom_games"),
     re_path(r'^custom_game/(?P<game_id>[\w-]+)/$', game_views.custom_game_detail, name='custom_game_detail'),
     path("admin/", admin.site.urls),
+    path('get_game/<uuid:game_id>/', game_views.get_game, name='get_game'),
+    path('get_locations_for_game/<uuid:game_id>/', game_views.get_locations_for_game, name='get_locations_for_game'),
 ]
