@@ -146,6 +146,25 @@ function redirectToSettings() {
     window.location.href = url;
 }
 
+// Get the user's location
+var user_lon = 0;
+var user_lat = 0;
+
+function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }
+  
+function showPosition(position) {
+user_lat = position.coords.latitude;
+user_lon = position.coords.longitude;
+}
+
+getLocation();
+
 function startGame() {
     console.log("Starting game");
     document.getElementById('playButton').value = "Play Again";
@@ -665,9 +684,10 @@ function newMap() {
         initStreetView(true);
     }
 
+
     map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 0, lng: 0 },
-        zoom: 1,
+        center: { lat: user_lat,  lng: user_lon },
+        zoom: 8,
         mapTypeControl: false,
         streetViewControl: false,
         minZoom: 1,
@@ -682,7 +702,7 @@ function newMap() {
     });
 
     if (current_map === 1) {
-    my_info_window_lat_lng = new google.maps.LatLng(0, 0);
+    my_info_window_lat_lng = new google.maps.LatLng(user_lat, user_lon);
     my_info_window = new google.maps.InfoWindow({
         position: my_info_window_lat_lng,
         content: "Zoom in and double click the map to make your guess!",
