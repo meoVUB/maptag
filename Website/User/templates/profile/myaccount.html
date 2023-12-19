@@ -11,26 +11,31 @@
   <link rel="stylesheet" type="text/css" href="{% static 'styles/myaccount.css' %}" />
 
   <!-- Required scripts -->
-  
+  <script src="{% static 'scripts/myaccount.js' %}" defer></script>
+
 {% endblock %}
 
 {% block content %}
 <div class="profile-container">
   <div class="profile-info">
-    <span class="label">Username:</span> {{ user.username }}<br>
+    <span class="label">Username:</span>
+    <span id="username">{{ user.username }}</span><br>
   </div>
 
   <div class="profile-info">
-    <span class="label">First Name:</span> {{ user.first_name }}<br>
+    <span class="label">First Name:</span>
+    <span id="first_name">{{ user.first_name }}</span><br>
   </div>
 
   <div class="profile-info">
-    <span class="label">Last Name:</span> {{ user.last_name }}<br>
+    <span class="label">Last Name:</span>
+    <span id="last_name">{{ user.last_name }}</span><br>
   </div>
 
   <div class="profile-info">
-    <span class="label">Email:</span> {{ user.email }}<br>
-    <button>Edit Your Account Details Here!</button>
+    <span class="label">Email:</span>
+    <span id="email">{{ user.email }}</span><br>
+    <button id="edit" onclick="editAccountDetails()"><span id="save">Edit Your Account Details Here!</span></button>
   </div>
 </div>
 {% endblock %}

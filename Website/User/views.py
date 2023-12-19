@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils import timezone
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 from Game.models import CustomGame, Location
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == "POST":
@@ -74,6 +75,19 @@ def myaccount(request):
         return render(request, "profile/myaccount.html")
     else:
         return redirect('home')
+    
+@login_required
+def update_account_details(request):
+    if request.method == 'POST':
+        user = request.user
+        user.username = request.POST.get('username')
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
     
 def create_game(request):
     if request.method == 'POST':
