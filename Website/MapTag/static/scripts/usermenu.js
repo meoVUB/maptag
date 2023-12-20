@@ -96,7 +96,6 @@ function isValidEmail(email) {
 function resetPage() {
     console.log("Resetting page");  
     const page = document.getElementById("pagediv");
-    page.innerHTML = 
     page.innerHTML = `
     <div class="profile-container">
         <div class="profile-info">

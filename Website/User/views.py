@@ -71,6 +71,12 @@ def mygames(request):
     else:
         return redirect('home')
     
+def myfriends(request):
+    if request.user.is_authenticated:
+        return render(request, "profile/myfriends.html")
+    else:
+        return redirect('home')
+    
 def myaccount(request):
     if request.user.is_authenticated:
         return render(request, "profile/myaccount.html")
