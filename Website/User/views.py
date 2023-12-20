@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils import timezone
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 from Game.models import CustomGame, Location
 
 def register(request):
@@ -24,8 +24,10 @@ def register(request):
             return redirect('home')
         if len(username) > 10:
             messages.error(request, "Username must be under 10 characters!")
+            return redirect('home')
         if pass1 != pass2:
             messages.error(request, "Passwords do not match!")
+            return redirect('home')
         if not username.isalnum():
             messages.error(request, "Username must be Alpha-Numeric!")
             return redirect('home')
@@ -66,6 +68,24 @@ def mygames(request):
         return render(request, "profile/mygames.html")
     else:
         return redirect('home')
+    
+def myaccount(request):
+    if request.user.is_authenticated:
+        return render(request, "profile/myaccount.html")
+    else:
+        return redirect('home')
+    
+def update_account_details(request):
+    if request.method == 'POST':
+        user = request.user
+        user.username = request.POST.get('username')
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
     
 def create_game(request):
     if request.method == 'POST':
