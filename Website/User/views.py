@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -65,7 +65,11 @@ def log_out(request):
 
 def mygames(request):
     if request.user.is_authenticated:
-        return render(request, "profile/mygames.html")
+        user_games = CustomGame.objects.filter(creator=request.user.username)
+        context = {
+            'my_games': user_games
+        }
+        return render(request, "profile/mygames.html", context)
     else:
         return redirect('home')
     
@@ -160,3 +164,76 @@ def create_game(request):
         
         return redirect ('mygames')
     return render(request, "mygames.html")
+
+def edit_game(request, game_id):
+    game = get_object_or_404(CustomGame, id=game_id)
+    context = {'game': game}
+    return render(request, 'profile/edit_game.html', context)
+
+def delete_game(request, game_id):
+    game = get_object_or_404(CustomGame, id=game_id)
+    game.delete()
+    return redirect('mygames')
+
+def update_game(request, game_id):
+    if request.method == 'POST':
+        game = get_object_or_404(CustomGame, id=game_id)
+        mapTitle = request.POST.get('mapTitle', '').strip()
+        canMove = request.POST.get('canMove', '').strip()
+        scoreCalc = request.POST.get('scoreCalc', '').strip()
+        timerActive = request.POST.get('timerActive', '').strip()
+        timerDuration = request.POST.get('timerDuration', '').strip()
+        mapDescription = request.POST.get('mapDescription', '').strip()
+
+        # Validate required fields
+        if not all([mapTitle, canMove, scoreCalc, timerActive, mapDescription]):
+            return HttpResponseBadRequest("Please fill in all required fields.")
+
+        # If Timer is set to "Yes," ensure Timer Duration is filled
+        if timerActive == 'yes' and not timerDuration:
+            return HttpResponseBadRequest("Please fill the Timer Duration.")
+
+        # Validate timer duration range
+        if timerDuration and int(timerDuration) > 600:
+            return HttpResponseBadRequest("Timer duration cannot exceed 10 minutes.")
+
+        # Validate difficulty level
+        valid_difficulty_levels = ['Impossible', 'Very Hard', 'Hard', 'Normal', 'Easy']
+        if scoreCalc not in valid_difficulty_levels:
+            return HttpResponseBadRequest("Invalid difficulty level.")
+        
+        # Update CustomGame instance
+        game.map_title = mapTitle
+        game.mobility = canMove == 'yes'
+        game.difficulty = scoreCalc
+        game.timer_status = timerActive == 'yes'
+        game.timer_duration = int(timerDuration) if timerDuration else None
+        game.map_description = mapDescription
+        game.save()
+
+        latitudes = []
+        longitudes = []
+        location_index = 1
+
+        while True:
+            lat_key = f'lat{location_index}'
+            lon_key = f'long{location_index}'
+
+            if lat_key in request.POST and lon_key in request.POST:
+                latitudes.append(request.POST[lat_key])
+                longitudes.append(request.POST[lon_key])
+                location_index += 1
+            else:
+                break
+
+        # Validate and create Location instances
+        for lat, lon in zip(latitudes, longitudes):
+            try:
+                lat, lon = float(lat), float(lon)
+                if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
+                    return HttpResponseBadRequest("Invalid coordinates.")
+                Location.objects.create(custom_game=game, latitude=lat, longitude=lon)
+            except ValueError:
+                return HttpResponseBadRequest("Invalid coordinate values.")
+
+        return redirect('mygames')

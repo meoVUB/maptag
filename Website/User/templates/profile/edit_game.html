@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Edit Game - MapTag
+{% endblock %}
+
+{% block extra_head %}
+  <!-- Required stylesheets -->
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/edit_game.css' %}" />
+
+  <!-- Required scripts -->
+  <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
+  <script src="{% static 'scripts/edit_game.js' %}" defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Edit Game</h1>
+  <div class="container submission-container">
+    <form method="post" action="{% url 'update_game' game.id %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="mapTitle">Map Title:</label>
+        <input type="text" class="form-control" id="mapTitle" name="mapTitle" required value="{{ game.map_title }}" />
+      </div>
+
+      <div class="form-group">
+        <label for="canMove">Can Players Move?</label>
+        <select class="form-control" id="canMove" name="canMove">
+          <option value="no" {% if game.mobility == 'True' %}selected{% endif %}>No</option>
+          <option value="yes" {% if game.mobility == 'False' %}selected{% endif %}>Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="scoreCalc">What's the difficulty?</label>
+        <select class="form-control" id="scoreCalc" name="scoreCalc">
+          <option value="Impossible" {% if game.difficulty == "Impossible" %}selected{% endif %}>Impossible</option>
+          <option value="Very Hard" {% if game.difficulty == "Very Hard" %}selected{% endif %}>Very Hard</option>
+          <option value="Hard" {% if game.difficulty == "Hard" %}selected{% endif %}>Hard</option>
+          <option value="Normal" {% if game.difficulty == "Normal" %}selected{% endif %}>Normal</option>
+          <option value="Easy" {% if game.difficulty == "Easy" %}selected{% endif %}>Easy</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="timerActive">Is Timer Active?</label>
+        <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput()">
+          <option value="no" {% if game.timer_status == "true" %}selected{% endif %}>No</option>
+          <option value="yes" {% if game.timer_status == "false" %}selected{% endif %}>Yes</option>
+        </select>
+      </div>
+
+      <div id="timerSection" style="display: none;">
+        <div class="form-group">
+          <label for="timerDuration">Timer Duration (in seconds, max 10 min):</label>
+          <input type="number" class="form-control" id="timerDuration" name="timerDuration" min="1" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="mapDescription">Map Description:</label>
+        <textarea class="form-control" id="mapDescription" name="mapDescription" rows="4" required></textarea>
+      </div>
+
+      <div id="addOrDeleteButtons">
+        <button type="button" class="btn btn-secondary" onclick="addCoordinate()">Add New Location</button>
+      </div>
+
+      <div id="locationSubmissionForm">
+        <!-- Location 1 -->
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="lat1">Latitude (New Location 1):</label>
+            <input type="text" class="form-control" id="lat1" name="lat1" required />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="long1">Longitude (New Location 1):</label>
+            <input type="text" class="form-control" id="long1" name="long1" required />
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" onclick="validateForm()">Update Game</button>
+    </form>
+  </div>
+{% endblock %}
