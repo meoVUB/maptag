@@ -44,7 +44,7 @@
             <button onclick="myFunction()" id="dropdown" class="dropbtn">{{ user.username }}</button>
             <div id="myDropdown" class="dropdown-content">
               <a onclick="document.getElementById('profile-modal').style.display='block'">My profile</a>
-              <a href="{% url 'myfriends' %}">My friends</a>
+              <a href="#">Friends</a>
               <a href="{% url 'mygames' %}">My games</a>
               <a href="{% url 'log_out' %}">Log out</a>
             </div>
