@@ -41,7 +41,7 @@
 
           <!-- User menu -->
           <div class="dropdown">
-            <button onclick="myFunction()" class="dropbtn">{{ user.username }}</button>
+            <button onclick="myFunction()" id="dropdown" class="dropbtn">{{ user.username }}</button>
             <div id="myDropdown" class="dropdown-content">
               <a href="{% url 'myaccount' %}">My profile</a>
               <a href="#">Friends</a>

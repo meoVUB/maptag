@@ -6,7 +6,6 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponseBadRequest, JsonResponse
 from Game.models import CustomGame, Location
-from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method == "POST":
@@ -76,7 +75,6 @@ def myaccount(request):
     else:
         return redirect('home')
     
-@login_required
 def update_account_details(request):
     if request.method == 'POST':
         user = request.user
