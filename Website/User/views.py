@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponseBadRequest, JsonResponse
 from Game.models import CustomGame, Location
+from User.models import Report, Feature
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -264,3 +265,39 @@ def update_game(request, game_id):
                 return HttpResponseBadRequest("Invalid coordinate values.")
 
         return redirect('mygames')
+
+def report_bug(request):
+    print("report_bug view called.")
+    if request.method == 'POST':
+        bug_description = request.POST.get('description', '').strip()
+
+        # Validate required fields
+        if not bug_description:
+            return HttpResponseBadRequest("Please fill in the bug description.")
+
+        print("Creating Report instance...")
+        # Create Report instance
+        report = Report.objects.create(description=bug_description)
+        print("Report instance created.")
+
+        return redirect('home')  # Adjust the redirect based on your actual URL configuration
+
+    return redirect('home')  # Adjust the template name as needed
+
+def request_feature(request):
+    print("request_feature view called.")
+    if request.method == 'POST':
+        request_description = request.POST.get('description', '').strip()
+
+        # Validate required fields
+        if not request_description:
+            return HttpResponseBadRequest("Please fill in the request description.")
+
+        print("Creating Request instance...")
+        # Create Report instance
+        report = Feature.objects.create(description=request_description)
+        print("Request instance created.")
+
+        return redirect('home')  # Adjust the redirect based on your actual URL configuration
+
+    return redirect('home')  # Adjust the template name as needed

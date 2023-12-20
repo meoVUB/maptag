@@ -23,6 +23,8 @@ from Game import views as game_views
 urlpatterns = [
     path('', home_views.home, name='home'),
     path('register', user_views.register, name="register"),
+    path('report_bug', user_views.report_bug, name="report_bug"),
+    path('request_feature', user_views.request_feature, name="request_feature"),
     path('log_in', user_views.log_in, name="log_in"),
     path('log_out', user_views.log_out, name="log_out"),
     path('mygames', user_views.mygames, name="mygames"),
