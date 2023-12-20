@@ -12,6 +12,8 @@
 
   <!-- Required scripts -->
   <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
+  <script src="{% static 'scripts/cg_dynamic_style.js' %}"></script>
+  <script src="{% static 'scripts/custom_games.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -31,8 +33,8 @@
             <label for="mobility-select">Mobility:</label>
             <select id="mobility-select">
               <option value="">Any</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
+              <option value="True">Yes</option>
+              <option value="False">No</option>
             </select>
           </div>
           <!-- Difficulty filter -->
@@ -49,17 +51,17 @@
           </div>
           <!-- Timer status filter -->
           <div class="filter-section">
-            <label for="timerstatus-select">Mobility:</label>
-            <select id="timerstatus-select">
+            <label for="timerstatus-select">Timer:</label>
+            <select id="timerstatus-select" onchange="toggleTimerInput()">
               <option value="">Any</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
+              <option value="True">Active</option>
+              <option value="False">Inactive</option>
             </select>
           </div>
           <!-- Timer duration filter -->
-          <div class="filter-section">
+          <div class="filter-section" id="duration-section" style="display: none;">
             <label for="duration-range">Timer Duration:</label>
-            <input type="range" id="duration-input" min="5" max="600" step="1" value="60" />
+            <input type="range" id="duration-input" min="5" max="600" step="1" value="5" />
             <output id="duration-output"></output>
           </div>
           <!-- Date posted filter -->
@@ -82,20 +84,67 @@
         <div class="filter-menu-background" id="filter-menu-background" style="display:none;"></div>
       </div>
       <div class="sorting-container">
-        <label for="sorting-select">Sort <i class="fa-solid fa-sort fa-sm" style="color: #6495ed;"></i> :</label>s<select id="sorting-select">
+        <label for="sorting-select">Sort <i class="fa-solid fa-sort fa-sm" style="color: #6495ed;"></i> :</label><select id="sorting-select">
           <option value="newest">Newest first</option>
           <option value="rating">Highest rating first</option>
         </select>
       </div>
     </div>
-    <div class="custom-games" id="custom-games">
+    <div class="current-games" id="current-games">
       {% for game in current_games %}
         <div class="game">
           <h2><span class="title">{{ game.map_title }}</span> by <span class="creator">{{ game.creator }}</span></h2>
           <div class="game-details">
-            <p class="game-duration">{{ game.timer_duration }}seconds</p>
+            <p class="game-difficulty">{{ game.difficulty }} <i class="fa-solid fa-signal fa-xs"></i></p>
             <div class="vertical-line"></div>
-            <p class="game-date">{{ game.date_created }}</p>
+            <p class="game-mobility">{{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i></p>
+            <div class="vertical-line"></div>
+            <p class="game-duration">{{ game.timer_duration }} seconds</p>
+            <div class="vertical-line"></div>
+            <p class="game-date">{{ game.date_created }} <i class="fa-solid fa-calendar-day fa-xs"></i></p>
+            <div class="vertical-line"></div>
+            <p class="game-likes">
+              {{ game.likes }} <i class="fa-solid fa-thumbs-up fa-xs"></i>
+            </p>
+            <p class="game-dislikes">
+              {{ game.dislikes }} <i class="fa-solid fa-thumbs-down fa-xs"></i>
+            </p>
+          </div>
+          <p class="game-description">{{ game.map_description|truncate_words:30 }}</p>
+          <div class="game-actions">
+            <a href="{% url 'custom_game_detail' game.id %}" class="game-view">View</a>
+            <a href="#" class="game-like"><i class="fa-solid fa-thumbs-up fa-sm"></i> Like</a>
+
+            <a href="#" class="game-dislike"><i class="fa-solid fa-thumbs-down fa-sm"></i> Dislike</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="all-games" id="all-games" style="display:none;">
+      {% for game in all_games %}
+        <div class="game">
+          <h2><span class="title">{{ game.map_title }}</span> by <span class="creator">{{ game.creator }}</span></h2>
+          <div class="game-details">
+            <p class="game-difficulty">{{ game.difficulty }} <i class="fa-solid fa-signal fa-xs"></i></p>
+            <div class="vertical-line"></div>
+            <p class="game-mobility" style="display: none;">{{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i></p>
+            {% if game.mobility == True %}
+            <p>Movement Allowed <i class="fa-solid fa-person-running fa-xs"></i></p>
+            {% else %}
+            <p>No Movement Allowed <i class="fa-solid fa-person-running fa-xs"></i></p>
+            {% endif %}
+            <div class="vertical-line"></div>
+            <p class="game-duration">{{ game.timer_duration }} seconds <i class="fa-solid fa-stopwatch fa-xs"></i></p>
+            <p class="game-timerstatus" style="display: none;">{{ game.timer_status }}</p>
+            <div class="vertical-line"></div>
+            <p class="game-date">{{ game.date_created }} <i class="fa-solid fa-calendar-day fa-xs"></i></p>
+            <div class="vertical-line"></div>
+            <p class="game-likes">
+              {{ game.likes }} <i class="fa-solid fa-thumbs-up fa-xs"></i>
+            </p>
+            <p class="game-dislikes">
+              {{ game.dislikes }} <i class="fa-solid fa-thumbs-down fa-xs"></i>
+            </p>
           </div>
           <p class="games-description">{{ game.map_description|truncate_words:30 }}</p>
           <div class="game-actions">

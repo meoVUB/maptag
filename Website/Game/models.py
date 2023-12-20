@@ -14,6 +14,7 @@ class CustomGame(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     creator = models.CharField(max_length=255)
     likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
     date_created = models.DateTimeField(auto_now_add=True)
     map_title = models.CharField(max_length=100)
     mobility = models.BooleanField(default=False)
