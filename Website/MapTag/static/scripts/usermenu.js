@@ -5,7 +5,8 @@ var username, first_name, last_name, email;
 var usernameID, firstNameID, lastNameID, emailID, button;
 
 function editAccountDetails() {
-    console.log("Hello World");
+
+    console.log("edit account");
     button.innerHTML = `<button id="edit" onclick="saveAccountDetails()"><span>Save</span></button>`;
 
     // Replace text with input fields using template literals
@@ -71,6 +72,7 @@ function saveAccountDetails() {
 
 
 function resetPage() {
+    console.log("Resetting page");  
     const page = document.getElementById("pagediv");
     page.innerHTML = 
     page.innerHTML = `
@@ -101,7 +103,11 @@ function resetPage() {
         </div>
     </div>
 `;
-
+usernameID = document.getElementById("username");
+firstNameID = document.getElementById("first_name");
+lastNameID = document.getElementById("last_name");
+emailID = document.getElementById("email");
+button = document.getElementById("button");
 const dropdownButton = document.getElementById("dropdown");
 dropdownButton.innerHTML = username;
 }
@@ -120,15 +126,15 @@ function myFunction() {
 var modals;
 
 window.onload = function() {
-    var usernameID = document.getElementById("username");
+    usernameID = document.getElementById("username");
     username = usernameID.textContent.trim();
-    var firstNameID = document.getElementById("first_name");
+    firstNameID = document.getElementById("first_name");
     first_name = firstNameID.textContent.trim();
-    var lastNameID = document.getElementById("last_name");
+    lastNameID = document.getElementById("last_name");
     last_name = lastNameID.textContent.trim();
-    var emailID = document.getElementById("email");
+    emailID = document.getElementById("email");
     email = emailID.textContent.trim();
-    var button = document.getElementById("button");
+    button = document.getElementById("button");
     console.log(username, first_name, last_name, email);
 
     // Get all elements with the class 'modal'
