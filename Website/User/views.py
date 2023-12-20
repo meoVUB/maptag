@@ -295,7 +295,7 @@ def request_feature(request):
 
         print("Creating Request instance...")
         # Create Report instance
-        report = Report.objects.create(description=request_description)
+        report = Feature.objects.create(description=request_description)
         print("Request instance created.")
 
         return redirect('home')  # Adjust the redirect based on your actual URL configuration
