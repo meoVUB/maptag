@@ -134,8 +134,6 @@ dropdownButton.innerHTML = username;
 }
 
 
-
-
 /* When the user clicks on the button, 
             toggle between hiding and showing the dropdown content */
 
@@ -148,13 +146,21 @@ var modals;
 
 window.onload = function() {
     usernameID = document.getElementById("username");
-    username = usernameID.textContent.trim();
+    if (usernameID !== null) {
+        username = usernameID.textContent.trim();
+    }
     firstNameID = document.getElementById("first_name");
-    first_name = firstNameID.textContent.trim();
+    if (firstNameID !== null) {
+        first_name = firstNameID.textContent.trim();
+    }
     lastNameID = document.getElementById("last_name");
-    last_name = lastNameID.textContent.trim();
+    if (lastNameID !== null) {
+        last_name = lastNameID.textContent.trim();
+    }
     emailID = document.getElementById("email");
-    email = emailID.textContent.trim();
+    if (emailID !== null) {
+        email = emailID.textContent.trim();
+    }
     button = document.getElementById("button");
     console.log(username, first_name, last_name, email);
 
