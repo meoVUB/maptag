@@ -10,10 +10,10 @@ function editAccountDetails() {
     button.innerHTML = `<button id="edit" onclick="saveAccountDetails()"><span>Save</span></button>`;
 
     // Replace text with input fields using template literals
-    usernameID.innerHTML = `<input type="text" name="username" value="${username}">`;
-    firstNameID.innerHTML = `<input type="text" name="first_name" value="${first_name}">`;
-    lastNameID.innerHTML = `<input type="text" name="last_name" value="${last_name}">`;
-    emailID.innerHTML = `<input type="email" name="email" value="${email}">`;
+    usernameID.innerHTML = `<input type="text" name="username" value="${username}" required>`;
+    firstNameID.innerHTML = `<input type="text" name="first_name" value="${first_name}" required>`;
+    lastNameID.innerHTML = `<input type="text" name="last_name" value="${last_name}" required>`;
+    emailID.innerHTML = `<input type="email" name="email" value="${email}" required>`;
 }
 
 function getCookie(name) {
@@ -33,10 +33,18 @@ function getCookie(name) {
 }
 
 function saveAccountDetails() {
+    // Get new user data
     var new_username = document.getElementsByName("username")[0].value;
     var new_first_name = document.getElementsByName("first_name")[0].value;
     var new_last_name = document.getElementsByName("last_name")[0].value;
     var new_email = document.getElementsByName("email")[0].value;
+
+    // Client-side validation
+    if (!isValidUsername(new_username) || !isValidName(new_first_name) || !isValidName(new_last_name) || !isValidEmail(new_email)) {
+        alert("Please enter valid data for all fields.");
+        resetPage();
+        return;
+    }
 
     // Perform AJAX request to update account details
     var xhr = new XMLHttpRequest();
@@ -57,19 +65,33 @@ function saveAccountDetails() {
                 email = new_email;
                 resetPage();
             } else {
-                console.error("Failed to update account details");
+                alert("Failed to update account details");
             }
         }
     };
 
+    // Send data to the server
     var data = "username=" + encodeURIComponent(new_username) +
                "&first_name=" + encodeURIComponent(new_first_name) +
                "&last_name=" + encodeURIComponent(new_last_name) +
                "&email=" + encodeURIComponent(new_email);
     xhr.send(data);
-
 }
 
+
+// Validation functions
+function isValidUsername(username) {
+    return username.trim().length >= 1;
+}
+
+function isValidName(name) {
+    return name.trim().length >= 1;
+}
+
+function isValidEmail(email) {
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
 
 function resetPage() {
     console.log("Resetting page");  
