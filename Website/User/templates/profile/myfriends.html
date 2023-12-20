@@ -7,11 +7,30 @@
 
 {% block extra_head %}
   <!-- Required stylesheets -->
-
-  <!-- Required scripts -->
-
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/myfriends.css' %}" />
 {% endblock %}
 
 {% block content %}
-<h1>HIIIIIIIIIIIIIIIIIIIIIIIIIII</h1>
+  <div class="friends-container">
+    <h1>Friends</h1>
+    <table class="friends-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Their games</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Friend 1</td>
+          <td><button class="games-button">Games</button></td>
+        </tr>
+        <tr>
+          <td>Friend 2</td>
+          <td><button class="games-button">Games</button></td>
+        </tr>
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
