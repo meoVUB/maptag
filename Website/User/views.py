@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponseBadRequest, JsonResponse
 from Game.models import CustomGame, Location
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 def register(request):
     if request.method == "POST":
@@ -73,20 +75,45 @@ def mygames(request):
     else:
         return redirect('home')
     
+    
 def myaccount(request):
     if request.user.is_authenticated:
         return render(request, "profile/myaccount.html")
     else:
         return redirect('home')
     
+def myfriends(request):
+    if request.user.is_authenticated:
+        return render(request, "profile/myfriends.html")
+    else:
+        return redirect('home')
+    
 def update_account_details(request):
     if request.method == 'POST':
+        # Get the user and the submitted data
         user = request.user
-        user.username = request.POST.get('username')
-        user.first_name = request.POST.get('first_name')
-        user.last_name = request.POST.get('last_name')
-        user.email = request.POST.get('email')
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+
+        # Server-side validation
+        if not username or not first_name or not last_name or not email:
+            return JsonResponse({'success': False, 'error': 'All fields are required.'})
+
+        # Validate email
+        try:
+            validate_email(email)
+        except ValidationError:
+            return JsonResponse({'success': False, 'error': 'Invalid email address.'})
+
+        # Update user details
+        user.username = username
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
         user.save()
+
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})

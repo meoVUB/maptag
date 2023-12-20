@@ -27,6 +27,7 @@ urlpatterns = [
     path('log_out', user_views.log_out, name="log_out"),
     path('mygames', user_views.mygames, name="mygames"),
     path('myaccount', user_views.myaccount, name="myaccount"),
+    path('myfriends', user_views.myfriends, name="myfriends"),
     path('update_account_details', user_views.update_account_details, name="update_account_details"),
     path('mygames/create_game', user_views.create_game, name="create_game"),
     path('mygames/edit_game/<uuid:game_id>/', user_views.edit_game, name='edit_game'),
