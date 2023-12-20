@@ -81,6 +81,15 @@ def mygames(request):
     else:
         return redirect('home') 
     
+def myfriends(request):
+
+    if request.user.is_authenticated:
+        fname = request.user.first_name
+        return render(request, "authentication/myfriends.html", {'fname' : fname})
+    
+    else:
+        return redirect('home')
+    
 def game(request):
     return render(request, "game/Game.html")
 
