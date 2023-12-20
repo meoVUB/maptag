@@ -78,6 +78,12 @@ def myaccount(request):
     else:
         return redirect('home')
     
+def myfriends(request):
+    if request.user.is_authenticated:
+        return render(request, "profile/myfriends.html")
+    else:
+        return redirect('home')
+    
 def update_account_details(request):
     if request.method == 'POST':
         # Get the user and the submitted data
