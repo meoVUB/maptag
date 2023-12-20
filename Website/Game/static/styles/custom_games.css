@@ -1,0 +1,385 @@
+body {
+    padding-top: 4em;
+    background-color: #a06bf6;
+}
+
+
+h1 {
+    font-size: 5em;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white;
+    margin-top: 0.5em;
+}
+
+.games-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+    margin-bottom: 3em;
+    width: 100%;
+}
+
+.search-container input {
+    font-family: "Outfit", sans-serif;
+    font-size: 0.9em;
+    padding: 0.55em;
+    border: 2px solid lavender;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    margin: 0.5em;
+    width: 250px;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: purple;
+}
+
+.tools-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+    width: 100%;
+}
+
+.filtering-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-left: -1.1em;
+    margin-bottom: -0.6em;
+}
+
+/* Filter Button */
+#filter-btn {
+    background-color: white;
+    border: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    font-family: "Outfit", sans-serif;
+    font-size: 1.1em;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    margin-right: 0.5em;
+}
+
+#filter-btn i {
+    color: #6D27DD;
+}
+
+#filter-btn:hover {
+    background-color: #a06bf6;
+    color: white;
+    transform: scale(1.05);
+}
+
+#filter-btn:hover i {
+    color: white;
+}
+
+/* Filter Bubbles */
+#filter-bubbles {
+    display: flex;
+    gap: 0.5em;
+}
+
+.filter-bubble {
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    color: black;
+    cursor: pointer;
+    font-family: "Outfit", sans-serif;
+    font-size: 1em;
+    padding: 5px 5px 5px 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.filter-bubble:hover {
+    background-color: #a06bf6;
+    color: white;
+    transform: scale(1.05);
+}
+
+.filter-bubble span {
+    font-size: 1em;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+}
+
+.filter-menu {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: "Outfit", sans-serif;
+    z-index: 2;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 1.5em;
+}
+
+.filter-menu-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    z-index: 1;
+}
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 1em;
+}
+
+.date-posted-options {
+    font-size: 0.9em;
+    display: flex;
+}
+
+.date-posted-options input[type="radio"] {
+    cursor: pointer;
+}
+
+/* Filter Actions */
+.filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5em;
+}
+
+#apply-filters,
+#cancel-filters {
+    background-color: white;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    color: black;
+    cursor: pointer;
+    font-family: "Outfit", sans-serif;
+    font-size: 0.8em;
+    padding: 5px 10px 5px 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+#apply-filters:hover,
+#cancel-filters:hover {
+    color: white;
+    background-color: #6D27DD;
+    transform: scale(1.05);
+}
+
+
+.sorting-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-family: "Outfit", sans-serif;
+    font-size: 1.1em;
+    background-color: white;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 18px;
+    padding: 5px 10px 5px 10px;
+    margin-right: -1em;
+}
+
+select {
+    padding: 0.5em;
+    border: none;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+option {
+    background-color: white;
+    color: black;
+}
+
+.current-games {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.game {
+    background-color: white;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 1.5em;
+    position: relative;
+    width: 100%;
+}
+
+.game[data-depth="1"] {
+    transform: translateY(0);
+}
+
+.game[data-depth="2"] {
+    transform: translateY(-10px);
+}
+
+.game[data-depth="3"] {
+    transform: translateY(-20px);
+}
+
+.game[data-depth="4"] {
+    transform: translateY(-30px);
+}
+
+.game h2 {
+    font-family: "Outfit", sans-serif;
+    font-size: 1.65em;
+    margin-top: 0;
+}
+
+.game-details {
+    display: flex;
+    align-items: center;
+    font-family: "Work Sans", sans-serif;
+    font-size: 0.9em;
+}
+
+.vertical-line {
+    height: 1rem;
+    border-left: 1px solid #aaa;
+    margin: 0 1rem;
+}
+
+.game-description {
+    margin-top: 0.3rem;
+    margin-bottom: 2rem;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.05rem;
+    color: #333;
+}
+
+.game h2 .title {
+    color: #6D27DD;
+}
+
+.game h2 .creator {
+    color: mediumseagreen;
+}
+
+.game-actions {
+    position: absolute;
+    bottom: 0.35em;
+    right: 1em;
+    margin-top: 10em;
+    display: flex;
+}
+
+.game-actions a {
+    margin-left: 0.5em;
+    background-color: white;
+    color: mediumaquamarine;
+    border: 1px solid mediumaquamarine;
+    border-radius: 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    font-family: "Outfit", sans-serif;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.game-view {
+    background-color: mediumaquamarine !important;
+    color: white !important;
+}
+
+.game-view:hover {
+    transform: scale(1.10);
+}
+
+.game-like:hover {
+    background-color: mediumaquamarine;
+    color: white;
+    transform: scale(1.05);
+}
+
+.game-dislike:hover {
+    background-color: mediumaquamarine;
+    color: white;
+    transform: scale(1.05);
+}
+
+#no-results {
+    font-family: "Outfit", sans-serif;
+    font-size: 1.3em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: white;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.pagination {
+    scale: 90%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.step-links {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.step-links a,
+.step-links span {
+    font-family: "Roboto", sans-serif;
+    background-color: white;
+    color: black;
+    text-decoration: none;
+    margin: 0 0.3rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.60rem;
+    height: 1.60rem;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+.step-links a:hover:not(.disabled),
+.step-links span.current-page {
+    background-color: #6D27DD;
+    color: white;
+    transform: scale(1.2);
+}
+
+.step-links span.disabled {
+    color: #aaa;
+}
+
+.step-links span.current-page {
+    font-weight: bold;
+}

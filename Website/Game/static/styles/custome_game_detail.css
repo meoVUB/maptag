@@ -1,0 +1,83 @@
+.game-detail-title {
+    font-size: 1em;
+    font-family: 'Work Sans', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white;
+    margin-top: 0.5em;
+}
+
+.game-detail-title h1 .title {
+    color: lightskyblue;
+}
+
+.game-detail-title h1 .creator {
+    color: mediumaquamarine;
+}
+
+.game-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-bottom: 5em;
+    padding: 2em;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    /* added */
+}
+
+.game-detail-container .game-posted-date {
+    position: absolute;
+    top: -1em;
+    right: 1em;
+    margin: 1em;
+    font-family: "Work Sans", sans-serif;
+    font-size: 0.9em;
+    color: #333;
+}
+
+.game-detail-container p {
+    line-height: 1.5;
+    margin-bottom: 2em;
+    padding-top: 0.5em;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.2rem;
+    color: black;
+}
+
+.game-detail-container h2 {
+    margin-top: 0;
+    margin-bottom: -0.9em;
+    font-family: "Work Sans", sans-serif;
+    font-size: 1.6em;
+    color: darkslateblue;
+}
+
+.detailed-actions {
+    margin-top: 1.5em;
+    display: flex;
+}
+
+.detailed-actions a {
+    margin-right: 0.5em;
+    background-color: white;
+    color: mediumaquamarine;
+    border: 1px solid mediumaquamarine;
+    border-radius: 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    font-family: "Work Sans", sans-serif;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.game-play {
+    background-color: mediumaquamarine !important;
+    color: white !important;
+}
+
+.game-apply:hover {
+    transform: scale(1.10);
+}
