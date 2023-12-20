@@ -40,7 +40,7 @@ def register(request):
         myuser.save()
         messages.success(request, "Your account has been successfully created.")
 
-        return redirect('log_in')
+        return redirect('home')
     return render(request, "authentication/register.html")
 
 def log_in(request):

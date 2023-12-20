@@ -14,6 +14,14 @@
   <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
   <script src="{% static 'scripts/cg_dynamic_style.js' %}"></script>
   <script src="{% static 'scripts/custom_games.js' %}"></script>
+  <script>
+    function toggleTimerInput() {
+      var timerActiveSelect = document.getElementById('timerstatus-select')
+      var durationSection = document.getElementById('duration-section')
+    
+      durationSection.style.display = timerActiveSelect.value === 'True' ? 'block' : 'none'
+    }
+  </script>
 {% endblock %}
 
 {% block content %}
@@ -61,7 +69,7 @@
           <!-- Timer duration filter -->
           <div class="filter-section" id="duration-section" style="display: none;">
             <label for="duration-range">Timer Duration:</label>
-            <input type="range" id="duration-input" min="5" max="600" step="1" value="5" />
+            <input type="range" id="duration-input" min="5" max="600" step="5" value="5" />
             <output id="duration-output"></output>
           </div>
           <!-- Date posted filter -->
