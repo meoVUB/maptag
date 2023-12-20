@@ -16,26 +16,30 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile-container">
-  <div class="profile-info">
-    <span class="label">Username:</span>
-    <span id="username">{{ user.username }}</span><br>
-  </div>
+<div id="pagediv">
+  <div class="profile-container">
+    <div class="profile-info">
+      <span class="label">Username:</span>
+      <span id="username">{{ user.username }}</span><br>
+    </div>
 
-  <div class="profile-info">
-    <span class="label">First Name:</span>
-    <span id="first_name">{{ user.first_name }}</span><br>
-  </div>
+    <div class="profile-info">
+      <span class="label">First Name:</span>
+      <span id="first_name">{{ user.first_name }}</span><br>
+    </div>
 
-  <div class="profile-info">
-    <span class="label">Last Name:</span>
-    <span id="last_name">{{ user.last_name }}</span><br>
-  </div>
+    <div class="profile-info">
+      <span class="label">Last Name:</span>
+      <span id="last_name">{{ user.last_name }}</span><br>
+    </div>
 
-  <div class="profile-info">
-    <span class="label">Email:</span>
-    <span id="email">{{ user.email }}</span><br>
-    <button id="edit" onclick="editAccountDetails()"><span id="save">Edit Your Account Details Here!</span></button>
+    <div class="profile-info">
+      <span class="label">Email:</span>
+      <span id="email">{{ user.email }}</span><br>
+      <div id="button" data-url="{% url 'myaccount' %}">
+      <button id="edit" onclick="editAccountDetails()"><span id="save">Edit Your Account Details Here!</span></button>
+      </div>
+    </div>
   </div>
-</div>
+  </div>
 {% endblock %}
