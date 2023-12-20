@@ -1,0 +1,26 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #a06bf6;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+h1 {
+    font-size: 5em;
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white;
+    margin-top: 0.5em;
+}
+
+label {
+    font-family: 'Roboto', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white;
+    margin-top: 0.5em;
+}

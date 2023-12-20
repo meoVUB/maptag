@@ -10,6 +10,7 @@
   <link rel="stylesheet" type="text/css" href="{% static 'styles/mygames.css' %}" />
 
   <!-- Required scripts -->
+  <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
   <script src="{% static 'scripts/mygames.js' %}" defer></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer></script>
 {% endblock %}
@@ -23,6 +24,42 @@
 
     <div id="Your Games" class="w3-container w3-border mode">
       <h2>Your Games</h2>
+      {% if my_games %}
+          {% for game in my_games %}
+          <div class="game">
+            <h2><span class="title">{{ game.map_title }}</span></span></h2>
+            <div class="game-details">
+              <p class="game-difficulty">{{ game.difficulty }} <i class="fa-solid fa-signal fa-xs"></i></p>
+              <div class="vertical-line"></div>
+              <p class="game-mobility" style="display: none;">{{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i></p>
+              {% if game.mobility == True %}
+              <p>Movement Allowed <i class="fa-solid fa-person-running fa-xs"></i></p>
+              {% else %}
+              <p>No Movement Allowed <i class="fa-solid fa-person-running fa-xs"></i></p>
+              {% endif %}
+              <div class="vertical-line"></div>
+              <p class="game-duration">{{ game.timer_duration }} seconds <i class="fa-solid fa-stopwatch fa-xs"></i></p>
+              <p class="game-timerstatus" style="display: none;">{{ game.timer_status }}</p>
+              <div class="vertical-line"></div>
+              <p class="game-date">{{ game.date_created }} <i class="fa-solid fa-calendar-day fa-xs"></i></p>
+              <div class="vertical-line"></div>
+              <p class="game-likes">
+                {{ game.likes }} <i class="fa-solid fa-thumbs-up fa-xs"></i>
+              </p>
+              <p class="game-dislikes">
+                {{ game.dislikes }} <i class="fa-solid fa-thumbs-down fa-xs"></i>
+              </p>
+            </div>
+            <div class="game-actions">
+              <a href="{% url 'custom_game_detail' game.id %}" class="game-view">View</a>
+              <a href="{% url 'edit_game' game.id %}" class="game-edit">Edit</a>
+              <a href="{% url 'delete_game' game.id %}" class="game-delete">Delete</a>
+            </div>
+          </div>
+          {% endfor %}
+      {% else %}
+        <p>No games found.</p>
+      {% endif %}
     </div>
 
     <div id="Create a Game" class="w3-container w3-border mode" style="display:none">

@@ -27,6 +27,104 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.game {
+    background-color: white;
+    margin-bottom: 1em;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 1.5em;
+    position: relative;
+    width: 100%;
+}
+
+.game[data-depth="1"] {
+    transform: translateY(0);
+}
+
+.game[data-depth="2"] {
+    transform: translateY(-10px);
+}
+
+.game[data-depth="3"] {
+    transform: translateY(-20px);
+}
+
+.game[data-depth="4"] {
+    transform: translateY(-30px);
+}
+
+.game h2 {
+    font-family: "Outfit", sans-serif;
+    font-size: 1.65em;
+    margin-top: 0;
+}
+
+.game-details {
+    display: flex;
+    align-items: center;
+    font-family: "Work Sans", sans-serif;
+    font-size: 0.9em;
+}
+
+.vertical-line {
+    height: 1rem;
+    border-left: 1px solid #aaa;
+    margin: 0 1rem;
+}
+
+.game h2 .title {
+    color: #6D27DD;
+}
+
+.game-actions {
+    position: absolute;
+    bottom: 0.35em;
+    right: 1em;
+    margin-top: 10em;
+    display: flex;
+}
+
+.game-actions a {
+    margin-left: 0.5em;
+    background-color: white;
+    color: mediumaquamarine;
+    border: 1px solid mediumaquamarine;
+    border-radius: 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    font-family: "Outfit", sans-serif;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.game-view {
+    background-color: mediumaquamarine !important;
+    color: white !important;
+}
+
+.game-view:hover {
+    transform: scale(1.10);
+}
+
+.game-edit {
+    background-color: darkslategray !important;
+    color: white !important;
+}
+
+.game-edit:hover {
+    transform: scale(1.10);
+}
+
+.game-delete {
+    background-color: red !important;
+    color: white !important;
+}
+
+.game-delete:hover {
+    transform: scale(1.10);
+}
+
 .mode {
     background-color: rgba(211, 211, 211, 0.7);
     padding: 1em;
