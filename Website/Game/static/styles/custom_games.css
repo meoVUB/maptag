@@ -152,12 +152,12 @@ h1 {
 }
 
 .date-posted-options {
-    font-size: 0.9em;
     display: flex;
 }
 
 .date-posted-options input[type="radio"] {
     cursor: pointer;
+    margin-left: 1.2em;
 }
 
 /* Filter Actions */
@@ -266,6 +266,7 @@ option {
     height: 1rem;
     border-left: 1px solid #aaa;
     margin: 0 1rem;
+    margin-top: -1.2em;
 }
 
 .game-description {

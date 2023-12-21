@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  My Games - MapTag
+{% endblock %}
+
+{% block extra_head %}
+  <!-- Required stylesheets -->
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/mygames.css' %}" />
+
+  <!-- Required scripts -->
+  <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
+  <script src="{% static 'scripts/mygames.js' %}" defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer></script>
+{% endblock %}
+
+{% block content %}
+  <div class="custom-tabs">
+    <a class="custom-tab" onclick="openMode(event, 'your_games')" id="tab-1"><i class="fa-solid fa-list"></i> Your Games</a>
+    <a class="custom-tab" onclick="openMode(event, 'create_a_game')" id="tab-2"><i class="fa-solid fa-plus"></i> Create a Game</a>
+  </div>
+
+  <div id="your_games" class="custom-mode">
+    <h1>Your Games</h1>
+    {% if my_games %}
+      {% for game in my_games %}
+        <div class="game">
+          <h2><span class="title">{{ game.map_title }}</span></h2>
+          <div class="game-details">
+            <p class="game-difficulty">
+              {{ game.difficulty }} <i class="fa-solid fa-signal fa-xs" style="color: #a06bf6; margin-left: 3px;"></i>
+            </p>
+            <div class="vertical-line"></div>
+            <p class="game-mobility" style="display: none;">
+              {{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i>
+            </p>
+            {% if game.mobility == True %}
+              <p>
+                Movement Allowed <i class="fa-solid fa-person-running fa-xs" style="color: #00c800; margin-left: 3px;"></i>
+              </p>
+            {% else %}
+              <p>
+                No Movement Allowed <i class="fa-solid fa-person-running fa-xs" style="color: #c80000; margin-left: 3px;"></i>
+              </p>
+            {% endif %}
+            <div class="vertical-line"></div>
+            <p class="game-duration">
+              {{ game.timer_duration }} seconds <i class="fa-solid fa-stopwatch fa-xs" style="color: #a06bf6; margin-left: 3px;"></i>
+            </p>
+            <p class="game-timerstatus" style="display: none;">{{ game.timer_status }}</p>
+            <div class="vertical-line"></div>
+            <p class="game-date">
+              {{ game.date_created|date:'Y-m-d' }} <i class="fa-solid fa-calendar-day fa-xs" style="color: #a06bf6; margin-left: 3px;"></i>
+            </p>
+            <div class="vertical-line"></div>
+            <p class="game-likes" id="game-likes">{{ game.likes }}</p>
+            <p>
+              <i class="fa-solid fa-thumbs-up fa-xs" style="color: #00c800; margin-left: 3px;"></i>
+            </p>
+            <p class="game-dislikes" id="game-dislikes" style="margin-left: 3px;">{{ game.dislikes }}</p>
+            <p>
+              <i class="fa-solid fa-thumbs-down fa-xs" style="color: #c80000; margin-left: 3px;"></i>
+            </p>
+          </div>
+          <div class="game-actions">
+            <a href="{% url 'custom_game_detail' game.id %}" class="game-view">View</a>
+            <a href="{% url 'edit_game' game.id %}" class="game-edit">Edit</a>
+            <a href="{% url 'delete_game' game.id %}" class="game-delete">Delete</a>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No games found.</p>
+    {% endif %}
+  </div>
+
+  <div id="create_a_game" class="custom-mode" style="display:none">
+    <h1>Create a Game</h1>
+
+    <div class="container submission-container">
+      <form id="mapSubmissionForm" method="post" action="{% url 'create_game' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="mapTitle">Map Title:</label>
+          <input type="text" class="form-control" id="mapTitle" name="mapTitle" required />
+        </div>
+
+        <div class="form-group">
+          <label for="canMove">Can Players Move?</label>
+          <select class="form-control" id="canMove" name="canMove">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="scoreCalc">What's the difficulty?</label>
+          <select class="form-control" id="scoreCalc" name="scoreCalc">
+            <option value="Impossible">Impossible</option>
+            <option value="Very Hard">Very Hard</option>
+            <option value="Hard">Hard</option>
+            <option value="Normal">Normal</option>
+            <option value="Easy">Easy</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="timerActive">Is Timer Active?</label>
+          <select class="form-control" id="timerActive" name="timerActive" onchange="toggleTimerInput()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+
+        <div id="timerSection" style="display: none;">
+          <div class="form-group">
+            <label for="timerDuration">Timer Duration (in seconds, max 10 min):</label>
+            <input type="number" class="form-control" id="timerDuration" name="timerDuration" min="1" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="mapDescription">Map Description:</label>
+          <textarea class="form-control" id="mapDescription" name="mapDescription" rows="4" required></textarea>
+        </div>
+
+        <div id="addOrDeleteButtons">
+          <button type="button" class="btn btn-success" onclick="addCoordinate()">Add Coordinate</button>
+        </div>
+
+        <div id="locationSubmissionForm">
+          <!-- Location 1 -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="lat1">Latitude (Location 1):</label>
+              <input type="text" class="form-control" id="lat1" name="lat1" required />
+            </div>
+            <div class="form-group col-md-6">
+              <label for="long1">Longitude (Location 1):</label>
+              <input type="text" class="form-control" id="long1" name="long1" required />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" onclick="validateForm()">Submit</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

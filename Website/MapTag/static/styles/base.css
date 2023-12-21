@@ -3,7 +3,8 @@ nav {
 }
 
 body {
-    padding-top: 4.4em;
+    padding-top: 4.2em;
+    background-color: #a06bf6;
 }
 
 
@@ -13,7 +14,7 @@ body {
 }
 
 .nav-item a:hover{
-    color: #6D27DD;
+    color: #a06bf6;
 }
 
 .ms-2 {
@@ -39,7 +40,8 @@ a {
 }
 
 .footer {
-    background-color: #2b054a;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(to top, #551fac, #520bc4);
     color: white;
     padding: 20px 0;
     text-align: center;
@@ -55,17 +57,23 @@ a {
 }
 
 .dropbtn {
-    background-color: #3498DB;
-    color: white;
+    background-color: #a06bf6;
+    font-family: 'Outfit', sans-serif;
+    border-radius: 10px;
+    color: lightgreen;
     padding: 16px;
     font-size: 16px;
     border: none;
     cursor: pointer;
 }
 
-.dropbtn:hover,
+.dropbtn:hover {
+    transform: scale(1.075);
+    background-color: #8460bd;
+}
+
 .dropbtn:focus {
-    background-color: #2980B9;
+    background-color: #8460bd;
 }
 
 .dropdown {
@@ -74,13 +82,14 @@ a {
 }
 
 .dropdown-content {
+    font-family: 'Outfit', sans-serif;
     display: none;
     position: absolute;
     background-color: #f1f1f1;
     min-width: 160px;
     overflow: auto;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    left: -80px;
+    left: -6em;
     z-index: 1;
 }
 
@@ -139,7 +148,9 @@ input[type=text], input[type=password], input[type=email] {
 .cancelbtn {
     width: auto;
     padding: 10px 18px;
+    color: white;
     background-color: #9521DC;
+    border-radius: 15px;
 }
 
 /* Modal Content/Box */
@@ -155,11 +166,12 @@ button:hover {
 }
 
 .modal h1{
+    margin-top: 0.6em;
     text-align: center;
     font-family: 'Outfit', sans-serif;
 }
 
-.modal a {
+#modal-switch {
     color:#9521DC;
 }
 
@@ -171,6 +183,7 @@ button:hover {
 }
 
 .container {
+    font-family: "Work Sans", sans-serif;
     padding: 16px;
 }
 

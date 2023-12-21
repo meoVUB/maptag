@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -27,3 +28,11 @@ class Location(models.Model):
     custom_game = models.ForeignKey(CustomGame, related_name='locations', on_delete=models.CASCADE)
     latitude = models.FloatField()
     longitude = models.FloatField()
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    game = models.ForeignKey(CustomGame, on_delete=models.CASCADE)
+    rating = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ['user', 'game']

@@ -81,7 +81,7 @@
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('register-modal').style.display='none'" class="cancelbtn">Cancel</button>
+      <a class="cancelbtn btn-primary" onclick="document.getElementById('register-modal').style.display='none'">Cancel</a>
       <span class="psw">Already have an account? <a id="modal-switch"
           onclick=
           "document.getElementById('login-modal').style.display='block'
@@ -107,7 +107,7 @@
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('login-modal').style.display='none'" class="cancelbtn">Cancel</button>
+      <a class="cancelbtn btn-primary" onclick="document.getElementById('login-modal').style.display='none'">Cancel</a>
       <span class="psw">No account yet? <a id="modal-switch"
           onclick=
           "document.getElementById('register-modal').style.display='block'
@@ -125,44 +125,44 @@
     <div class="row text-center">
       <!-- Information section -->
       <div class="col-12 mb-5">
-        <h2>MAPTAG</h2>
+        <h2>MapTag</h2>
         <p>Discover the exciting world of MapTag and enjoy exclusive benefits!</p>
       </div>
       <!-- Boxes with symbols and text -->
         <div class="col-md-4">
           <div class="feature-box">
             <p>Check out you and your friends highscores!</p>
-            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127942;</span> Friends <span class="symbol">&#127942;</span></a>
+            <a href="{% url 'myfriends' %}" class="btn btn-outline-light"><span class="symbol">&#127942;</span> Friends <span class="symbol">&#127942;</span></a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-box">
             <p>Explore custom made games!</p>
-            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127759;</span> Custom Games <span class="symbol">&#127759;</span></a>
+            <a href="{% url 'custom_games' %}" class="btn btn-outline-light"><span class="symbol">&#127759;</span> Custom Games <span class="symbol">&#127759;</span></a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-box">
             <p>Check out your account!</p>
-            <a href="#" class="btn btn-outline-light"> <span class="symbol">&#128100;</span> My Account <span class="symbol">&#128100;</span></a>
+            <a class="btn btn-outline-light" onclick="document.getElementById('profile-modal').style.display='block'"> <span class="symbol">&#128100;</span> My Account <span class="symbol">&#128100;</span></a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-box">
             <p>Play on different difficulties!</p>
-            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127918;</span> Play MapTag <span class="symbol">&#127918;</span></a>
+            <a href="{% url 'gameselection' %}" class="btn btn-outline-light"><span class="symbol">&#127918;</span> Play MapTag <span class="symbol">&#127918;</span></a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-box">
-            <p>Show off your custom games!</p>
-            <a href="#" class="btn btn-outline-light"><span class="symbol">&#9733;</span> My Games <span class="symbol">&#9733;</span></a>
+            <p>Create your own custom games!</p>
+            <a href="{% url 'mygames' %}" class="btn btn-outline-light"><span class="symbol">&#9733;</span> My Games <span class="symbol">&#9733;</span></a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-box">
             <p>Compete with your friends!</p>
-            <a href="#" class="btn btn-outline-light"><span class="symbol">&#127891;</span> Friends <span class="symbol">&#127891;</span></a>
+            <a href="{% url 'myfriends' %}" class="btn btn-outline-light"><span class="symbol">&#127891;</span> Friends <span class="symbol">&#127891;</span></a>
           </div>
         </div>
     </div>

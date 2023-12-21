@@ -72,20 +72,20 @@ def mygames(request):
         context = {
             'my_games': user_games
         }
-        return render(request, "profile/mygames.html", context)
+        return render(request, "mygames.html", context)
     else:
         return redirect('home')
     
     
 def myaccount(request):
     if request.user.is_authenticated:
-        return render(request, "profile/myaccount.html")
+        return render(request, "myaccount.html")
     else:
         return redirect('home')
     
 def myfriends(request):
     if request.user.is_authenticated:
-        return render(request, "profile/myfriends.html")
+        return render(request, "myfriends.html")
     else:
         return redirect('home')
     
@@ -196,7 +196,7 @@ def create_game(request):
 def edit_game(request, game_id):
     game = get_object_or_404(CustomGame, id=game_id)
     context = {'game': game}
-    return render(request, 'profile/edit_game.html', context)
+    return render(request, 'edit_game.html', context)
 
 def delete_game(request, game_id):
     game = get_object_or_404(CustomGame, id=game_id)

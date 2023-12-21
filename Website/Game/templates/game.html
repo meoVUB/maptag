@@ -28,8 +28,8 @@
       <!-- User menu -->
       <div class="dropdown">
         <button onclick="myFunction()" class="dropbtn">{{ user.username }}</button>
-        <div id="myDropdown" class="dropdown-content">>
-          <a href="#">Friends</a>
+        <div id="myDropdown" class="dropdown-content">
+          <a href="{% url 'myfriends' %}">Friends</a>
           <a href="{% url 'mygames' %}">My games</a>
           <a href="{% url 'log_out' %}">Log out</a>
         </div>

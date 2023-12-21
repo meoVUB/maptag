@@ -14,14 +14,6 @@
   <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
   <script src="{% static 'scripts/cg_dynamic_style.js' %}"></script>
   <script src="{% static 'scripts/custom_games.js' %}"></script>
-  <script>
-    function toggleTimerInput() {
-      var timerActiveSelect = document.getElementById('timerstatus-select')
-      var durationSection = document.getElementById('duration-section')
-    
-      durationSection.style.display = timerActiveSelect.value === 'True' ? 'block' : 'none'
-    }
-  </script>
 {% endblock %}
 
 {% block content %}
@@ -76,6 +68,8 @@
           <div class="filter-section">
             <label>Date posted:</label>
             <div class="date-posted-options">
+              <input type="radio" id="today" name="date-posted" value="today" />
+              <label for="this-week">today</label>
               <input type="radio" id="this-week" name="date-posted" value="this-week" />
               <label for="this-week">this week</label>
               <input type="radio" id="this-month" name="date-posted" value="this-month" />
@@ -109,21 +103,19 @@
             <div class="vertical-line"></div>
             <p class="game-duration">{{ game.timer_duration }} seconds</p>
             <div class="vertical-line"></div>
-            <p class="game-date">{{ game.date_created }} <i class="fa-solid fa-calendar-day fa-xs"></i></p>
+            <p class="game-date">{{ game.date_created|date:'Y-m-d' }} <i class="fa-solid fa-calendar-day fa-xs"></i></p>
             <div class="vertical-line"></div>
-            <p class="game-likes">
-              {{ game.likes }} <i class="fa-solid fa-thumbs-up fa-xs"></i>
-            </p>
-            <p class="game-dislikes">
-              {{ game.dislikes }} <i class="fa-solid fa-thumbs-down fa-xs"></i>
-            </p>
+            <p class="game-likes" id="game-likes">{{ game.likes }}</p>
+            <p><i class="fa-solid fa-thumbs-up fa-xs"></i></p>
+            <p class="game-dislikes" id="game-dislikes">{{ game.dislikes }}</p>
+            <p><i class="fa-solid fa-thumbs-down fa-xs" style="color: #a06bf6; margin-left: 10px;"></i></p>
           </div>
           <p class="game-description">{{ game.map_description|truncate_words:30 }}</p>
+          <div id="hidden-game-id" style="display: none;">{{ game.id }}</div>
           <div class="game-actions">
             <a href="{% url 'custom_game_detail' game.id %}" class="game-view">View</a>
-            <a href="#" class="game-like"><i class="fa-solid fa-thumbs-up fa-sm"></i> Like</a>
-
-            <a href="#" class="game-dislike"><i class="fa-solid fa-thumbs-down fa-sm"></i> Dislike</a>
+            <a href="#" class="game-like"><i class="fa-solid fa-thumbs-up fa-sm" data-game-id="{{ game.id }}"></i> Like</a>
+            <a href="#" class="game-dislike"><i class="fa-solid fa-thumbs-down fa-sm" data-game-id="{{ game.id }}"></i> Dislike</a>
           </div>
         </div>
       {% endfor %}
@@ -133,32 +125,31 @@
         <div class="game">
           <h2><span class="title">{{ game.map_title }}</span> by <span class="creator">{{ game.creator }}</span></h2>
           <div class="game-details">
-            <p class="game-difficulty">{{ game.difficulty }} <i class="fa-solid fa-signal fa-xs"></i></p>
+            <p class="game-difficulty">{{ game.difficulty }} <i class="fa-solid fa-signal fa-xs" style="color: #a06bf6; margin-left: 3px;"></i></p>
             <div class="vertical-line"></div>
             <p class="game-mobility" style="display: none;">{{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i></p>
             {% if game.mobility == True %}
-            <p>Movement Allowed <i class="fa-solid fa-person-running fa-xs"></i></p>
+            <p>Movement Allowed <i class="fa-solid fa-person-running fa-xs" style="color: #00c800; margin-left: 3px;"></i></p>
             {% else %}
-            <p>No Movement Allowed <i class="fa-solid fa-person-running fa-xs"></i></p>
+            <p>No Movement Allowed <i class="fa-solid fa-person-running fa-xs" style="color: #c80000; margin-left: 3px;"></i></p>
             {% endif %}
             <div class="vertical-line"></div>
-            <p class="game-duration">{{ game.timer_duration }} seconds <i class="fa-solid fa-stopwatch fa-xs"></i></p>
+            <p class="game-duration">{{ game.timer_duration }} seconds <i class="fa-solid fa-stopwatch fa-xs" style="color: #a06bf6; margin-left: 3px;"></i></p>
             <p class="game-timerstatus" style="display: none;">{{ game.timer_status }}</p>
             <div class="vertical-line"></div>
-            <p class="game-date">{{ game.date_created }} <i class="fa-solid fa-calendar-day fa-xs"></i></p>
+            <p class="game-date">{{ game.date_created|date:'Y-m-d' }} <i class="fa-solid fa-calendar-day fa-xs" style="color: #a06bf6; margin-left: 3px;"></i></p>
             <div class="vertical-line"></div>
-            <p class="game-likes">
-              {{ game.likes }} <i class="fa-solid fa-thumbs-up fa-xs"></i>
-            </p>
-            <p class="game-dislikes">
-              {{ game.dislikes }} <i class="fa-solid fa-thumbs-down fa-xs"></i>
-            </p>
+            <p class="game-likes" id="game-likes">{{ game.likes }}</p>
+            <p><i class="fa-solid fa-thumbs-up fa-xs" style="color: #00c800; margin-left: 3px;"></i></p>
+            <p class="game-dislikes" id="game-dislikes" style="margin-left: 3px;">{{ game.dislikes }}</p>
+            <p><i class="fa-solid fa-thumbs-down fa-xs" style="color: #c80000; margin-left: 3px;"></i></p>
           </div>
           <p class="games-description">{{ game.map_description|truncate_words:30 }}</p>
+          <div class="hidden-game-id" style="display: none;" id="hidden-game-id">{{ game.id }}</div>
           <div class="game-actions">
             <a href="{% url 'custom_game_detail' game.id %}" class="game-view">View</a>
-            <a href="#" class="game-like"><i class="fa-solid fa-thumbs-up fa-sm"></i> Like</a>
-            <a href="#" class="game-dislike"><i class="fa-solid fa-thumbs-down fa-sm"></i> Dislike</a>
+            <a href="#" class="game-like"><i class="fa-solid fa-thumbs-up fa-sm" data-game-id="{{ game.id }}"></i> Like</a>
+            <a href="#" class="game-dislike"><i class="fa-solid fa-thumbs-down fa-sm" data-game-id="{{ game.id }}"></i> Dislike</a>
           </div>
         </div>
       {% endfor %}
@@ -198,4 +189,5 @@
       </span>
     </div>
   </div>
+  <script src="{% static 'scripts/rating.js' %}"></script>
 {% endblock %}

@@ -1,15 +1,15 @@
 function openMode(evt, name) {
     var i, x, tablinks;
-    x = document.getElementsByClassName("mode");
+    x = document.getElementsByClassName("custom-mode");
     for (i = 0; i < x.length; i++) {
         x[i].style.display = "none";
     }
-    tablinks = document.getElementsByClassName("tablink");
+    tablinks = document.getElementsByClassName("custom-tab");
     for (i = 0; i < x.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" w3-dark-grey", "");
+        tablinks[i].classList.remove("active");
     }
     document.getElementById(name).style.display = "block";
-    evt.currentTarget.className += " w3-dark-grey";
+    evt.currentTarget.classList.add("active");
 }
 
 function toggleTimerInput() {

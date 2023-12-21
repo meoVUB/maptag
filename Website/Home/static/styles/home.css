@@ -4,6 +4,32 @@
     overflow: hidden;
 }
 
+.box-text {
+    font-family: 'Outfit', sans-serif;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.small-text {
+    font-family: 'Work Sans', sans-serif;
+}
+
+.btn-container {
+    font-family: 'Work Sans', sans-serif;
+}
+
+
+.btn-success {
+    background-color: green;
+}
+
+.btn-primary:hover {
+    background-color: #8460bd;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    transform: scale(1.075);
+}
+
 .blurry-background {
     width: 100%;
     height: 100%;
@@ -13,18 +39,26 @@
 }
 
 .container-section {
-    margin-top: 20px; /* Adjust the margin as needed */
+    margin-top: 1.5em; /* Adjust the margin as needed */
     color: white; /* Set text color to white */
+    margin-bottom: 3em;
 }
 
 /* Style for the "Why create an account?" text */
 .container-section h2 {
+    font-family: 'Outfit', sans-serif;
     color: white; /* Set text color to white */
 }
 
 /* Style for the paragraph under "Why create an account?" */
 .container-section p {
+    font-family: 'Work Sans', sans-serif;
+    font-size: medium;
     color: white; /* Set text color to white */
+}
+
+.feature-box {
+    font-family: 'Work Sans', sans-serif;
 }
 
 .foreground-box {

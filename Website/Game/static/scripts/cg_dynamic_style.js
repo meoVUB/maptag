@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
   const body = document.body;
-  const startColor = [160, 107, 246]; // cornflowerblue
-  const endColor = [109, 39, 221]; // royalblue
+  const startColor = [160, 107, 246];
+  const endColor = [109, 39, 221];
   const maxScrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
   const games = document.querySelectorAll('.game');
   const maxScale = 1.03;

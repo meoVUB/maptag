@@ -24,9 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
         })
       } else if (sortingOption === 'rating') {
         sortResults.sort((a, b) => {
-          const likes = parseInt(a.querySelector('.game-likes').textContent.split(' ')[0])
-          const dislikes = parseInt(b.querySelector('.game-dislikes').textContent.split(' ')[0])
-          return likes - dislikes
+          const likesA = parseInt(a.querySelector('.game-likes').textContent.split(' ')[0])
+          const dislikesA = parseInt(a.querySelector('.game-dislikes').textContent.split(' ')[0])
+          const diffA = likesA - dislikesA;
+
+          const likesB = parseInt(b.querySelector('.game-likes').textContent.split(' ')[0])
+          const dislikesB = parseInt(b.querySelector('.game-dislikes').textContent.split(' ')[0])
+          const diffB = likesB - dislikesB;
+
+          return diffB - diffA
         })
       }
   
@@ -76,19 +82,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const gameTimerStatus = game.querySelector('.game-timerstatus').textContent
         const gameDuration = parseInt(game.querySelector('.game-duration').textContent.split(' ')[0])
         const gameDate = new Date(game.querySelector('.game-date').textContent.split(' ')[0])
-  
-        console.log(timerStatusFilter)
-        console.log(timerDurationFilter)
-        console.log(gameDuration)
+
         const mobilityFilterPassed = !mobilityFilter || gameMobility === mobilityFilter
         const difficultyFilterPassed = !difficultyFilter || gameDifficulty === difficultyFilter
         const timerstatusFilterPassed = !timerStatusFilter || gameTimerStatus === timerStatusFilter
         const durationFilterPassed = !timerDurationFilter || gameDuration >= timerDurationFilter
         const timeFilterPassed = timerstatusFilterPassed && (gameTimerStatus === 'False' ? true : durationFilterPassed)
-  
+
         let datePostedFilterPassed = true
         const currentDate = new Date()
-        if (datePostedFilter === 'this-week') {
+        if (datePostedFilter === 'today') {
+          const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+          datePostedFilterPassed = gameDate >= today
+        } else if (datePostedFilter === 'this-week') {
           const oneWeekAgo = new Date(currentDate - 7 * 24 * 60 * 60 * 1000)
           datePostedFilterPassed = gameDate >= oneWeekAgo
         } else if (datePostedFilter === 'this-month') {
@@ -98,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const oneYearAgo = new Date(currentDate.setFullYear(currentDate.getFullYear() - 1))
           datePostedFilterPassed = gameDate >= oneYearAgo
         }
-  
+
         return mobilityFilterPassed && difficultyFilterPassed && timeFilterPassed && datePostedFilterPassed
       })
   
@@ -135,7 +141,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (mobilityFilter) {
         const mobilityBubble = document.createElement('span')
         mobilityBubble.classList.add('filter-bubble')
-        mobilityBubble.textContent = `${mobilityFilter}`
+        if (mobilityFilter == 'True') {
+          mobilityBubble.textContent = `Movement allowed`
+        } else {
+          mobilityBubble.textContent = `Movement not allowed`
+        }
         const mobilityBubbleClose = document.createElement('span')
         mobilityBubbleClose.classList.add('filter-bubble-close')
         mobilityBubbleClose.innerHTML = ' &times;'
@@ -167,7 +177,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (timerStatusFilter) {
         const timerStatusBubble = document.createElement('span')
         timerStatusBubble.classList.add('filter-bubble')
-        timerStatusBubble.textContent = `Timer ${timerStatusFilter}`
+        if (timerStatusFilter == 'True') {
+          timerStatusBubble.textContent = `Timer enabled`
+        } else {
+          timerStatusBubble.textContent = `Timer disabled`
+        }
         const timerStatusBubbleClose = document.createElement('span')
         timerStatusBubbleClose.classList.add('filter-bubble-close')
         timerStatusBubbleClose.innerHTML = ' &times;'
@@ -199,12 +213,14 @@ document.addEventListener('DOMContentLoaded', function () {
       if (datePostedFilter) {
         const datePostedBubble = document.createElement('span')
         datePostedBubble.classList.add('filter-bubble')
-        if (`${datePostedFilter}` === 'this-week') {
-          datePostedBubble.textContent = 'this week'
+        if (`${datePostedFilter}` === 'today') {
+          datePostedBubble.textContent = 'today';
+        } else if (`${datePostedFilter}` === 'this-week') {
+          datePostedBubble.textContent = 'this week';
         } else if (`${datePostedFilter}` === 'this-month') {
-          datePostedBubble.textContent = 'this month'
+          datePostedBubble.textContent = 'this month';
         } else if (`${datePostedFilter}` === 'this-year') {
-          datePostedBubble.textContent = 'this year'
+          datePostedBubble.textContent = 'this year';
         }
         const datePostedBubbleClose = document.createElement('span')
         datePostedBubbleClose.classList.add('filter-bubble-close')
@@ -311,10 +327,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   
     function updateGames() {
-      console.log('test1')
       // Apply filters
       const filteredGames = applyFilters()
-      console.log('test2')
   
       // Filter games by text
       const searchedGames = filterGamesByText(filteredGames)
