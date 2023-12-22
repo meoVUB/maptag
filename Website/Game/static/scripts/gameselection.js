@@ -1,7 +1,5 @@
 function toggleTimerInput(selectElement) {
     var timerSection = document.getElementById("timerSection");
-    console.log(selectElement.value);
-
     // Show or hide the timer input based on the selection
     timerSection.style.display = (selectElement.value === "true") ? "block" : "none";
 }
