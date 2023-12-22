@@ -37,27 +37,27 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: blur(5px); /* Adjust the blur level as needed */
-    z-index: -1; /* Place the background behind other elements */
+    filter: blur(5px); 
+    z-index: -1; 
 }
 
 .container-section {
-    margin-top: 1.5em; /* Adjust the margin as needed */
-    color: white; /* Set text color to white */
+    margin-top: 1.5em; 
+    color: white; 
     margin-bottom: 3em;
 }
 
-/* Style for the "Why create an account?" text */
+
 .container-section h2 {
     font-family: 'Outfit', sans-serif;
-    color: white; /* Set text color to white */
+    color: white; 
 }
 
-/* Style for the paragraph under "Why create an account?" */
+
 .container-section p {
     font-family: 'Work Sans', sans-serif;
     font-size: medium;
-    color: white; /* Set text color to white */
+    color: white; 
 }
 
 .feature-box {
@@ -73,9 +73,9 @@
     color: white;
 }
 
-/* Style for the boxes with text and symbols */
+
 .feature-box {
-    background-color: #4e5959; /* White background color for boxes */
+    background-color: #4e5959; 
     padding: 20px;
     margin: 10px;
     text-align: center;
@@ -85,7 +85,7 @@
     color: white;
 }
 
-/* Style for the text inside the box */
+
 .box-text {
     font-size: 2.5rem;
     font-weight: bold;
@@ -93,7 +93,6 @@
     color: white;
 }
 
-/* Style for the smaller font text */
 .small-text {
     font-size: 2rem;
     margin-bottom: 20px;

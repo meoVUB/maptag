@@ -10,7 +10,6 @@
     overflow: hidden;
 }
 
-/* Style for the form */
 body {
     font-family: 'Helvetica', sans-serif;
     background-color: #a06bf6;
@@ -20,7 +19,6 @@ body {
 .make-game {
     font-family: "Outfit", sans-serif;
     max-width: 40vw;
-    /* Adjust the maximum width of the form as needed */
     width: 100%;
     padding: 2vw;
     background-color: #fefefe;
@@ -30,7 +28,6 @@ body {
 
 h3 {
     font-size: 2vw;
-    /* Adjust the font size using vw */
     margin-bottom: 2vw;
 }
 

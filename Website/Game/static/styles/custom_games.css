@@ -63,7 +63,6 @@ body {
     margin-bottom: -0.6em;
 }
 
-/* Filter Button */
 #filter-btn {
     background-color: white;
     border: none;
@@ -91,7 +90,6 @@ body {
     color: white;
 }
 
-/* Filter Bubbles */
 #filter-bubbles {
     display: flex;
     gap: 0.5em;
@@ -161,7 +159,6 @@ body {
     margin-left: 1.2em;
 }
 
-/* Filter Actions */
 .filter-actions {
     display: flex;
     justify-content: flex-end;
