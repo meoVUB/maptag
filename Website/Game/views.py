@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .models import CustomGame, Location, Rating
@@ -10,33 +10,44 @@ def get_game(request, game_id):
     serialized_game = serializers.serialize('json', [game])
     return JsonResponse({'game': serialized_game}, safe=False)
 
-def get_locations_for_game(request, game_id): 
+def get_locations_for_game(request, game_id):
     custom_game = get_object_or_404(CustomGame, id=game_id)
     locations = Location.objects.filter(custom_game=custom_game)
     serialized_locations = serializers.serialize('json', locations)
     return JsonResponse({'locations': serialized_locations}, safe=False)
 
-# Create your views here.
 def game(request):
-    return render(request, "game.html")
+    if request.user.is_authenticated:
+        return render(request, "game.html")
+    else:
+        return redirect('home')
 
 def gameselection(request):
-    return render(request, "gameselection.html")
+    if request.user.is_authenticated:
+        return render(request, "gameselection.html")
+    else:
+        return redirect('home')
 
 def custom_games(request):
-    game_list = CustomGame.objects.all()
-    paginator = Paginator(game_list, 5)  # Split game list into pages of 5
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)  # Get current page
-    context = {
-        'all_games': game_list,
-        'current_games': page_obj,
-    }
-    return render(request, "custom_games.html", context)
-
+    if request.user.is_authenticated:
+        game_list = CustomGame.objects.all()
+        paginator = Paginator(game_list, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {
+            'all_games': game_list,
+            'current_games': page_obj,
+        }
+        return render(request, "custom_games.html", context)
+    else:
+        return redirect('home')
+    
 def custom_game_detail(request, game_id):
-    game = get_object_or_404(CustomGame, pk=game_id)
-    return render(request, 'custom_game_detail.html', {'game': game})
+    if request.user.is_authenticated:
+        game = get_object_or_404(CustomGame, pk=game_id)
+        return render(request, 'custom_game_detail.html', {'game': game})
+    else:
+        return redirect('home')
 
 def rate_game(request, game_id, action):
     game = get_object_or_404(CustomGame, id=game_id)

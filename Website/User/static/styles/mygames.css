@@ -175,7 +175,7 @@ body {
     margin-bottom: 0.5em;
 }
 
-label {
+.custom-mode label {
     font-family: 'Outfit', sans-serif;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     color: white;
