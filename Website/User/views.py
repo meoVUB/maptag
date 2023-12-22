@@ -118,13 +118,18 @@ def send_friend_request(request):
             return HttpResponseBadRequest("User doesn't exist.")
         
         # Check if a friendship object already exists
-        friendship = Friendship.objects.filter(sender=request.user, receiver=receiver).first()
+        friendship1 = Friendship.objects.filter(sender=request.user, receiver=receiver).first()
+        friendship2 = Friendship.objects.filter(sender=receiver, receiver=request.user).first()
+
+        friendship = friendship1 if friendship1 else friendship2
         
         if friendship:
             # Check the status of the existing friendship
-            if friendship.status == Friendship.PENDING:
+            if friendship.status == 'pending':
                 return HttpResponseBadRequest("Request already sent.")
-            elif friendship.status == Friendship.BLOCKED:
+            elif friendship.status == 'accepted':
+                return HttpResponseBadRequest("User is already a friend.")
+            elif friendship.status == 'blocked':
                 return HttpResponseBadRequest("You are blocked from sending this user requests.")
         else:
             # Create a new friendship object if it doesn't exist
