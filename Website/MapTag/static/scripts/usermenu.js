@@ -6,7 +6,6 @@ var usernameID, firstNameID, lastNameID, emailID, button;
 
 function editAccountDetails() {
 
-    console.log("edit account");
     button.innerHTML = `<button id="edit" onclick="saveAccountDetails()"><span>Save</span></button>`;
 
     // Replace text with input fields using template literals
@@ -58,7 +57,6 @@ function saveAccountDetails() {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                console.log("Account details updated successfully");
                 username = new_username;
                 first_name = new_first_name
                 last_name = new_last_name;
@@ -93,8 +91,7 @@ function isValidEmail(email) {
     return emailRegex.test(email);
 }
 
-function resetPage() {
-    console.log("Resetting page");  
+function resetPage() {  
     const page = document.getElementById("pagediv");
     page.innerHTML = `
     <div class="profile-container">
@@ -164,23 +161,15 @@ window.onload = function() {
         email = emailID.textContent.trim();
     }
     button = document.getElementById("button");
-    console.log(username, first_name, last_name, email);
 
     // Get all elements with the class 'modal'
     modals = document.querySelectorAll('.modal');
-
-    console.log("Modals:", modals);
-
-    // Log each modal for verification
-    modals.forEach(function(modal, index) {
-        console.log("Modal " + (index + 1) + ":", modal);
-    });
 }
 
 // Close the dropdown if the user clicks outside of it
 window.onclick = function (event) {
     modals.forEach(function(modal) {
-        if (event.target == modal) {
+        if (event.target == modal && !modal.classList.contains('no-close')) {
             modal.style.display = "none";
             if (document.getElementById("profile-modal") === event.target) {
                 resetPage();
