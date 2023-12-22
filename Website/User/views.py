@@ -102,6 +102,9 @@ def update_account_details(request):
         if not username or not first_name or not last_name or not email:
             return JsonResponse({'success': False, 'error': 'All fields are required.'})
 
+        # Validate username
+        if len(username) > 10:
+            return JsonResponse({'success': False, 'error': 'Username must be under 10 characters.'})
         # Validate email
         try:
             validate_email(email)
