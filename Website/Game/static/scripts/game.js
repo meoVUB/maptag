@@ -5,7 +5,7 @@ const max_score = 5000; // Max score for each round
 const start_score = 0; // Starting score
 const start_map = 1; // Starting map
 const base_radius = 1000; // Base radius for the Street View panorama search
-const base_sigma = 1000; // Base sigma for the score calculation
+const base_sigma = 1500; // Base sigma for the score calculation
 
 const base_total_maps = 5; // Base total maps for the game
 const base_timer = 60000; // Base timer for the game
@@ -14,11 +14,11 @@ const base_timer = 60000; // Base timer for the game
 let played; // Variable to check if the round has been played
 let total_score = start_score; // Variable to store the total score
 let map_score = start_score; // Variable to store the current score of the 
-let current_map = start_map;
-let radius = base_radius;
-let map_found;
-let latitude, longitude;
-let map_location;
+let current_map = start_map; //Variable to store the current map number
+let radius = base_radius; // Variable to store the radius for the Street View panorama search this will be increased if no panorama is found
+let map_found; // Variable to check if a map has been found, used to know if the modal should be hidden
+let latitude, longitude; // Variables to store the latitude and longitude of the Street View panorama
+let map_location; // Variable to store the location of the Street View panorama
 let guess_marker, target_marker, line_path, line_coordinates, random_coordinates, random_area;
 
 // Variables for the gamemodes
@@ -58,9 +58,7 @@ function getQueryParam(key) {
     const urlParams = new URLSearchParams(queryString);
     return urlParams.get(key);
 }
-
-
-
+///////////////////////////////////////////////////////////////////////
 function setVariables(){
     map_score = start_score; // Reset the score
     total_score = start_score; // Reset the total score
@@ -93,7 +91,6 @@ function setVariables(){
         }
         sigma = parseInt(getQueryParam('sigma'));
     } else if (id !== null && id !== undefined && id !== '') { // if there is a game id
-        console.log("Getting game data");
         game_id = id;
         var api_url = '/get_game/' + game_id + '/';
 
@@ -115,18 +112,10 @@ function setVariables(){
                 const timer_status = gameData[0].fields.timer_status;
                 const canMove = gameData[0].fields.mobility;
 
-                // Log or use the retrieved values
-                console.log('Map Title:', mapTitle);
-                console.log('Difficulty:', difficulty);
-                console.log('Timer status:', timer_status);
-                console.log('Timer Duration:', timerDuration);
-                console.log('Can move:', canMove);
-
                 timer = timer_status;
                 time_ms = timerDuration * 1000;
                 move_enabled = canMove;
                 sigma = difficultyToNumber(difficulty);
-                console.log("Sigma: " + sigma);
 
             })
             .catch(error => {
@@ -249,8 +238,6 @@ var zoom = 0;
 function getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition);
-    } else { 
-      console.log("Geolocation is not supported by this browser.");
     }
   }
   
@@ -263,7 +250,6 @@ zoom = 8;
 getLocation();
 
 function startGame() {
-    console.log("Starting game");
     document.getElementById("playButton").value = "Play Again";
     setVariables();
     toggleLoader(true);
@@ -274,12 +260,9 @@ function startGame() {
 
 
 function showModal() {
-    console.log("current map: " + current_map);
-    console.log("total maps: " + total_maps);
     document.getElementById('id01').style.display = 'block';
 
     if (current_map === total_maps) {
-        console.log("Game over");
         document.getElementById("playButton").value = "Start New Game";
     }
 
@@ -696,7 +679,6 @@ function findNearestStreetView(latitude, longitude) {
             } else {
                 map_found = false;
                 radius += base_radius;
-                console.log("Retry");
                 initStreetView(false);
             }
         }
@@ -704,7 +686,6 @@ function findNearestStreetView(latitude, longitude) {
 }
 
 function initStreetView(newArea) {
-    console.log(user_map)
     if (user_map === true) {
         latitude = latitude_array[current_map - 1];
         longitude = longitude_array[current_map - 1];
@@ -790,7 +771,6 @@ function newMap() {
     if (map_found === false) { // if a map has been found already, don't generate a new one
         initStreetView(true);
     }
-
 
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: user_lat,  lng: user_lon },
