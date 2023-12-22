@@ -1,11 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    function toggleTimerInput() {
-        var timerActiveSelect = document.getElementById('timerstatus-select')
-        var durationSection = document.getElementById('duration-section')
-      
-        durationSection.style.display = timerActiveSelect.value === 'True' ? 'block' : 'none'
-      }
-
     const games = document.getElementById('all-games')
     const currentGames = document.getElementById('current-games')
     const sortingSelect = document.getElementById('sorting-select')
@@ -77,17 +70,19 @@ document.addEventListener('DOMContentLoaded', function () {
       const datePostedFilter = getDatePostedFilter()
   
       const filterResults = gameArray.filter((game) => {
-        const gameMobility = game.querySelector('.game-mobility').textContent.split(' ')[0]
-        const gameDifficulty = game.querySelector('.game-difficulty').textContent.split(' ')[0]
-        const gameTimerStatus = game.querySelector('.game-timerstatus').textContent
+        const gameMobility = game.querySelector('.game-mobility').textContent
+        const gameDifficulty = game.querySelector('.game-difficulty').textContent
+        const gameTimerStatus = game.querySelector('.game-timerstatus').textContent.split(' ')[0]
         const gameDuration = parseInt(game.querySelector('.game-duration').textContent.split(' ')[0])
-        const gameDate = new Date(game.querySelector('.game-date').textContent.split(' ')[0])
+        const gameDate = new Date(game.querySelector('.game-date').textContent)
 
         const mobilityFilterPassed = !mobilityFilter || gameMobility === mobilityFilter
         const difficultyFilterPassed = !difficultyFilter || gameDifficulty === difficultyFilter
         const timerstatusFilterPassed = !timerStatusFilter || gameTimerStatus === timerStatusFilter
         const durationFilterPassed = !timerDurationFilter || gameDuration >= timerDurationFilter
         const timeFilterPassed = timerstatusFilterPassed && (gameTimerStatus === 'False' ? true : durationFilterPassed)
+
+        console.log(game.querySelector('.game-duration').textContent)
 
         let datePostedFilterPassed = true
         const currentDate = new Date()

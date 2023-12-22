@@ -17,6 +17,9 @@
     font-family: 'Work Sans', sans-serif;
 }
 
+.btn-primary {
+    background-color: #a06bf6;
+}
 
 .btn-success {
     background-color: green;
