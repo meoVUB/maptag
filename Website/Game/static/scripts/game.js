@@ -693,11 +693,11 @@ function initStreetView(newArea) {
         findNearestStreetView(latitude, longitude);
     } else {
         random_number = Math.random();
-        if (random_number < 0.0) {
-            // 10% of an actual random coordinate in the whole world
+        if (random_number < 0.05) {
+            // 5% of an actual random coordinate in the whole world
             random_coordinates = randomCoordinates();
         } else {
-            // 90% chance for a coordinate in the defined Areas
+            // 95% chance for a coordinate in the defined Areas
             if (newArea === true) {
                 random_area = getRandomArea();
             }
