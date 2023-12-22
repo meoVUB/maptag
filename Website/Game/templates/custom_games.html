@@ -70,7 +70,7 @@
           <!-- Timer duration filter -->
           <div class="filter-section" id="duration-section" style="display: none;">
             <label for="duration-range">Timer Duration:</label>
-            <input type="range" id="duration-input" min="5" max="600" step="1" value="5" />
+            <input type="range" id="duration-input" min="5" max="600" step="5" value="5" />
             <output id="duration-output"></output>
           </div>
           <!-- Date posted filter -->
@@ -110,9 +110,7 @@
             {{ game.difficulty }} <i class="fa-solid fa-signal fa-xs" style="color: #a06bf6; margin-left: 3px;"></i>
           </p>
           <div class="vertical-line"></div>
-          <p class="game-mobility" style="display: none;">
-            {{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i>
-          </p>
+          <p class="game-mobility" style="display: none;">{{ game.mobility }}</p>
           {% if game.mobility == True %}
             <p>
               Movement Allowed <i class="fa-solid fa-person-running fa-xs" style="color: #00c800; margin-left: 3px;"></i>
@@ -157,9 +155,7 @@
             {{ game.difficulty }} <i class="fa-solid fa-signal fa-xs" style="color: #a06bf6; margin-left: 3px;"></i>
           </p>
           <div class="vertical-line"></div>
-          <p class="game-mobility" style="display: none;">
-            {{ game.mobility }} <i class="fa-solid fa-person-running fa-xs"></i>
-          </p>
+          <p class="game-mobility" style="display: none;">{{ game.mobility }}</p>
           {% if game.mobility == True %}
             <p>
               Movement Allowed <i class="fa-solid fa-person-running fa-xs" style="color: #00c800; margin-left: 3px;"></i>

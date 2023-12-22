@@ -1,6 +1,7 @@
 body {
     padding-top: 4em;
     background-color: #a06bf6;
+    min-height: 100vh;
 }
 
 
@@ -296,8 +297,6 @@ option {
 .game-actions a {
     margin-left: 0.5em;
     background-color: white;
-    color: mediumaquamarine;
-    border: 1px solid mediumaquamarine;
     border-radius: 5px;
     padding: 5px 10px;
     text-decoration: none;
@@ -309,21 +308,31 @@ option {
 
 .game-view {
     background-color: mediumaquamarine !important;
-    color: white !important;
+    color: white;
 }
 
 .game-view:hover {
     transform: scale(1.10);
 }
 
+.game-like {
+    color: green;
+    border: 1px solid green;
+}
+
 .game-like:hover {
-    background-color: mediumaquamarine;
+    background-color: green;
     color: white;
     transform: scale(1.05);
 }
 
+.game-dislike {
+    color: red;
+    border: 1px solid red;
+}
+
 .game-dislike:hover {
-    background-color: mediumaquamarine;
+    background-color: red;
     color: white;
     transform: scale(1.05);
 }

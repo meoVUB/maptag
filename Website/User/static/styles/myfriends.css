@@ -1,38 +1,187 @@
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-color: #a06bf6;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-.friends-container {
-    max-width: 600px;
+.custom-tabs {
+    padding-top: 1em;
+    width: 50%;
+    display: flex;
     margin: 0 auto;
-  }
-  
-  .friends-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  .friends-table th, .friends-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  .friends-table th {
-    background-color: #f2f2f2;
-  }
-  
-  .games-button {
-    background-color: #4CAF50;
-    color: white;
+    justify-content: center;
+}
+
+.custom-tab {
     border: none;
-    padding: 8px 16px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    flex: 1;
+    padding: 10px;
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin: 4px 2px;
     cursor: pointer;
-    border-radius: 4px;
-  }
+    outline: none;
+    background-color: white;
+    color: black;
+    font-family: "Outfit", sans-serif;
+    font-size: 1.1em;
+    transition: transform 0.2s ease; 
+}
+
+.custom-tab i {
+    margin-right: 0.3em;
+}
+
+#tab-1 {
+    margin-right: 1em;
+}
+
+#tab-2 {
+    margin-left: 1em;
+}
+
+.custom-tab:hover, .custom-tab:focus {
+    background-color: #6D27DD;
+    color: white;
+    transform: scale(1.05);
+}
+
+.custom-mode {
+    padding-top: 1.5em;
+    width: 35%;
+    padding-bottom: 1.5em;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.custom-mode h1 {
+    margin: 0 auto;
+    margin-bottom: 0.5em;
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 4em;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: white;
+}
+
+.friend, .request {
+  background-color: white;
+  margin-bottom: 1em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 1.5em;
+  position: relative;
+  width: 100%;
+}
+
+.friend h2, .request h2 {
+  font-family: "Outfit", sans-serif;
+  font-size: 1.65em;
+  margin-top: 0;
+  color: #6D27DD;
+}
+
+.friend-actions, .request-actions {
+  position: absolute;
+  bottom: 0.35em;
+  right: 1em;
+  margin-top: 10em;
+  display: flex;
+}
+
+.friend-actions a, .request-actions a {
+  margin-left: 0.5em;
+  background-color: white;
+  color: mediumaquamarine;
+  border: 1px solid mediumaquamarine;
+  border-radius: 5px;
+  padding: 5px 10px;
+  text-decoration: none;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.request-accept, .request-unblock {
+  background-color: mediumaquamarine !important;
+  color: white !important;
+}
+
+.request-accept:hover, .request-unblock:hover {
+  transform: scale(1.10);
+}
+
+.request-deny, .friend-remove {
+  background-color: red !important;
+  color: white !important;
+}
+
+.request-deny:hover, .friend-remove:hover {
+  transform: scale(1.10);
+}
+
+.request-block, .request-cancel {
+  background-color: darkslategray !important;
+  color: white !important;
+}
+
+.request-block:hover, .request-cancel:hover {
+  transform: scale(1.10);
+}
+
+.submission-container form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submission-container label {
+  margin-right: 10px;
+  font-family: "Outfit", sans-serif;
+  font-size: large;
+  color: white;
+}
+
+.submission-container input {
+  width: 15em;
+  margin-right: 10px;
+  border-radius: 15px;
+}
+
+.btn-primary {
+  font-family: "Work Sans", sans-serif;
+  background-color: #6D27DD;
+  transition: transform 0.2s ease; 
+}
+
+.btn-primary:hover {
+  background-color: #571fb1;
+  transform: scale(1.05);
+}
+
+.requests {
+  padding-top: 3em;
+  padding-bottom: 3em;
+  font-family: "Outfit", sans-serif;
+}
+
+.requests h3 {
+  font-size: 2.5em;
+  color: white;
+  text-align: center;
+}
+
+.requests p {
+  text-align: center;
+}
+
+.sent-requests, .received-requests, .blocked-requests {
+  margin-bottom: 3em;
+}

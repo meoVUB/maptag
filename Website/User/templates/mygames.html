@@ -11,6 +11,7 @@
 
   <!-- Required scripts -->
   <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
+  <script src="{% static 'scripts/tabs.js' %}" defer></script>
   <script src="{% static 'scripts/mygames.js' %}" defer></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfIdLGhVXWF-JiBJuJle1Pp1YnHYutuC0&v=weekly" defer></script>
 {% endblock %}
@@ -71,7 +72,7 @@
         </div>
       {% endfor %}
     {% else %}
-      <p>No games found.</p>
+      <p class="no-results">No games found.</p>
     {% endif %}
   </div>
 

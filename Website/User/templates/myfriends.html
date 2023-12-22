@@ -8,29 +8,102 @@
 {% block extra_head %}
   <!-- Required stylesheets -->
   <link rel="stylesheet" type="text/css" href="{% static 'styles/myfriends.css' %}" />
+
+  <!-- Required scripts -->
+  <script src="https://kit.fontawesome.com/faa39f46c7.js" crossorigin="anonymous"></script>
+  <script src="{% static 'scripts/tabs.js' %}" defer></script>
+  <script src="{% static 'scripts/friends.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
-  <div class="friends-container">
-    <h1>Friends</h1>
-    <table class="friends-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Their games</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Friend 1</td>
-          <td><button class="games-button">Games</button></td>
-        </tr>
-        <tr>
-          <td>Friend 2</td>
-          <td><button class="games-button">Games</button></td>
-        </tr>
-        <!-- Add more rows as needed -->
-      </tbody>
-    </table>
+  <div class="custom-tabs">
+    <a class="custom-tab" onclick="openMode(event, 'your_friends')" id="tab-1"><i class="fa-solid fa-list"></i> Your Friends</a>
+    <a class="custom-tab" onclick="openMode(event, 'add_friends')" id="tab-2"><i class="fa-solid fa-plus"></i> Add Friends</a>
+  </div>
+
+  <div id="your_friends" class="custom-mode">
+    <h1>Your Friends</h1>
+    {% for friend in sent_friends %}
+      <div class="friend">
+        <h2>{{ friend.receiver.username }}</h2>
+        <div class="friend-actions">
+          <a href="{% url 'remove_friend' friend.id %}" class="friend-remove">Remove</a>
+        </div>
+      </div>
+    {% endfor %}
+    {% for friend in received_friends %}
+      <div class="friend">
+        <h2>{{ friend.sender.username }}</h2>
+        <div class="friend-actions">
+          <a href="{% url 'remove_friend' friend.id %}" class="friend-remove">Remove</a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div id="add_friends" class="custom-mode" style="display:none">
+    <h1>Add Friends</h1>
+    <!-- Content for Friend Requests tab -->
+    <div class="container submission-container">
+      <form method="post" action="{% url 'send_friend_request' %}">
+        {% csrf_token %}
+        <label for="friendUsername">Username:</label>
+        <input type="text" name="friendUsername" required />
+        <button type="submit" class="btn btn-primary">Send Request</button>
+      </form>
+    </div>
+
+    <div class="requests">
+      <!-- Display sent friend requests -->
+      <div class="sent-requests">
+        <h3>Sent requests</h3>
+        {% if sent_requests %}
+          {% for request in sent_requests %}
+            <div class="request">
+              <h2>{{ request.receiver.username }}</h2>
+              <div class="request-actions">
+                <a href="{% url 'cancel_friend_request' request.id %}" class="request-cancel">Cancel</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No requests sent.</p>
+        {% endif %}
+      </div>
+      <!-- Display received friend requests -->
+      <div class="received-requests">
+        <h3>Received requests</h3>
+        {% if received_requests %}
+          {% for request in received_requests %}
+            <div class="request">
+              <h2>{{ request.sender.username }}</h2>
+              <div class="request-actions">
+                <a href="{% url 'accept_friend_request' request.id %}" class="request-accept">Accept</a>
+                <a href="{% url 'deny_friend_request' request.id %}" class="request-deny">Deny</a>
+                <a href="{% url 'block_friend_request' request.id %}" class="request-block">Block requests</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No requests received.</p>
+        {% endif %}
+      </div>
+      <!-- Display blocked friend requests -->
+      <div class="blocked-requests">
+        <h3>Blocked requests</h3>
+        {% if blocked_requests %}
+          {% for request in blocked_requests %}
+            <div class="request">
+              <h2>{{ request.receiver.username }}</h2>
+              <div class="request-actions">
+                <a href="{% url 'unblock_friend_request' request.id %}" class="request-unblock">Unblock requests</a>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No requests blocked.</p>
+        {% endif %}
+      </div>
+    </div>
   </div>
 {% endblock %}

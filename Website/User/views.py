@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.http import HttpResponseBadRequest, JsonResponse
 from Game.models import CustomGame, Location
-from User.models import Report, Feature
+from .models import Report, Feature, Friendship
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
@@ -85,40 +85,141 @@ def myaccount(request):
     
 def myfriends(request):
     if request.user.is_authenticated:
-        return render(request, "myfriends.html")
+        user = request.user
+
+        sent_friendships = Friendship.objects.filter(sender=user, status='accepted')
+        received_friendships = Friendship.objects.filter(receiver=user, status='accepted')
+        
+        blocked_requests = Friendship.objects.filter(receiver=user, status='blocked')
+
+        received_requests = Friendship.objects.filter(receiver=user, status='pending')
+        sent_requests = Friendship.objects.filter(sender=user, status='pending')
+
+        context = {'sent_friends': sent_friendships,
+                   'received_friends': received_friendships,
+                   'blocked_requests': blocked_requests,
+                   'received_requests': received_requests,
+                   'sent_requests': sent_requests}
+        
+        return render(request, 'myfriends.html', context)
     else:
         return redirect('home')
     
-def update_account_details(request):
+def send_friend_request(request):
     if request.method == 'POST':
-        # Get the user and the submitted data
-        user = request.user
-        username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
+        friend_username = request.POST.get('friendUsername', None)
 
-        # Server-side validation
-        if not username or not first_name or not last_name or not email:
-            return JsonResponse({'success': False, 'error': 'All fields are required.'})
+        if not friend_username:
+            return HttpResponseBadRequest("Friend's username is required.")
 
-        # Validate email
         try:
-            validate_email(email)
-        except ValidationError:
-            return JsonResponse({'success': False, 'error': 'Invalid email address.'})
+            receiver = User.objects.get(username=friend_username)
+        except:
+            return HttpResponseBadRequest("User doesn't exist.")
+        
+        # Check if a friendship object already exists
+        friendship = Friendship.objects.filter(sender=request.user, receiver=receiver).first()
+        
+        if friendship:
+            # Check the status of the existing friendship
+            if friendship.status == Friendship.PENDING:
+                return HttpResponseBadRequest("Request already sent.")
+            elif friendship.status == Friendship.BLOCKED:
+                return HttpResponseBadRequest("You are blocked from sending this user requests.")
+        else:
+            # Create a new friendship object if it doesn't exist
+            Friendship.objects.create(sender=request.user, receiver=receiver)
 
-        # Update user details
-        user.username = username
-        user.first_name = first_name
-        user.last_name = last_name
-        user.email = email
-        user.save()
-
-        return JsonResponse({'success': True})
-    else:
-        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+        return redirect('myfriends')
     
+def cancel_friend_request(request, friendship_id):
+    friendship = Friendship.objects.get(id=friendship_id)
+
+    # Ensure that the request user is the sender of the friend request
+    if request.user == friendship.sender:
+        friendship.delete()
+
+    return redirect('myfriends')
+    
+def accept_friend_request(request, friendship_id):
+    friendship = Friendship.objects.get(id=friendship_id)
+
+    # Ensure that the request user is the receiver of the friend request
+    if request.user == friendship.receiver:
+        friendship.status = 'accepted'
+        friendship.save()
+
+    return redirect('myfriends')
+
+def deny_friend_request(request, friendship_id):
+    friendship = Friendship.objects.get(id=friendship_id)
+
+    # Ensure that the request user is the receiver of the friend request
+    if request.user == friendship.receiver:
+        friendship.delete()
+        
+    return redirect('myfriends')
+
+def block_friend_request(request, friendship_id):
+    friendship = Friendship.objects.get(id=friendship_id)
+
+    # Ensure that the request user is the receiver of the friend request
+    if request.user == friendship.receiver:
+        friendship.status = 'blocked'
+        friendship.save()
+
+    return redirect('myfriends')
+
+def unblock_friend_request(request, friendship_id):
+    friendship = Friendship.objects.get(id=friendship_id)
+
+    # Ensure that the request user is the blocker of the friend request
+    if request.user == friendship.receiver:
+        friendship.status = 'pending'
+        friendship.save()
+
+    return redirect('myfriends')
+
+def remove_friend(request, friendship_id):
+    friendship = Friendship.objects.get(id=friendship_id)
+
+    friendship.delete()
+        
+    return redirect('myfriends')
+    
+def update_account_details(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            # Get the user and the submitted data
+            user = request.user
+            username = request.POST.get('username')
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+
+            # Server-side validation
+            if not username or not first_name or not last_name or not email:
+                return JsonResponse({'success': False, 'error': 'All fields are required.'})
+
+            # Validate email
+            try:
+                validate_email(email)
+            except ValidationError:
+                return JsonResponse({'success': False, 'error': 'Invalid email address.'})
+
+            # Update user details
+            user.username = username
+            user.first_name = first_name
+            user.last_name = last_name
+            user.email = email
+            user.save()
+
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'error': 'Invalid request method'})
+    else:
+        return redirect('home')
+
 def create_game(request):
     if request.method == 'POST':
         creator_username = request.user.username if request.user.is_authenticated else None
@@ -280,9 +381,9 @@ def report_bug(request):
         report = Report.objects.create(description=bug_description)
         print("Report instance created.")
 
-        return redirect('home')  # Adjust the redirect based on your actual URL configuration
+        return redirect('home')
 
-    return redirect('home')  # Adjust the template name as needed
+    return redirect('home')
 
 def request_feature(request):
     print("request_feature view called.")
@@ -294,10 +395,10 @@ def request_feature(request):
             return HttpResponseBadRequest("Please fill in the request description.")
 
         print("Creating Request instance...")
-        # Create Report instance
+        # Create Request instance
         report = Feature.objects.create(description=request_description)
         print("Request instance created.")
 
-        return redirect('home')  # Adjust the redirect based on your actual URL configuration
+        return redirect('home')
 
-    return redirect('home')  # Adjust the template name as needed
+    return redirect('home')

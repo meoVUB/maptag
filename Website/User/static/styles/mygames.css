@@ -216,3 +216,9 @@ label {
     background-color: #571fb1;
     transform: scale(1.05);
 }
+
+.no-results {
+    text-align: center;
+    font-family: "Work Sans", sans-serif;
+    color: white;
+}
