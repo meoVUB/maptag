@@ -1,6 +1,7 @@
 # MapTag
-## 3RD YEAR VUB COMPUTERSCIENCE PROJECT.
-## SIMPLE GEOGUESSER LIKE WEBGAME
+### 3RD YEAR VUB COMPUTERSCIENCE PROJECT.
+### SIMPLE GEOGUESSER LIKE WEBGAME
+### Find out where you are in the world, create customs games, share them and play custom games made by other people
 
 ## Main Page
 ![Image](https://github.com/user-attachments/assets/2153c0e6-eb85-446f-9f19-99829eb10b84)
