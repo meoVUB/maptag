@@ -1,2 +1,3 @@
 3RD YEAR VUB COMPUTERSCIENCE PROJECT.
 SIMPLE GEOGUESSER LIKE WEBGAME
+![Image](https://github.com/user-attachments/assets/2153c0e6-eb85-446f-9f19-99829eb10b84)
